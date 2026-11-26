@@ -2,7 +2,7 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 
 import type {TChatListRefObject} from '#src/Components/Lists/ChatList';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import type {ChatListSharedState} from '#src/Hooks/ChatList/useChatListSharedState';
+import type {ChatListScrollArbiter} from '#src/Hooks/ChatList/useChatListScrollArbiter';
 import {
   computeAnchorError,
   initialReadyCheckState,
@@ -16,7 +16,7 @@ const logger = createLogger('useChatListReadyCheck.ts');
 
 interface UseChatListReadyCheckProps<TItem> {
   listRef: TChatListRefObject<TItem>;
-  shared: ChatListSharedState;
+  arbiter: ChatListScrollArbiter;
   data: TItem[];
   keyExtractor: (item: TItem) => string;
   /** Index of the anchored item, or undefined for an end anchor. */
@@ -33,7 +33,7 @@ interface UseChatListReadyCheckProps<TItem> {
  */
 export const useChatListReadyCheck = <TItem>({
   listRef,
-  shared,
+  arbiter,
   data,
   keyExtractor,
   anchorIndex,
@@ -70,14 +70,14 @@ export const useChatListReadyCheck = <TItem>({
 
   /** Fires `onReadyToShow` at most once. */
   const fireReadyToShow = useCallback(() => {
-    if (shared.readyFired.current) {
+    if (arbiter.isReady()) {
       return;
     }
-    shared.readyFired.current = true;
+    arbiter.dispatch({type: 'ready'});
     setReady(true);
     logger.debug('Firing onReadyToShow');
     onReadyToShowRef.current?.();
-  }, [shared]);
+  }, [arbiter]);
 
   /**
    * Measures how far (in pixels) the current scroll offset is from the anchor's target offset (see
@@ -86,7 +86,7 @@ export const useChatListReadyCheck = <TItem>({
   const getAnchorError = useCallback(
     (index?: number) => {
       const list = listRef.current;
-      const endOffset = shared.getEndOffset();
+      const endOffset = arbiter.getEndOffset();
       if (!list || endOffset === undefined) {
         return undefined;
       }
@@ -100,7 +100,7 @@ export const useChatListReadyCheck = <TItem>({
       }
       // Our own onScroll metrics update on the scroll event itself; FlashList's tracked offset is
       // updated from a deferred velocity callback and lags a correction by a frame or more.
-      const offset = shared.scrollMetrics.current?.offset ?? list.getAbsoluteLastScrollOffset();
+      const offset = arbiter.scrollMetrics.current?.offset ?? list.getAbsoluteLastScrollOffset();
       return computeAnchorError({
         offset,
         endOffset,
@@ -109,7 +109,7 @@ export const useChatListReadyCheck = <TItem>({
         margin: styleDefaults.marginSize,
       });
     },
-    [listRef, shared, styleDefaults.marginSize],
+    [arbiter, listRef, styleDefaults.marginSize],
   );
 
   /**
@@ -130,7 +130,7 @@ export const useChatListReadyCheck = <TItem>({
       state = step.state;
       if (step.scrollTo !== undefined) {
         logger.debug(`Anchor correction ${state.corrections}: off by ${Math.round(state.lastError ?? 0)}px`);
-        listRef.current?.scrollToOffset({offset: step.scrollTo, animated: false});
+        arbiter.dispatch({type: 'anchorCorrection', offset: step.scrollTo});
       }
       if (step.ready) {
         fireReadyToShow();
@@ -139,7 +139,7 @@ export const useChatListReadyCheck = <TItem>({
       }
     };
     readyFrameRef.current = requestAnimationFrame(tick);
-  }, [anchorIndex, anchorKey, getAnchorError, keyExtractor, fireReadyToShow, listRef]);
+  }, [anchorIndex, anchorKey, arbiter, getAnchorError, keyExtractor, fireReadyToShow]);
 
   /**
    * FlashList fires `onLoad` once after first layout. That is not "initial scroll done", so it only

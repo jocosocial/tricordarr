@@ -1,13 +1,13 @@
 import {useEffect, useRef} from 'react';
 
 import type {TChatListRefObject} from '#src/Components/Lists/ChatList';
-import type {ChatListSharedState} from '#src/Hooks/ChatList/useChatListSharedState';
+import type {ChatListScrollArbiter} from '#src/Hooks/ChatList/useChatListScrollArbiter';
 import {PAGE_FILL_DELAY_MS} from '#src/Libraries/ChatList/Constants';
 import {getPageFillAction, nextPageFillDelay} from '#src/Libraries/ChatList/Pagination';
 
 interface UseChatListPageFillProps<TItem> {
   listRef: TChatListRefObject<TItem>;
-  shared: ChatListSharedState;
+  arbiter: ChatListScrollArbiter;
   /** Whether the list has been revealed; the fill waits for it. */
   ready: boolean;
   dataLength: number;
@@ -32,7 +32,7 @@ interface UseChatListPageFillProps<TItem> {
  */
 export const useChatListPageFill = <TItem>({
   listRef,
-  shared,
+  arbiter,
   ready,
   dataLength,
   anchorsToEnd,
@@ -61,12 +61,12 @@ export const useChatListPageFill = <TItem>({
     let timer: ReturnType<typeof setTimeout>;
     const check = () => {
       const list = listRef.current;
-      const endOffset = shared.getEndOffset();
+      const endOffset = arbiter.getEndOffset();
       if (list && endOffset !== undefined) {
         const viewportHeight = list.getWindowSize().height;
         const offset = Math.min(list.getAbsoluteLastScrollOffset(), endOffset);
-        if (delay === PAGE_FILL_DELAY_MS && shared.scrollMetrics.current) {
-          shared.scrollMetrics.current = {...shared.scrollMetrics.current, offset};
+        if (delay === PAGE_FILL_DELAY_MS && arbiter.scrollMetrics.current) {
+          arbiter.scrollMetrics.current = {...arbiter.scrollMetrics.current, offset};
           applyAtTop(offset);
           applyScrollButtonDirection();
         }
@@ -79,7 +79,7 @@ export const useChatListPageFill = <TItem>({
           anchorsToEnd,
         });
         if (action.load === 'previous') {
-          shared.pinEndOnFill.current = action.pinEndOnFill;
+          arbiter.dispatch({type: 'loadPrevious', pinEndOnFill: action.pinEndOnFill});
           handleLoadPreviousRef.current?.();
         } else if (action.load === 'next') {
           handleLoadNextRef.current?.();
@@ -101,6 +101,6 @@ export const useChatListPageFill = <TItem>({
     hasPreviousPage,
     listRef,
     ready,
-    shared,
+    arbiter,
   ]);
 };

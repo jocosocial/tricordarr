@@ -10,9 +10,9 @@ import {useChatListKeyboardPin} from '#src/Hooks/ChatList/useChatListKeyboardPin
 import {useChatListOwnItemScroll} from '#src/Hooks/ChatList/useChatListOwnItemScroll';
 import {useChatListPageFill} from '#src/Hooks/ChatList/useChatListPageFill';
 import {useChatListReadyCheck} from '#src/Hooks/ChatList/useChatListReadyCheck';
+import {useChatListScrollArbiter} from '#src/Hooks/ChatList/useChatListScrollArbiter';
 import {useChatListScrollButtons} from '#src/Hooks/ChatList/useChatListScrollButtons';
 import {useChatListScrollHandlers} from '#src/Hooks/ChatList/useChatListScrollHandlers';
-import {useChatListSharedState} from '#src/Hooks/ChatList/useChatListSharedState';
 import {AUTOSCROLL_TO_BOTTOM_THRESHOLD, START_RENDERING_FROM_BOTTOM} from '#src/Libraries/ChatList/Constants';
 import {getFallbackEndIndex, getInitialScrollIndex} from '#src/Libraries/ChatList/InitialScroll';
 
@@ -87,7 +87,9 @@ interface ChatListProps<TItem> {
  * becomes known (see `FezChatScreen`).
  *
  * Each workaround lives in a concern hook under `src/Hooks/ChatList/`, and its decisions, with the
- * reasons for them, in `src/Libraries/ChatList/`. This component only wires them to FlashList.
+ * reasons for them, in `src/Libraries/ChatList/`. The hooks report what they see to one scroll
+ * arbiter (`useChatListScrollArbiter`, `ScrollArbiter.ts`), the only ChatList code that scrolls the
+ * list. This component only wires them to FlashList.
  */
 export const ChatList = <TItem,>({
   listRef,
@@ -148,9 +150,9 @@ export const ChatList = <TItem,>({
     [anchorsToEnd, effectiveFollowTail, hasNextPage],
   );
 
-  const shared = useChatListSharedState(listRef);
-  const {ready, onLoad} = useChatListReadyCheck({listRef, shared, data, keyExtractor, anchorIndex, onReadyToShow});
-  useChatListOwnItemScroll({listRef, data, keyExtractor, isOwnItem});
+  const arbiter = useChatListScrollArbiter(listRef);
+  const {ready, onLoad} = useChatListReadyCheck({listRef, arbiter, data, keyExtractor, anchorIndex, onReadyToShow});
+  useChatListOwnItemScroll({arbiter, data, keyExtractor, isOwnItem});
   const {
     scrollButtonDirection,
     atTop,
@@ -158,13 +160,11 @@ export const ChatList = <TItem,>({
     applyAtTop,
     onPrimaryPress,
     onSecondaryPress,
-    clearButtonTargetIfReached,
     onListTouchStart,
-    retryButtonScroll,
-  } = useChatListScrollButtons({listRef, shared, newDividerIndex, hasPreviousPage});
+  } = useChatListScrollButtons({listRef, arbiter, newDividerIndex, hasPreviousPage});
   useChatListPageFill({
     listRef,
-    shared,
+    arbiter,
     ready,
     dataLength: data.length,
     anchorsToEnd,
@@ -175,7 +175,7 @@ export const ChatList = <TItem,>({
     applyAtTop,
     applyScrollButtonDirection,
   });
-  const {onContainerLayout} = useChatListKeyboardPin(listRef, shared);
+  const {onContainerLayout} = useChatListKeyboardPin(arbiter);
   const {
     onScroll,
     onContentSizeChange,
@@ -184,13 +184,11 @@ export const ChatList = <TItem,>({
     onMomentumScrollBegin,
     onMomentumScrollEnd,
   } = useChatListScrollHandlers({
-    shared,
+    arbiter,
     hasPreviousPage,
     handleLoadPrevious,
     applyAtTop,
     applyScrollButtonDirection,
-    clearButtonTargetIfReached,
-    retryButtonScroll,
   });
 
   const lastIndex = data.length - 1;

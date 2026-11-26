@@ -1,40 +1,32 @@
-import {useCallback, useRef} from 'react';
+import {useCallback} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent} from 'react-native';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import type {ChatListSharedState} from '#src/Hooks/ChatList/useChatListSharedState';
-import {END_PIN_MS} from '#src/Libraries/ChatList/Constants';
+import type {ChatListScrollArbiter} from '#src/Hooks/ChatList/useChatListScrollArbiter';
 import {shouldNudgeLoadPrevious} from '#src/Libraries/ChatList/Pagination';
-import {hasOutgrownViewport, isUserFling, shouldRepinOnContentGrowth} from '#src/Libraries/ChatList/Pinning';
-import {getDistanceFromBottom} from '#src/Libraries/ChatList/ScrollButtons';
 
 interface UseChatListScrollHandlersProps {
-  shared: ChatListSharedState;
+  arbiter: ChatListScrollArbiter;
   hasPreviousPage?: boolean;
   handleLoadPrevious?: () => void;
   applyAtTop: (offset: number) => void;
   applyScrollButtonDirection: () => void;
-  clearButtonTargetIfReached: (offset: number, distanceFromBottom: number) => void;
-  retryButtonScroll: () => void;
 }
 
 /**
- * ChatList's FlashList scroll, content-size, drag and momentum handlers. They keep the shared scroll
- * state current, tell the user's drags and flings apart from programmatic scrolls (a user scroll
- * always wins over re-pins, see `src/Libraries/ChatList/Pinning.ts`), and feed the other concerns:
- * the load-previous nudge, the scroll buttons, and the end re-pins.
+ * ChatList's FlashList scroll, content-size, drag and momentum handlers. They keep the scroll
+ * metrics current and report each event to the scroll arbiter (`src/Libraries/ChatList/ScrollArbiter.ts`),
+ * which tells the user's drags and flings apart from programmatic scrolls and decides the end
+ * re-pins. They also feed the load-previous nudge and the scroll buttons.
  */
 export const useChatListScrollHandlers = ({
-  shared,
+  arbiter,
   hasPreviousPage,
   handleLoadPrevious,
   applyAtTop,
   applyScrollButtonDirection,
-  clearButtonTargetIfReached,
-  retryButtonScroll,
 }: UseChatListScrollHandlersProps) => {
   const {styleDefaults} = useStyles();
-  const dragEndedAtRef = useRef(0);
 
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -44,11 +36,14 @@ export const useChatListScrollHandlers = ({
         viewportHeight: layoutMeasurement.height,
         contentHeight: contentSize.height,
       };
-      shared.scrollMetrics.current = metrics;
-      const distanceFromBottom = getDistanceFromBottom(metrics);
-      shared.isNearBottom.current = distanceFromBottom <= styleDefaults.listScrollThreshold;
+      arbiter.scrollMetrics.current = metrics;
+      arbiter.dispatch({
+        type: 'scroll',
+        metrics,
+        threshold: styleDefaults.listScrollThreshold,
+        margin: styleDefaults.marginSize,
+      });
       applyAtTop(contentOffset.y);
-      clearButtonTargetIfReached(contentOffset.y, distanceFromBottom);
 
       // FlashList's onStartReached stops firing after a few prepends that add less than a threshold of
       // content (Shopify/flash-list#1785), so also load older posts directly when near the top. The
@@ -57,7 +52,7 @@ export const useChatListScrollHandlers = ({
       if (
         handleLoadPrevious &&
         shouldNudgeLoadPrevious({
-          ready: shared.readyFired.current,
+          ready: arbiter.isReady(),
           hasPreviousPage,
           offset: contentOffset.y,
           viewportHeight: layoutMeasurement.height,
@@ -71,75 +66,46 @@ export const useChatListScrollHandlers = ({
     [
       applyAtTop,
       applyScrollButtonDirection,
-      clearButtonTargetIfReached,
+      arbiter,
       handleLoadPrevious,
       hasPreviousPage,
-      shared,
       styleDefaults.listScrollThreshold,
+      styleDefaults.marginSize,
     ],
   );
 
   /**
-   * The content grew or shrank without a scroll (a page loaded, an image measured). Re-derives the
-   * buttons, which may have hidden for a bottom that has since moved away; the next scroll event
-   * refreshes everything else. Within the button's end-pin window, growth while the list sat at the
-   * end re-pins the end. Outgrowing the viewport after a page fill (see `pinEndOnFill`) opens the
-   * same window.
+   * The content grew or shrank without a scroll (a page loaded, an image measured). The arbiter
+   * decides whether that re-pins the end. Re-derives the buttons, which may have hidden for a bottom
+   * that has since moved away; the next scroll event refreshes everything else.
    */
   const onContentSizeChange = useCallback(
     (_width: number, height: number) => {
-      if (hasOutgrownViewport(shared.pinEndOnFill.current, shared.containerHeight.current, height)) {
-        shared.pinEndOnFill.current = false;
-        if (!shared.userScrolling.current) {
-          shared.endPinUntil.current = Date.now() + END_PIN_MS;
-          shared.scheduleRepin();
-        }
-      }
-      const metrics = shared.scrollMetrics.current;
+      const metrics = arbiter.scrollMetrics.current;
+      arbiter.dispatch({type: 'contentSize', height, metrics, now: Date.now()});
       if (!metrics || metrics.contentHeight === height) {
         return;
       }
-      shared.scrollMetrics.current = {...metrics, contentHeight: height};
-      if (
-        shouldRepinOnContentGrowth({
-          metrics,
-          contentHeight: height,
-          now: Date.now(),
-          endPinUntil: shared.endPinUntil.current,
-          userScrolling: shared.userScrolling.current,
-        })
-      ) {
-        shared.scheduleRepin();
-      }
+      arbiter.scrollMetrics.current = {...metrics, contentHeight: height};
       applyScrollButtonDirection();
     },
-    [applyScrollButtonDirection, shared],
+    [applyScrollButtonDirection, arbiter],
   );
 
-  /** A user drag has started: stop all re-pins. */
-  const onScrollBeginDrag = useCallback(() => {
-    shared.userScrolling.current = true;
-    shared.cancelRepins();
-  }, [shared]);
+  /** A user drag has started: the arbiter stops all re-pins. */
+  const onScrollBeginDrag = useCallback(() => arbiter.dispatch({type: 'dragBegin'}), [arbiter]);
 
   /** A user drag has ended; a fling may follow (see onMomentumScrollBegin). */
-  const onScrollEndDrag = useCallback(() => {
-    shared.userScrolling.current = false;
-    dragEndedAtRef.current = Date.now();
-  }, [shared]);
+  const onScrollEndDrag = useCallback(() => arbiter.dispatch({type: 'dragEnd', now: Date.now()}), [arbiter]);
 
   /** Momentum that starts as a drag ends is the user's fling; any other momentum is programmatic. */
-  const onMomentumScrollBegin = useCallback(() => {
-    if (isUserFling(Date.now(), dragEndedAtRef.current)) {
-      shared.userScrolling.current = true;
-    }
-  }, [shared]);
+  const onMomentumScrollBegin = useCallback(
+    () => arbiter.dispatch({type: 'momentumBegin', now: Date.now()}),
+    [arbiter],
+  );
 
-  /** A fling (or programmatic momentum) has ended. Resends a button scroll that ended short of its edge. */
-  const onMomentumScrollEnd = useCallback(() => {
-    retryButtonScroll();
-    shared.userScrolling.current = false;
-  }, [retryButtonScroll, shared]);
+  /** A fling (or programmatic momentum) has ended. The arbiter resends a button scroll that ended short. */
+  const onMomentumScrollEnd = useCallback(() => arbiter.dispatch({type: 'momentumEnd', now: Date.now()}), [arbiter]);
 
   return {
     onScroll,

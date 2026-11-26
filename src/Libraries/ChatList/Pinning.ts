@@ -11,9 +11,8 @@
  *   already hidden, so the end stays pinned for `END_PIN_MS`.
  * - Page fill of a short end-anchored list (see `Pagination.ts`).
  *
- * A user scroll always wins: a drag cancels pending re-pins and suppresses new ones until the drag
- * and its fling end. Android also fires the momentum events for programmatic animated scrolls
- * (scrollToEnd), so momentum only counts as the user's when it starts right after a drag ends.
+ * A user scroll always wins over all of these. These predicates are called only by the scroll
+ * arbiter (`ScrollArbiter.ts`), which holds the state they read and says how a gesture is tracked.
  */
 
 import {AT_BOTTOM_EPSILON, FLING_AFTER_DRAG_MS} from '#src/Libraries/ChatList/Constants';

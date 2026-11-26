@@ -2,39 +2,34 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 
 import type {TChatListRefObject} from '#src/Components/Lists/ChatList';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import type {ChatListSharedState} from '#src/Hooks/ChatList/useChatListSharedState';
-import {DIVIDER_VIEW_POSITION, END_PIN_MS} from '#src/Libraries/ChatList/Constants';
+import type {ChatListScrollArbiter} from '#src/Hooks/ChatList/useChatListScrollArbiter';
+import {DIVIDER_VIEW_POSITION} from '#src/Libraries/ChatList/Constants';
 import {
-  ButtonScrollEdge,
-  ButtonScrollTarget,
-  createButtonScrollTarget,
-  getButtonRetryAction,
   getScrollButtonDirection,
   getSecondaryEdge,
-  hasReachedButtonEdge,
   isAtTop,
   ScrollButtonDirection,
 } from '#src/Libraries/ChatList/ScrollButtons';
 
 interface UseChatListScrollButtonsProps<TItem> {
   listRef: TChatListRefObject<TItem>;
-  shared: ChatListSharedState;
+  arbiter: ChatListScrollArbiter;
   newDividerIndex?: number;
   hasPreviousPage?: boolean;
 }
 
 /**
  * State and handlers for ChatList's floating scroll buttons: which way they point, whether
- * scroll-to-top is greyed out, and pressing them. A press keeps sending the list to its edge until it
- * lands, because on Android an animated scroll is cancelled by FlashList's own offset corrections.
- * The decisions and the reasons for them are in `src/Libraries/ChatList/ScrollButtons.ts`.
+ * scroll-to-top is greyed out, and pressing them. Presses go to the scroll arbiter, which keeps
+ * sending the list to its edge until it lands, because on Android an animated scroll is cancelled by
+ * FlashList's own offset corrections. The decisions and the reasons for them are in
+ * `src/Libraries/ChatList/ScrollButtons.ts` and `ScrollArbiter.ts`.
  *
- * The scroll handlers call `applyScrollButtonDirection`, `applyAtTop`, `clearButtonTargetIfReached`
- * and `retryButtonScroll` as the list moves.
+ * The scroll handlers call `applyScrollButtonDirection` and `applyAtTop` as the list moves.
  */
 export const useChatListScrollButtons = <TItem>({
   listRef,
-  shared,
+  arbiter,
   newDividerIndex,
   hasPreviousPage,
 }: UseChatListScrollButtonsProps<TItem>) => {
@@ -46,8 +41,6 @@ export const useChatListScrollButtons = <TItem>({
   // moment the page takes to load just made it flicker off and on.
   const [atTop, setAtTop] = useState(false);
   const atTopRef = useRef(false);
-  // The edge a scroll button sent the list to, until the list reaches it. Cleared by a touch on the list.
-  const buttonTargetRef = useRef<ButtonScrollTarget | null>(null);
 
   /**
    * Derives which floating scroll button to show from the latest scroll metrics (see
@@ -57,7 +50,7 @@ export const useChatListScrollButtons = <TItem>({
    * so the header height (`getFirstItemOffset`) is added to compare against scroll offsets.
    */
   const computeScrollButtonDirection = useCallback((): ScrollButtonDirection => {
-    const metrics = shared.scrollMetrics.current;
+    const metrics = arbiter.scrollMetrics.current;
     if (!metrics) {
       return null;
     }
@@ -69,7 +62,7 @@ export const useChatListScrollButtons = <TItem>({
       styleDefaults.listScrollThreshold,
       layout && dividerTop !== undefined ? {top: dividerTop, bottom: dividerTop + layout.height} : undefined,
     );
-  }, [listRef, newDividerIndex, shared, styleDefaults.listScrollThreshold]);
+  }, [arbiter, listRef, newDividerIndex, styleDefaults.listScrollThreshold]);
 
   /** Recomputes the button direction, touching state only when it actually changed. */
   const applyScrollButtonDirection = useCallback(() => {
@@ -101,88 +94,29 @@ export const useChatListScrollButtons = <TItem>({
   );
 
   /**
-   * Scrolls to the end for a button press and keeps the end pinned for END_PIN_MS, so a tall last
-   * post whose image measures in after landing (or a page that arrives) doesn't leave the list short
-   * of the bottom with the buttons already hidden.
+   * Primary button: to the "New" divider when there is one, else to the end of the list. Pressing
+   * toward an edge keeps the list going there until it lands (see the arbiter's `buttonTarget`).
    */
-  const scrollToEndFromButton = useCallback(() => {
-    shared.endPinUntil.current = Date.now() + END_PIN_MS;
-    listRef.current?.scrollToEnd({animated: true});
-  }, [listRef, shared]);
-
-  /** Animates to a list edge for a button press. */
-  const scrollToButtonEdge = useCallback(
-    (edge: ButtonScrollEdge) => {
-      if (edge === 'end') {
-        scrollToEndFromButton();
-      } else {
-        listRef.current?.scrollToOffset({offset: 0, animated: true});
-      }
-    },
-    [listRef, scrollToEndFromButton],
-  );
-
-  /** Scrolls to a list edge for a button press and keeps sending it there until it lands (see buttonTargetRef). */
-  const startButtonScroll = useCallback(
-    (edge: ButtonScrollEdge) => {
-      buttonTargetRef.current = createButtonScrollTarget(edge, Date.now());
-      scrollToButtonEdge(edge);
-    },
-    [scrollToButtonEdge],
-  );
-
-  /** Primary button: to the "New" divider when there is one, else to the end of the list. */
   const onPrimaryPress = useCallback(() => {
     if (newDividerIndex !== undefined) {
-      listRef.current?.scrollToIndex({index: newDividerIndex, animated: true, viewPosition: DIVIDER_VIEW_POSITION});
+      arbiter.dispatch({type: 'dividerPress', index: newDividerIndex, viewPosition: DIVIDER_VIEW_POSITION});
     } else {
-      startButtonScroll('end');
+      arbiter.dispatch({type: 'buttonPress', edge: 'end', now: Date.now()});
     }
-  }, [listRef, newDividerIndex, startButtonScroll]);
+  }, [arbiter, newDividerIndex]);
 
   /** Secondary button: to the list edge opposite the primary button's direction. */
   const onSecondaryPress = useCallback(() => {
-    startButtonScroll(getSecondaryEdge(scrollButtonDirection));
-  }, [scrollButtonDirection, startButtonScroll]);
-
-  /** Clears the button target once a scroll event shows the list reached its edge. */
-  const clearButtonTargetIfReached = useCallback(
-    (offset: number, distanceFromBottom: number) => {
-      const buttonTarget = buttonTargetRef.current;
-      if (
-        buttonTarget &&
-        hasReachedButtonEdge(buttonTarget.edge, offset, distanceFromBottom, styleDefaults.marginSize)
-      ) {
-        buttonTargetRef.current = null;
-      }
-    },
-    [styleDefaults.marginSize],
-  );
+    arbiter.dispatch({type: 'buttonPress', edge: getSecondaryEdge(scrollButtonDirection), now: Date.now()});
+  }, [arbiter, scrollButtonDirection]);
 
   /**
    * Any touch on the list hands it back to the user. Touching it stops an animated scroll on Android,
    * and the momentum end must not take that for a cancelled button scroll and send it again.
    */
   const onListTouchStart = useCallback(() => {
-    buttonTargetRef.current = null;
-  }, []);
-
-  /**
-   * Called when momentum ends. A button scroll that ended short of its edge (the target is cleared
-   * once it lands) was cancelled on the way, so it is sent again within its window and retry budget.
-   */
-  const retryButtonScroll = useCallback(() => {
-    const buttonTarget = buttonTargetRef.current;
-    if (!buttonTarget) {
-      return;
-    }
-    if (getButtonRetryAction(buttonTarget, Date.now()) === 'clear') {
-      buttonTargetRef.current = null;
-    } else {
-      buttonTarget.retries += 1;
-      scrollToButtonEdge(buttonTarget.edge);
-    }
-  }, [scrollToButtonEdge]);
+    arbiter.dispatch({type: 'touchStart'});
+  }, [arbiter]);
 
   return {
     scrollButtonDirection,
@@ -191,8 +125,6 @@ export const useChatListScrollButtons = <TItem>({
     applyAtTop,
     onPrimaryPress,
     onSecondaryPress,
-    clearButtonTargetIfReached,
     onListTouchStart,
-    retryButtonScroll,
   };
 };

@@ -29,8 +29,10 @@ The component only wires FlashList up. Each challenge has a concern hook in `src
 | Floating scroll buttons | `useChatListScrollButtons` | `ScrollButtons.ts` |
 | Page fill without scroll events | `useChatListPageFill` | `Pagination.ts` |
 | Keyboard and resize re-pins | `useChatListKeyboardPin` | `Pinning.ts` |
-| Scroll, drag and momentum handling | `useChatListScrollHandlers` | `Pinning.ts`, `Pagination.ts` |
-| Refs shared between the hooks | `useChatListSharedState` | |
+| Scroll, drag and momentum handling | `useChatListScrollHandlers` | `Pagination.ts` |
+| Who may scroll the list, and when | `useChatListScrollArbiter` | `ScrollArbiter.ts` (calls `Pinning.ts`) |
+
+The hooks never scroll the list themselves. They report events (scroll, drag, momentum, keyboard, resize, button press, page fill, own post) to the scroll arbiter, a pure reducer in `ScrollArbiter.ts` whose state is the named modes (`phase` positioning/settled, the user's `gesture`, `following`, the `endPin` window, the `keyboardPin`, the pending fill pin and the button target). It returns scroll commands, and `useChatListScrollArbiter` is the only code that runs them and owns their frames and timers. A new scroll goes through a new event and command there, not a `listRef.current.scrollTo*` call in a hook.
 
 Tuning constants live in `src/Libraries/ChatList/Constants.ts`. Things that are easy to break:
 
