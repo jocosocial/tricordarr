@@ -3,7 +3,7 @@ import {useIsFocused} from '@react-navigation/native';
 import {InfiniteData, QueryClient, useQueryClient} from '@tanstack/react-query';
 import {AxiosError} from 'axios';
 import pluralize from 'pluralize';
-import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
@@ -145,9 +145,9 @@ export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDa
     isLoading,
     refetch,
   } = queryResult;
-  const initialReadCountRef = useRef<number | undefined>(undefined);
-  const hasConsumedHintRef = useRef(false);
-  const [, setReadCountVersion] = useState(0);
+  // Seeded from the route hint at mount so the common case needs no extra render.
+  const [initialReadCount, setInitialReadCount] = useState<number | undefined>(() => initialReadCountHint);
+  const [hasConsumedHint, setHasConsumedHint] = useState(() => initialReadCountHint !== undefined);
 
   const fezData = useMemo(() => {
     return data?.pages[0];
@@ -156,23 +156,19 @@ export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDa
   // Capture readCount once using highest-priority sources:
   // route hint -> list caches -> detail data. Subsequent cache mutations
   // (markRead, socket-driven postCount bumps) will not overwrite this value
-  // until resetInitialReadCount is called.
-  if (initialReadCountRef.current === undefined) {
-    if (initialReadCountHint !== undefined && !hasConsumedHintRef.current) {
-      initialReadCountRef.current = initialReadCountHint;
-      hasConsumedHintRef.current = true;
-    } else if (initialReadCountHint !== undefined && hasConsumedHintRef.current) {
-      if (fezData?.members) {
-        const listReadCount = getListCacheReadCount(queryClient, fezID);
-        initialReadCountRef.current = listReadCount ?? fezData.members.readCount;
-      }
+  // until resetInitialReadCount is called. The hint is used at most once: after a reset clears the
+  // value, it is recaptured from the caches. Captured as state during render (React's "adjust
+  // state while rendering" pattern) so the value is available before this render commits.
+  if (initialReadCount === undefined) {
+    if (initialReadCountHint !== undefined && !hasConsumedHint) {
+      setInitialReadCount(initialReadCountHint);
+      setHasConsumedHint(true);
     } else if (fezData?.members) {
-      const listReadCount = getListCacheReadCount(queryClient, fezID);
-      initialReadCountRef.current = listReadCount ?? fezData.members.readCount;
+      setInitialReadCount(getListCacheReadCount(queryClient, fezID) ?? fezData.members.readCount);
     }
   }
 
-  // Recomputes immediately (rather than clearing the ref and waiting for the next
+  // Recomputes immediately (rather than clearing the value and waiting for the next
   // render's render-body recompute) so the new value is read in the same tick as
   // the cache writes that motivated the reset (e.g. appendPost after sending a
   // message), instead of depending on React's re-render scheduling to observe them.
@@ -182,8 +178,7 @@ export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDa
       .map(([, entryData]) => entryData?.pages[entryData.pages.length - 1]?.members?.readCount)
       .find(value => value !== undefined);
     const listReadCount = getListCacheReadCount(queryClient, fezID);
-    initialReadCountRef.current = listReadCount ?? detailReadCount;
-    setReadCountVersion(v => v + 1);
+    setInitialReadCount(listReadCount ?? detailReadCount);
   }, [queryClient, fezID]);
 
   /**
@@ -284,7 +279,7 @@ export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDa
     fezData,
     fezPages,
     postDayCount,
-    initialReadCount: initialReadCountRef.current,
+    initialReadCount,
     fetchNextPage: () => fetchNextPage(),
     fetchPreviousPage: () => fetchPreviousPage(),
     hasNextPage,

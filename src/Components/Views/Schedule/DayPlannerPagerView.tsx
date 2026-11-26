@@ -150,6 +150,8 @@ export const DayPlannerPagerView = ({variant}: DayPlannerPagerViewProps) => {
   // Only the visible page can open a card menu, so one flag covers the whole pager.
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // One stable callback shared by every page (each passes its own day), so a DayPlannerPage doesn't
+  // re-register its scroll controller on every unrelated render.
   const registerScrollController = useCallback((day: number, controller: DayPlannerScrollController | null) => {
     if (controller) {
       scrollControllersRef.current.set(day, controller);
@@ -157,14 +159,6 @@ export const DayPlannerPagerView = ({variant}: DayPlannerPagerViewProps) => {
       scrollControllersRef.current.delete(day);
     }
   }, []);
-
-  // Stable per-day callback identity (rebuilt only when the cruise length changes) so each
-  // DayPlannerPage doesn't re-register its scroll controller on every unrelated render.
-  const registerScrollControllerCallbacks = useMemo(
-    () =>
-      allDays.map(day => (controller: DayPlannerScrollController | null) => registerScrollController(day, controller)),
-    [allDays, registerScrollController],
-  );
 
   /**
    * Record where the active day's scroll gesture came to rest. Only the offset is stored here;
@@ -314,7 +308,7 @@ export const DayPlannerPagerView = ({variant}: DayPlannerPagerViewProps) => {
               renderTimeline={renderedDays.has(day)}
               onLoaded={handleDayLoaded}
               onActiveControlsChange={handleActiveControlsChange}
-              onRegisterScrollController={registerScrollControllerCallbacks[day - 1]}
+              onRegisterScrollController={registerScrollController}
               onScrollSettled={handleScrollSettled}
               getSharedOffset={getSharedOffset}
               onMenuVisibleChange={setMenuOpen}

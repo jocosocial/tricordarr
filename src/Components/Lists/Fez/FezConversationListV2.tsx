@@ -1,4 +1,4 @@
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback, useState} from 'react';
 import {RefreshControlProps, View} from 'react-native';
 
 import {ChatList, type TChatListRefObject} from '#src/Components/Lists/ChatList';
@@ -12,6 +12,7 @@ import {FezPostListItem} from '#src/Components/Lists/Items/Fez/FezPostListItem';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useTime} from '#src/Context/Contexts/TimeContext';
+import {useStickyTrue} from '#src/Hooks/useStickyTrue';
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
 
 interface FezConversationListV2Props {
@@ -60,11 +61,9 @@ export const FezConversationListV2 = ({
   // postDayCount only covers the loaded posts. Loading a page could cross the threshold and add every
   // day divider at once, moving the posts on screen, so a chat with unloaded pages always shows them.
   // One-way, so that loading the last page does not take them away again.
-  const showDayDividersRef = useRef(false);
-  if (postDayCount === undefined || postDayCount > 2 || hasPreviousPage || hasNextPage) {
-    showDayDividersRef.current = true;
-  }
-  const showDayDividers = showDayDividersRef.current;
+  const showDayDividers = useStickyTrue(
+    postDayCount === undefined || postDayCount > 2 || !!hasPreviousPage || !!hasNextPage,
+  );
 
   /** Whether two neighboring posts fall on different days. */
   const isDayBoundary = useCallback(
@@ -79,20 +78,21 @@ export const FezConversationListV2 = ({
   // provided (e.g. from list cache) so the "New" divider shows correctly on subsequent
   // visits when detail cache is already marked read.
   const effectiveReadCount = initialReadCount ?? fez.members?.readCount ?? 0;
-  const initialReadCountRef = useRef(effectiveReadCount);
+  const [frozenReadCount, setFrozenReadCount] = useState(effectiveReadCount);
   // The frozen read count must stay frozen across ordinary re-renders (new posts arriving,
   // props changing shape, etc.) so the divider doesn't drift while the user is reading —
   // but it also must not stay frozen forever, or a stale readCount pins the
   // "New" divider at the wrong index permanently once resetInitialReadCount changes
   // initialReadCount upstream (e.g. right after this user sends a post). A useEffect would
   // fix that only after an extra render (a visible flash of the divider in the wrong spot);
-  // comparing against lastInitialReadCountRef during render — the "derived state from
-  // props" ref pattern — re-seeds initialReadCountRef synchronously, in the same render
-  // that the new prop value arrives, and only on renders where it actually changed.
-  const lastInitialReadCountRef = useRef(initialReadCount);
-  if (initialReadCount !== lastInitialReadCountRef.current) {
-    lastInitialReadCountRef.current = initialReadCount;
-    initialReadCountRef.current = effectiveReadCount;
+  // comparing against seenInitialReadCount during render — React's "adjust state while
+  // rendering" pattern — re-seeds frozenReadCount before this render commits, and only on
+  // renders where the prop actually changed. React re-runs the render immediately with the
+  // new state, so children never see the stale value.
+  const [seenInitialReadCount, setSeenInitialReadCount] = useState(initialReadCount);
+  if (initialReadCount !== seenInitialReadCount) {
+    setSeenInitialReadCount(initialReadCount);
+    setFrozenReadCount(effectiveReadCount);
   }
   // The page start is deliberately NOT frozen. `fez` is the first loaded page, so its start drops
   // when an older page is prepended, and the divider's index in the flattened posts must shift by
@@ -100,11 +100,8 @@ export const FezConversationListV2 = ({
   const paginatorStart = fez.members?.paginator?.start ?? 0;
 
   // The anchor is a layout concern — once set false (unreads detected) it must
-  // not flip back to true or the list layout will jump. Locked via one-way ref.
-  const alignAtEndRef = useRef(fez.members ? effectiveReadCount === fez.members.postCount : true);
-  if (alignAtEndRef.current && fez.members && effectiveReadCount !== fez.members.postCount) {
-    alignAtEndRef.current = false;
-  }
+  // not flip back to true or the list layout will jump. Locked via a one-way latch.
+  const alignAtEnd = !useStickyTrue(!!fez.members && effectiveReadCount !== fez.members.postCount);
 
   // Divider visibility is dynamic: effectiveReadCount uses the frozen initialReadCount
   // (stable until resetInitialReadCount), so this naturally shows the divider for
@@ -113,7 +110,7 @@ export const FezConversationListV2 = ({
 
   const newDividerIndex = (() => {
     if (isFullyRead) return undefined;
-    const idx = initialReadCountRef.current - paginatorStart;
+    const idx = frozenReadCount - paginatorStart;
     return idx >= 0 && idx < fezPostData.length ? idx : undefined;
   })();
 
@@ -122,9 +119,9 @@ export const FezConversationListV2 = ({
       if (isFullyRead) {
         return false;
       }
-      return initialReadCountRef.current - paginatorStart === index;
+      return frozenReadCount - paginatorStart === index;
     },
-    [isFullyRead, paginatorStart],
+    [frozenReadCount, isFullyRead, paginatorStart],
   );
 
   const renderItem = useCallback(
@@ -199,14 +196,14 @@ export const FezConversationListV2 = ({
       handleLoadPrevious={handleLoadPrevious}
       hasNextPage={hasNextPage}
       hasPreviousPage={hasPreviousPage}
-      anchor={alignAtEndRef.current ? 'end' : {index: initialScrollIndex ?? 0}}
+      anchor={alignAtEnd ? 'end' : {index: initialScrollIndex ?? 0}}
       // Real-time chat: always follow new posts at the tail, even when the read state says there
       // are unreads and the list is anchored to the New divider instead of the end.
       followTail={true}
       isOwnItem={isOwnItem}
       onReadyToShow={onReadyToShow}
       newDividerIndex={newDividerIndex}
-      // renderItem's "New" divider placement is driven by isFullyRead/initialReadCountRef/paginatorStart,
+      // renderItem's "New" divider placement is driven by isFullyRead/frozenReadCount/paginatorStart,
       // which live outside `data`. FlashList's recycled cells only
       // redraw when `item`/`index` change or `extraData` changes identity, so without this
       // a cell that already rendered a divider keeps showing it forever — e.g. sending two

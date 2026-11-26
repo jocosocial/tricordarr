@@ -35,6 +35,7 @@ import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useForumData} from '#src/Hooks/Forum/useForumData';
 import {useKeyboardVerticalOffset} from '#src/Hooks/Keyboard/useKeyboardVerticalOffset';
+import {useFirstDefined} from '#src/Hooks/useFirstDefined';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
@@ -113,7 +114,6 @@ const ForumThreadScreenBaseInner = ({
   const postCreateMutation = useForumPostCreateMutation();
   const markReadMutation = useForumMarkReadMutation();
   const flatListRef = useRef<TChatListRef<PostData>>(null);
-  const frozenScrollIndexRef = useRef<number | null>(null);
   const {hasModerator} = usePrivilege();
   const {asModerator, asTwitarrTeam} = useElevation();
   const {maxForumPostImages} = useClientSettings();
@@ -279,7 +279,18 @@ const ForumThreadScreenBaseInner = ({
     setReadyToShow(true);
   }, []);
 
-  if (!data || isLoading || isLoadingFavorites) {
+  // Frozen once computable so later page loads and reads don't move the anchor; the list is
+  // remounted via `key` when the index first becomes known, because FlashList only honors its
+  // initial scroll position at mount. Computed above the early return below so the hook runs on
+  // every render, but only once loading has finished, as before.
+  const isLoaded = !!data && !isLoading && !isLoadingFavorites;
+  const computedScrollIndex = isLoaded
+    ? getForumInitialScrollIndex(forumPosts.length, forumData?.paginator.start ?? 0, forumListData, startFromPost)
+    : undefined;
+  const frozenScrollIndex = useFirstDefined(computedScrollIndex);
+  const initialScrollIndex = frozenScrollIndex ?? computedScrollIndex;
+
+  if (!isLoaded) {
     return (
       <AppView>
         <LoadingView />
@@ -287,19 +298,6 @@ const ForumThreadScreenBaseInner = ({
     );
   }
 
-  // Frozen once computable so later page loads and reads don't move the anchor; the list is
-  // remounted via `key` when the index first becomes known, because FlashList only honors its
-  // initial scroll position at mount.
-  const computedScrollIndex = getForumInitialScrollIndex(
-    forumPosts.length,
-    forumData?.paginator.start ?? 0,
-    forumListData,
-    startFromPost,
-  );
-  if (frozenScrollIndexRef.current === null && computedScrollIndex !== undefined) {
-    frozenScrollIndexRef.current = computedScrollIndex;
-  }
-  const initialScrollIndex = frozenScrollIndexRef.current ?? computedScrollIndex;
   const listKey = `${forumData?.forumID ?? 'forum'}-${initialScrollIndex ?? 'bottom'}`;
 
   const showForm = !forumData?.isLocked || hasModerator;

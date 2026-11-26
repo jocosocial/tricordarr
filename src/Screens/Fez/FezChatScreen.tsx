@@ -33,6 +33,8 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezData, useMarkFezReadEffect} from '#src/Hooks/Fez/useFezData';
 import {useKeyboardVerticalOffset} from '#src/Hooks/Keyboard/useKeyboardVerticalOffset';
+import {useFirstDefined} from '#src/Hooks/useFirstDefined';
+import {useLatestRef} from '#src/Hooks/useLatestRef';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
@@ -137,7 +139,6 @@ const FezChatScreenInner = ({route}: Props) => {
     ws: ReconnectingWebSocket;
     handler: (e: WebSocketMessageEvent) => void;
   } | null>(null);
-  const fezSocketMessageHandlerRef = useRef<(event: WebSocketMessageEvent) => void>(() => {});
   const lastProcessedPostIDRef = useRef<number | null>(null);
   // Flattened straight from the query pages. Derived rather than copied into state so the list never
   // sees an empty first render. De-duped by postID (first occurrence wins) because the socket append
@@ -228,7 +229,7 @@ const FezChatScreenInner = ({route}: Props) => {
     },
     [appendPostToCache, route.params.fezID, setSnackbarPayload],
   );
-  fezSocketMessageHandlerRef.current = fezSocketMessageHandler;
+  const fezSocketMessageHandlerRef = useLatestRef(fezSocketMessageHandler);
 
   const {handleLoadNext, handleLoadPrevious} = usePagination({
     fetchNextPage,
@@ -332,7 +333,7 @@ const FezChatScreenInner = ({route}: Props) => {
       }
       closeFezSocket(fezID);
     };
-  }, [fezID, closeFezSocket, dispatchFezSockets, openFezSocket]);
+  }, [fezID, closeFezSocket, dispatchFezSockets, fezSocketMessageHandlerRef, openFezSocket]);
 
   const getFezHeaderTitle = useCallback(() => {
     if (fez) {
@@ -358,7 +359,6 @@ const FezChatScreenInner = ({route}: Props) => {
   const [readyToShow, setReadyToShow] = useState(false);
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
-  const frozenScrollIndexRef = useRef<number | null>(null);
 
   const keyboardVerticalOffset = useKeyboardVerticalOffset();
 
@@ -366,6 +366,16 @@ const FezChatScreenInner = ({route}: Props) => {
     logger.debug('Fez chat list ready to show');
     setReadyToShow(true);
   }, []);
+
+  // Frozen once computable so later page loads and reads don't move the anchor; the list is
+  // remounted via `key` when the index first becomes known, because FlashList only honors its
+  // initial scroll position at mount. Computed above the early return below so the hook runs
+  // on every render.
+  const computedScrollIndex = fez ? getFezInitialScrollIndex(fez, fezPostsData.length, initialReadCount) : undefined;
+  const frozenScrollIndex = useFirstDefined(
+    computedScrollIndex !== undefined && computedScrollIndex >= 0 ? computedScrollIndex : undefined,
+  );
+  const initialScrollIndex = frozenScrollIndex ?? computedScrollIndex;
 
   // This is kinda hax for the fezPostData below
   if (!fez) {
@@ -376,11 +386,6 @@ const FezChatScreenInner = ({route}: Props) => {
     );
   }
 
-  const computedScrollIndex = getFezInitialScrollIndex(fez, fezPostsData.length, initialReadCount);
-  if (frozenScrollIndexRef.current === null && computedScrollIndex !== undefined && computedScrollIndex >= 0) {
-    frozenScrollIndexRef.current = computedScrollIndex;
-  }
-  const initialScrollIndex = frozenScrollIndexRef.current ?? computedScrollIndex;
   const listKey = `${fez.fezID}-${initialScrollIndex ?? 'bottom'}`;
 
   const overlayStyles = StyleSheet.create({

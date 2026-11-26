@@ -50,6 +50,7 @@ import {
   type Transform,
 } from '#src/Components/Lightbox/types';
 import {ImageViewerSnackbar} from '#src/Components/Snackbars/ImageViewerSnackbar';
+import {useLatestRef} from '#src/Hooks/useLatestRef';
 import {isIOS} from '#src/Libraries/Platform/Detection';
 import {StringOrError} from '#src/Types';
 
@@ -280,8 +281,7 @@ function ImageView({
   const isPagerDragging = useSharedValue(false);
   const activeIndexSV = useSharedValue(initialImageIndex);
   const isScaledSV = useSharedValue(false);
-  const imageIndexRef = useRef(imageIndex);
-  imageIndexRef.current = imageIndex;
+  const imageIndexRef = useLatestRef(imageIndex);
 
   const containerStyle = useAnimatedStyle(() => {
     if (openProgress.get() < 1) {
@@ -358,7 +358,7 @@ function ImageView({
     } else {
       onRequestClose();
     }
-  }, [isAnimated, images, thumbRects, onRequestClose]);
+  }, [imageIndexRef, isAnimated, images, thumbRects, onRequestClose]);
 
   const onTap = useCallback(() => {
     if (isMenuOpenRef.current) {

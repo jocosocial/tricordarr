@@ -38,11 +38,7 @@ const logger = createLogger('SessionProvider.tsx');
 export const SessionProvider = ({children}: PropsWithChildren) => {
   const {deviceConfig} = useDeviceConfig();
   // Create store instance (persists across renders)
-  const storeRef = useRef<SessionStore | null>(null);
-  if (!storeRef.current) {
-    storeRef.current = new SessionStore();
-  }
-  const store = storeRef.current;
+  const [store] = useState(() => new SessionStore());
 
   // Subscribe to store changes using useSyncExternalStore for synchronous state access
   const state: SessionState = useSyncExternalStore(

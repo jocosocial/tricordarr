@@ -7,6 +7,7 @@ import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SocketContext} from '#src/Context/Contexts/SocketContext';
 import {useWebSocketStorageReducer, WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReducer';
+import {useLatestRef} from '#src/Hooks/useLatestRef';
 import {createLogger} from '#src/Libraries/Logger';
 import {buildWebSocket, getToken, OpenFezSocket} from '#src/Libraries/Network/Websockets';
 
@@ -143,17 +144,17 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
 
   // SocketProvider lives inside SessionBoundaryProvider, so it unmounts on every session change. Sockets are
   // authenticated as the outgoing account, so they must not outlive it.
-  const socketsRef = useRef<{notification?: ReconnectingWebSocket; fez: Record<string, ReconnectingWebSocket>}>({
-    fez: {},
+  const socketsRef = useLatestRef<{notification?: ReconnectingWebSocket; fez: Record<string, ReconnectingWebSocket>}>({
+    notification: notificationSocket,
+    fez: fezSockets,
   });
-  socketsRef.current = {notification: notificationSocket, fez: fezSockets};
   useEffect(() => {
     const sockets = socketsRef;
     return () => {
       sockets.current.notification?.close();
       Object.values(sockets.current.fez).forEach(ws => ws.close());
     };
-  }, []);
+  }, [socketsRef]);
 
   useEffect(() => {
     logger.debug('Triggering openNotificationSocket useEffect.');
