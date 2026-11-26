@@ -141,6 +141,9 @@ export const ChatList = <TItem,>({
       startRenderingFromBottom: START_RENDERING_FROM_BOTTOM && anchorsToEnd,
       autoscrollToBottomThreshold: effectiveFollowTail && !hasNextPage ? AUTOSCROLL_TO_BOTTOM_THRESHOLD : undefined,
       animateAutoScrollToBottom: true,
+      // Local FlashList patch, opt-in so other lists keep stock behaviour: loading an older page
+      // keeps the posts on screen mounted and still. See docs/Code Notes.md and docs/Dependencies.md.
+      anchorThroughDataUpdates: true,
     }),
     [anchorsToEnd, effectiveFollowTail, hasNextPage],
   );

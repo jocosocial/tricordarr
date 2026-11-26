@@ -1,5 +1,22 @@
+diff --git a/node_modules/@shopify/flash-list/dist/FlashListProps.d.ts b/node_modules/@shopify/flash-list/dist/FlashListProps.d.ts
+index 5e90a5c..eb5d7ee 100644
+--- a/node_modules/@shopify/flash-list/dist/FlashListProps.d.ts
++++ b/node_modules/@shopify/flash-list/dist/FlashListProps.d.ts
+@@ -311,6 +311,12 @@ export interface FlashListProps<TItem> extends Omit<ScrollViewProps, "maintainVi
+          * If true, initial render will start from the bottom of the list, useful for chat-like interfaces when there are only few messages
+          */
+         startRenderingFromBottom?: boolean;
++        /**
++         * Local patch (Tricordarr): keeps the offset-correction anchor through a data update, keeps the
++         * cells on screen mounted through a prepend, and moves measured layouts with their items when
++         * items are added only at the start. Off by default; only the chat list opts in.
++         */
++        anchorThroughDataUpdates?: boolean;
+     };
+     /**
+      * New arch only
 diff --git a/node_modules/@shopify/flash-list/dist/recyclerview/RecyclerViewManager.js b/node_modules/@shopify/flash-list/dist/recyclerview/RecyclerViewManager.js
-index 1aa651d..bc27b05 100644
+index 1aa651d..1bf9845 100644
 --- a/node_modules/@shopify/flash-list/dist/recyclerview/RecyclerViewManager.js
 +++ b/node_modules/@shopify/flash-list/dist/recyclerview/RecyclerViewManager.js
 @@ -36,6 +36,8 @@ export class RecyclerViewManager {
@@ -32,7 +49,7 @@ index 1aa651d..bc27b05 100644
 +        var _a;
 +        const layoutManager = this.layoutManager;
 +        const added = this.getDataLength() - (layoutManager ? layoutManager.getLayoutCount() : 0);
-+        if (!layoutManager || !this.hasRenderedProgressively || added === 0 || this.getDataLength() === 0) {
++        if (!layoutManager || !this.shouldAnchorThroughDataUpdates() || !this.hasRenderedProgressively || added === 0 || this.getDataLength() === 0) {
 +            return;
 +        }
 +        const anchor = (_a = this.getCorrectionAnchor) === null || _a === void 0 ? void 0 : _a.call(this);
@@ -88,8 +105,23 @@ index 1aa651d..bc27b05 100644
              this.modifyChildrenLayout([], (_b = (_a = this.propsRef.data) === null || _a === void 0 ? void 0 : _a.length) !== null && _b !== void 0 ? _b : 0);
              if (this.hasRenderedProgressively && !this.recomputeEngagedIndices()) {
                  // recomputeEngagedIndices will update the render stack if there are any changes in the engaged indices.
+@@ -258,6 +320,14 @@ export class RecyclerViewManager {
+         // Return true if maintainVisibleContentPosition is enabled
+         return !((_a = this.propsRef.maintainVisibleContentPosition) === null || _a === void 0 ? void 0 : _a.disabled);
+     }
++    /**
++     * Whether the list opted in to keeping its anchor through data updates (local patch).
++     */
++    shouldAnchorThroughDataUpdates() {
++        var _a;
++        return (this.shouldMaintainVisibleContentPosition() &&
++            Boolean((_a = this.propsRef.maintainVisibleContentPosition) === null || _a === void 0 ? void 0 : _a.anchorThroughDataUpdates));
++    }
+     getDataLength() {
+         var _a, _b;
+         return (_b = (_a = this.propsRef.data) === null || _a === void 0 ? void 0 : _a.length) !== null && _b !== void 0 ? _b : 0;
 diff --git a/node_modules/@shopify/flash-list/dist/recyclerview/hooks/useRecyclerViewController.js b/node_modules/@shopify/flash-list/dist/recyclerview/hooks/useRecyclerViewController.js
-index 08724d1..0133eec 100644
+index 08724d1..00841cf 100644
 --- a/node_modules/@shopify/flash-list/dist/recyclerview/hooks/useRecyclerViewController.js
 +++ b/node_modules/@shopify/flash-list/dist/recyclerview/hooks/useRecyclerViewController.js
 @@ -30,6 +30,26 @@ export function useRecyclerViewController(recyclerViewManager, ref, scrollViewRe
@@ -103,7 +135,7 @@ index 08724d1..0133eec 100644
 +            recyclerViewManager.animationOptimizationsEnabled ||
 +            !recyclerViewManager.getIsFirstLayoutComplete() ||
 +            !recyclerViewManager.hasStableDataKeys() ||
-+            !recyclerViewManager.shouldMaintainVisibleContentPosition() ||
++            !recyclerViewManager.shouldAnchorThroughDataUpdates() ||
 +            !firstVisibleItemKey.current ||
 +            !firstVisibleItemLayout.current) {
 +            return undefined;
@@ -175,7 +207,7 @@ index 08724d1..0133eec 100644
 +                            // next pass. Items newly revealed above it have estimated heights
 +                            // now; anchoring to one of them holds its top while it measures,
 +                            // which moves the content the user was looking at.
-+                            keepAnchor = true;
++                            keepAnchor = recyclerViewManager.shouldAnchorThroughDataUpdates();
 +                            updateScrollOffsetWithCallback(recyclerViewManager.getAbsoluteLastScrollOffset() +
 +                                diff -
 +                                movedOffset, () => { });
@@ -219,8 +251,25 @@ index aa37225..3b09e75 100644
      /**
       * Updates layout information for items and recomputes layout if necessary.
       * @param layoutInfo Array of layout information for items (real measurements)
+diff --git a/node_modules/@shopify/flash-list/src/FlashListProps.ts b/node_modules/@shopify/flash-list/src/FlashListProps.ts
+index 1dba06c..d9d13c1 100644
+--- a/node_modules/@shopify/flash-list/src/FlashListProps.ts
++++ b/node_modules/@shopify/flash-list/src/FlashListProps.ts
+@@ -406,6 +406,12 @@ export interface FlashListProps<TItem>
+      * If true, initial render will start from the bottom of the list, useful for chat-like interfaces when there are only few messages
+      */
+     startRenderingFromBottom?: boolean;
++    /**
++     * Local patch (Tricordarr): keeps the offset-correction anchor through a data update, keeps the
++     * cells on screen mounted through a prepend, and moves measured layouts with their items when
++     * items are added only at the start. Off by default; only the chat list opts in.
++     */
++    anchorThroughDataUpdates?: boolean;
+   };
+ 
+   /**
 diff --git a/node_modules/@shopify/flash-list/src/recyclerview/RecyclerViewManager.ts b/node_modules/@shopify/flash-list/src/recyclerview/RecyclerViewManager.ts
-index 41704d0..4d2ed3f 100644
+index 41704d0..88e96d5 100644
 --- a/node_modules/@shopify/flash-list/src/recyclerview/RecyclerViewManager.ts
 +++ b/node_modules/@shopify/flash-list/src/recyclerview/RecyclerViewManager.ts
 @@ -38,6 +38,15 @@ export class RecyclerViewManager<T> {
@@ -247,7 +296,7 @@ index 41704d0..4d2ed3f 100644
      if (dataLength === 0) {
        return false;
      }
-@@ -299,8 +309,81 @@ export class RecyclerViewManager<T> {
+@@ -299,8 +309,82 @@ export class RecyclerViewManager<T> {
      this.computeItemViewability();
    }
  
@@ -262,6 +311,7 @@ index 41704d0..4d2ed3f 100644
 +    const added = dataLength - (layoutManager?.getLayoutCount() ?? 0);
 +    if (
 +      !layoutManager ||
++      !this.shouldAnchorThroughDataUpdates() ||
 +      !this.hasRenderedProgressively ||
 +      added === 0 ||
 +      dataLength === 0
@@ -329,8 +379,27 @@ index 41704d0..4d2ed3f 100644
        this.modifyChildrenLayout([], this.propsRef.data?.length ?? 0);
        if (this.hasRenderedProgressively && !this.recomputeEngagedIndices()) {
          // recomputeEngagedIndices will update the render stack if there are any changes in the engaged indices.
+@@ -343,6 +427,18 @@ export class RecyclerViewManager<T> {
+     return !this.propsRef.maintainVisibleContentPosition?.disabled;
+   }
+ 
++  /**
++   * Whether the list opted in to keeping its anchor through data updates (local patch).
++   */
++  shouldAnchorThroughDataUpdates() {
++    return (
++      this.shouldMaintainVisibleContentPosition() &&
++      Boolean(
++        this.propsRef.maintainVisibleContentPosition?.anchorThroughDataUpdates
++      )
++    );
++  }
++
+   getDataLength() {
+     return this.propsRef.data?.length ?? 0;
+   }
 diff --git a/node_modules/@shopify/flash-list/src/recyclerview/hooks/useRecyclerViewController.tsx b/node_modules/@shopify/flash-list/src/recyclerview/hooks/useRecyclerViewController.tsx
-index 3689830..500f0ac 100644
+index 3689830..1fa848b 100644
 --- a/node_modules/@shopify/flash-list/src/recyclerview/hooks/useRecyclerViewController.tsx
 +++ b/node_modules/@shopify/flash-list/src/recyclerview/hooks/useRecyclerViewController.tsx
 @@ -57,6 +57,29 @@ export function useRecyclerViewController<T>(
@@ -346,7 +415,7 @@ index 3689830..500f0ac 100644
 +      recyclerViewManager.animationOptimizationsEnabled ||
 +      !recyclerViewManager.getIsFirstLayoutComplete() ||
 +      !recyclerViewManager.hasStableDataKeys() ||
-+      !recyclerViewManager.shouldMaintainVisibleContentPosition() ||
++      !recyclerViewManager.shouldAnchorThroughDataUpdates() ||
 +      !firstVisibleItemKey.current ||
 +      !firstVisibleItemLayout.current
 +    ) {
@@ -422,7 +491,7 @@ index 3689830..500f0ac 100644
 +              // next pass. Items newly revealed above it have estimated heights
 +              // now; anchoring to one of them holds its top while it measures,
 +              // which moves the content the user was looking at.
-+              keepAnchor = true;
++              keepAnchor = recyclerViewManager.shouldAnchorThroughDataUpdates();
                updateScrollOffsetWithCallback(
 -                recyclerViewManager.getAbsoluteLastScrollOffset() + diff,
 +                recyclerViewManager.getAbsoluteLastScrollOffset() +
