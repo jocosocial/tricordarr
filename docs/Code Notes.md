@@ -17,10 +17,25 @@ Android ignores the prop. `AppFlashList` and a few raw settings `ScrollView`s st
 
 ## ChatList
 
-`src/Components/Lists/ChatList.tsx` is the chat list for Seamail/LFG/Private Event chats and forum threads (FlashList v2, data oldest to newest), wrapped by `FezConversationListV2` and `ForumConversationListV2`. Things that are easy to break:
+`src/Components/Lists/ChatList.tsx` is the chat list for Seamail/LFG/Private Event chats and forum threads (FlashList v2, data oldest to newest), wrapped by `FezConversationListV2` and `ForumConversationListV2`.
+
+The component only wires FlashList up. Each challenge has a concern hook in `src/Hooks/ChatList/` (the refs, timers and effects) and a file in `src/Libraries/ChatList/` (pure decisions, unit tested in `__tests__/unit/TestChatList*.ts`). Each library file's header says what it compensates for:
+
+| Challenge | Hook | Library |
+|---|---|---|
+| Where the list opens | (component) | `InitialScroll.ts` |
+| Landing on the anchor before reveal | `useChatListReadyCheck` | `Anchor.ts` |
+| Scrolling to the user's own post | `useChatListOwnItemScroll` | `Pagination.ts` (`isEndAppend`) |
+| Floating scroll buttons | `useChatListScrollButtons` | `ScrollButtons.ts` |
+| Page fill without scroll events | `useChatListPageFill` | `Pagination.ts` |
+| Keyboard and resize re-pins | `useChatListKeyboardPin` | `Pinning.ts` |
+| Scroll, drag and momentum handling | `useChatListScrollHandlers` | `Pinning.ts`, `Pagination.ts` |
+| Refs shared between the hooks | `useChatListSharedState` | |
+
+Tuning constants live in `src/Libraries/ChatList/Constants.ts`. Things that are easy to break:
 
 - `keyExtractor` is required: FlashList's maintain-visible-content-position is a silent no-op without it, and loading older pages would jump the viewport.
-- The list only honors its initial position at mount, so screens freeze the initial scroll index and remount via `key` when it becomes known (`FezChatScreen`, `ForumThreadScreenBase`; index math in `src/Libraries/ChatList.ts`).
+- The list only honors its initial position at mount, so screens freeze the initial scroll index and remount via `key` when it becomes known (`FezChatScreen`, `ForumThreadScreenBase`; index math in `src/Libraries/ChatList/InitialScroll.ts`).
 - The parent shows an overlay until `onReadyToShow` fires. It always fires (position reached, empty list, or a ~750ms fallback). For an index anchor the ready check also corrects FlashList's estimate-based `initialScrollIndex` landing with plain `scrollToOffset` nudges, and for an end anchor it does the same when the last item is taller than the viewport (`startRenderingFromBottom` only reaches that item's top); don't swap that for `scrollToIndex`, which raced the initial scroll and overshot.
 - The list scrolls to the user's own new posts itself (`isOwnItem`); screens must not call `scrollToEnd` after a send.
 - Keyboard: the local `KeyboardAvoidingView` resizes the list. `ChatList` re-pins the bottom on any container resize while the user was near the bottom, plus one bounded pass after `keyboardDidShow/Hide` (near-bottom is snapshotted at `keyboardWill*`). FlashList's own resize autoscroll alone left Android one post short after the keyboard closed. A user drag (`onScrollBeginDrag`) cancels any pending re-pin and suppresses new ones until the drag and its fling end. Momentum only counts when it starts right after a drag ends: Android fires the momentum events for programmatic animated scrolls too, and treating those as the user cancelled the scroll-to-bottom end pin, so scrolling up right after closing the keyboard is not pulled back down. Do not grow this into a multi-frame loop.
@@ -29,7 +44,7 @@ Android ignores the prop. `AppFlashList` and a few raw settings `ScrollView`s st
 - Page loading must not depend on scroll events alone. A first page too short to scroll (a few posts at a small page size) gets none, and `startRenderingFromBottom` leaves FlashList's tracked offset outside its start threshold, so `onStartReached` never fires. `ChatList` checks the position once ready and after each page, re-checking with a doubling delay (capped at 30s) in case a load fails or a refetch cancels it. The bottom alignment margin of such a list disappears as it fills, so the end is pinned through that fill. The check uses FlashList's tracked offset and never the last scroll event: FlashList swallows the scroll event of its own prepend correction, so that event still says the list is at the top, and going by it loaded every older page in a row (and left the scroll-to-top button disabled). That button only greys out at the real beginning: while an older page exists it stays enabled, or it would flick off and on as each page loads.
 - No spacer in `ListFooterComponent`: FlashList leaves the footer out of its scroll extent (`getMaxScrollOffset`), so `scrollToEnd` from far away landed short and then hopped the footer's height. `ChatList` puts the gap below the last post inside the last cell instead. Horizontal padding goes in `contentContainerStyle`, not `style`, so the scroll indicator stays on the screen edge.
 - On Android, an animated `scrollTo` is cancelled wherever it is when the native `maintainVisibleContentPosition` shifts the offset (`scrollToPreservingMomentum` cancels the fling animator). FlashList makes that shift whenever a cell above the viewport measures or a page arrives, which is common right after a fling, so the scroll-to-top button often just stopped the fling. The scroll buttons resend a scroll that ends short of its edge (on momentum end, up to 3 times within 2s); a touch on the list drops the retry.
-- `START_RENDERING_FROM_BOTTOM` in `ChatList.tsx` is the one-line switch for the fallback that opens at the last item index instead (short chats then top-align).
+- `START_RENDERING_FROM_BOTTOM` in `src/Libraries/ChatList/Constants.ts` is the one-line switch for the fallback that opens at the last item index instead (short chats then top-align).
 - Do not add Reanimated `entering`/`exiting`/`layout` animations to chat items (Shopify/flash-list#2052).
 
 ## Checkpoints
