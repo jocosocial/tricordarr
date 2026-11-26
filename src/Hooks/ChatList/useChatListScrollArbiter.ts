@@ -2,7 +2,6 @@ import {useCallback, useEffect, useMemo, useRef} from 'react';
 
 import type {TChatListRefObject} from '#src/Components/Lists/ChatList';
 import {computeEndOffset} from '#src/Libraries/ChatList/Anchor';
-import {KEYBOARD_SETTLE_DELAYS_MS} from '#src/Libraries/ChatList/Constants';
 import {
   ArbiterEvent,
   initialScrollArbiterState,
@@ -32,16 +31,15 @@ export interface ChatListScrollArbiter {
 
 /**
  * Holds ChatList's scroll arbiter (`src/Libraries/ChatList/ScrollArbiter.ts`) and runs its commands.
- * This is the only code in ChatList's hooks that scrolls the list. It owns the pending frames and
- * timers behind those scrolls and cancels them on unmount: parent screens remount the list via `key`,
- * and a callback from a replaced instance must never move the new one.
+ * This is the only code in ChatList's hooks that scrolls the list. It owns the pending frames behind
+ * those scrolls and cancels them on unmount: parent screens remount the list via `key`, and a
+ * callback from a replaced instance must never move the new one.
  */
 export const useChatListScrollArbiter = <TItem>(listRef: TChatListRefObject<TItem>): ChatListScrollArbiter => {
   const stateRef = useRef<ScrollArbiterState>(initialScrollArbiterState);
   const scrollMetrics = useRef<ScrollMetrics | null>(null);
   const repinFrame = useRef<number | null>(null);
   const ownItemFrame = useRef<number | null>(null);
-  const keyboardTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     return () => {
@@ -50,9 +48,6 @@ export const useChatListScrollArbiter = <TItem>(listRef: TChatListRefObject<TIte
       }
       if (ownItemFrame.current !== null) {
         cancelAnimationFrame(ownItemFrame.current);
-      }
-      if (keyboardTimer.current !== null) {
-        clearTimeout(keyboardTimer.current);
       }
     };
   }, []);
@@ -96,29 +91,7 @@ export const useChatListScrollArbiter = <TItem>(listRef: TChatListRefObject<TIte
             listRef.current?.scrollToEnd({animated: true});
           });
           return;
-        case 'startKeyboardSettle': {
-          if (keyboardTimer.current !== null) {
-            clearTimeout(keyboardTimer.current);
-          }
-          // Bounded chain, not a loop; each step reports back so the reducer can end the keyboard pin.
-          const settleStep = (step: number) => {
-            keyboardTimer.current = setTimeout(() => {
-              keyboardTimer.current = null;
-              const last = step + 1 >= KEYBOARD_SETTLE_DELAYS_MS.length;
-              dispatch({type: 'keyboardSettleStep', last});
-              if (!last) {
-                settleStep(step + 1);
-              }
-            }, KEYBOARD_SETTLE_DELAYS_MS[step]);
-          };
-          settleStep(0);
-          return;
-        }
         case 'cancelPending':
-          if (keyboardTimer.current !== null) {
-            clearTimeout(keyboardTimer.current);
-            keyboardTimer.current = null;
-          }
           if (repinFrame.current !== null) {
             cancelAnimationFrame(repinFrame.current);
             repinFrame.current = null;

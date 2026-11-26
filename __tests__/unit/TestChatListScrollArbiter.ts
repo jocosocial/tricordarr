@@ -41,12 +41,10 @@ describe('positioning', () => {
     expect(commandsFor(settledAtEnd, {type: 'anchorCorrection', offset: 42})).toEqual([]);
   });
 
-  it('does not re-pin on resize or keyboard before ready', () => {
+  it('does not re-pin on resize before ready', () => {
     const {commands} = run([
       {type: 'resize', height: viewport},
       {type: 'resize', height: 300},
-      {type: 'keyboardWill'},
-      {type: 'keyboardDid'},
     ]);
     expect(commands).toEqual([]);
   });
@@ -67,45 +65,6 @@ describe('resize', () => {
   it('does not re-pin while the user drags', () => {
     const dragging = run([{type: 'dragBegin'}], settledAtEnd).state;
     expect(commandsFor(dragging, {type: 'resize', height: 300})).toEqual([]);
-  });
-});
-
-describe('keyboard', () => {
-  it('re-pins and starts the settle chain when the user was at the bottom', () => {
-    const {state, commands} = run([{type: 'keyboardWill'}, {type: 'keyboardDid'}], settledAtEnd);
-    expect(state.keyboardPin).toBe(true);
-    expect(commands).toEqual([{type: 'repin'}, {type: 'startKeyboardSettle'}]);
-  });
-
-  it('keeps the snapshot from the Will event when the resize disturbs near-bottom', () => {
-    const {commands} = run([{type: 'keyboardWill'}, scroll(farUp), {type: 'keyboardDid'}], settledAtEnd);
-    expect(commands).toContainEqual({type: 'startKeyboardSettle'});
-  });
-
-  it('pins resizes during the keyboard animation even if a scroll event reports far from the bottom', () => {
-    const moving = run([{type: 'keyboardWill'}, scroll(farUp)], settledAtEnd).state;
-    expect(commandsFor(moving, {type: 'resize', height: 300})).toEqual([{type: 'repin'}]);
-  });
-
-  it('scrolls on each settle step and ends the pin on the last', () => {
-    const pinned = run([{type: 'keyboardWill'}, {type: 'keyboardDid'}], settledAtEnd).state;
-    const step = run([{type: 'keyboardSettleStep', last: false}], pinned);
-    expect(step.state.keyboardPin).toBe(true);
-    expect(step.commands).toEqual([{type: 'scrollToEnd', animated: false}]);
-    expect(run([{type: 'keyboardSettleStep', last: true}], step.state).state.keyboardPin).toBe(false);
-  });
-
-  it('does nothing for a user who was scrolled up', () => {
-    const scrolledUp = run([scroll(farUp)], settledAtEnd).state;
-    expect(run([{type: 'keyboardWill'}, {type: 'keyboardDid'}], scrolledUp).commands).toEqual([]);
-  });
-
-  it('is cancelled by a drag', () => {
-    const pinned = run([{type: 'keyboardWill'}, {type: 'keyboardDid'}], settledAtEnd).state;
-    const {state, commands} = run([{type: 'dragBegin'}], pinned);
-    expect(commands).toEqual([{type: 'cancelPending'}]);
-    expect(state.keyboardPin).toBe(false);
-    expect(commandsFor(state, {type: 'keyboardDid'})).toEqual([]);
   });
 });
 

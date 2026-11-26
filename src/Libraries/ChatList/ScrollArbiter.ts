@@ -3,10 +3,10 @@
  *
  * FlashList moves the list on its own (maintain-visible-content-position, the bottom autoscroll, the
  * initial scroll). ChatList adds its own scrolls on top: anchor corrections before reveal, re-pins to
- * the end when the keyboard, a resize or growing content would leave it short, the scroll buttons,
+ * the end when a resize (the keyboard) or growing content would leave it short, the scroll buttons,
  * and scrolling to the user's own post. Those used to be separate writers coordinated by flags that
  * several hooks set and cleared. This reducer now owns all of that state. Each hook turns what it
- * sees (a scroll event, a keyboard event, a press) into an `ArbiterEvent`. The reducer answers with
+ * sees (a scroll event, a resize, a press) into an `ArbiterEvent`. The reducer answers with
  * the `ScrollCommand`s to run, and `useChatListScrollArbiter` is the only code that runs them.
  *
  * State, by name:
@@ -17,12 +17,10 @@
  *   Android also fires momentum events for programmatic animated scrolls (scrollToEnd), so momentum
  *   only counts as the user's fling when it starts right after a drag ends (`isUserFling`).
  * - `following`: the user is within a threshold of the bottom, as of the last scroll event. Gates
- *   the resize and keyboard re-pins.
+ *   the resize re-pin.
  * - `endPin`: until `until` (ms), content growth while the list sits at the end re-pins the end.
  *   Opened by a scroll-to-bottom press (`button`) or by a short list outgrowing its viewport after a
  *   page fill (`fill`).
- * - `keyboardPin`: near-bottom as snapshotted when the keyboard started to move, held through the
- *   delayed re-pins after it settles.
  * - `pendingFillPin`: an older page was loaded into an end-anchored list that does not fill the
  *   viewport yet; once the content outgrows the viewport, an end pin opens (see `Pagination.ts`).
  * - `buttonTarget`: the edge a scroll button sent the list to, resent if the scroll is cut short.
@@ -35,7 +33,6 @@ import {END_PIN_MS} from '#src/Libraries/ChatList/Constants';
 import {
   hasOutgrownViewport,
   isUserFling,
-  shouldPinAfterKeyboard,
   shouldRepinOnContentGrowth,
   shouldRepinOnResize,
 } from '#src/Libraries/ChatList/Pinning';
@@ -58,7 +55,6 @@ export interface ScrollArbiterState {
   gesture: ArbiterGesture;
   following: boolean;
   endPin: {reason: EndPinReason; until: number} | null;
-  keyboardPin: boolean;
   pendingFillPin: boolean;
   buttonTarget: ButtonScrollTarget | null;
   /** Height of the list's container, from its onLayout. Null before the first layout. */
@@ -72,7 +68,6 @@ export const initialScrollArbiterState: ScrollArbiterState = {
   gesture: 'none',
   following: true,
   endPin: null,
-  keyboardPin: false,
   pendingFillPin: false,
   buttonTarget: null,
   containerHeight: null,
@@ -99,10 +94,6 @@ export type ArbiterEvent =
   | {type: 'touchStart'}
   /** The list's container was laid out. */
   | {type: 'resize'; height: number}
-  | {type: 'keyboardWill'}
-  | {type: 'keyboardDid'}
-  /** One of the delayed re-pins after the keyboard settled fired; `last` for the final one. */
-  | {type: 'keyboardSettleStep'; last: boolean}
   | {type: 'buttonPress'; edge: ButtonScrollEdge; now: number}
   | {type: 'dividerPress'; index: number; viewPosition: number}
   /** The page fill is loading an older page; `pinEndOnFill` from `getPageFillAction`. */
@@ -115,9 +106,7 @@ export type ScrollCommand =
   | {type: 'repin'}
   /** Animated scrollToEnd on the next frame, replacing any pending own-item scroll. */
   | {type: 'followOwnItem'}
-  /** Start (or restart) the delayed re-pins after the keyboard settles (`KEYBOARD_SETTLE_DELAYS_MS`). */
-  | {type: 'startKeyboardSettle'}
-  /** Cancel the pending re-pin frame and the keyboard re-pins. */
+  /** Cancel the pending re-pin frame. */
   | {type: 'cancelPending'}
   | {type: 'scrollToEnd'; animated: boolean}
   | {type: 'scrollToOffset'; offset: number; animated: boolean}
@@ -198,7 +187,7 @@ export const reduceScrollArbiter = (state: ScrollArbiterState, event: ArbiterEve
 
     case 'dragBegin':
       return {
-        state: {...state, gesture: 'dragging', keyboardPin: false, endPin: null},
+        state: {...state, gesture: 'dragging', endPin: null},
         commands: [{type: 'cancelPending'}],
       };
 
@@ -237,33 +226,9 @@ export const reduceScrollArbiter = (state: ScrollArbiterState, event: ArbiterEve
         ready,
         userScrolling,
         nearBottom: state.following,
-        keyboardPinned: state.keyboardPin,
       });
       return {state: {...state, containerHeight: event.height}, commands: repin ? [{type: 'repin'}] : []};
     }
-
-    case 'keyboardWill':
-      return {state: {...state, keyboardPin: ready && state.following}, commands: []};
-
-    case 'keyboardDid': {
-      const pinned = shouldPinAfterKeyboard({
-        userScrolling,
-        keyboardPinned: state.keyboardPin,
-        ready,
-        nearBottom: state.following,
-      });
-      return {
-        state: {...state, keyboardPin: pinned},
-        commands: pinned ? [{type: 'repin'}, {type: 'startKeyboardSettle'}] : [],
-      };
-    }
-
-    case 'keyboardSettleStep':
-      // Unconditional while the re-pins run: a drag cancels them before they get here.
-      return {
-        state: event.last ? {...state, keyboardPin: false} : state,
-        commands: [{type: 'scrollToEnd', animated: false}],
-      };
 
     case 'buttonPress':
       return scrollToButtonEdge(

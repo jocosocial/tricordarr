@@ -2,7 +2,6 @@ import {FLING_AFTER_DRAG_MS} from '#src/Libraries/ChatList/Constants';
 import {
   hasOutgrownViewport,
   isUserFling,
-  shouldPinAfterKeyboard,
   shouldRepinOnContentGrowth,
   shouldRepinOnResize,
 } from '#src/Libraries/ChatList/Pinning';
@@ -45,12 +44,10 @@ describe('shouldRepinOnResize', () => {
     ready: true,
     userScrolling: false,
     nearBottom: true,
-    keyboardPinned: false,
   };
 
   it('re-pins a real resize while near the bottom', () => {
     expect(shouldRepinOnResize(base)).toBe(true);
-    expect(shouldRepinOnResize({...base, nearBottom: false, keyboardPinned: true})).toBe(true);
   });
 
   it('ignores the first layout, no change, before ready, while scrolling, and away from the bottom', () => {
@@ -59,20 +56,6 @@ describe('shouldRepinOnResize', () => {
     expect(shouldRepinOnResize({...base, ready: false})).toBe(false);
     expect(shouldRepinOnResize({...base, userScrolling: true})).toBe(false);
     expect(shouldRepinOnResize({...base, nearBottom: false})).toBe(false);
-  });
-});
-
-describe('shouldPinAfterKeyboard', () => {
-  const base = {userScrolling: false, keyboardPinned: false, ready: true, nearBottom: true};
-
-  it('pins from the Will snapshot or from near-bottom at the Did event', () => {
-    expect(shouldPinAfterKeyboard(base)).toBe(true);
-    expect(shouldPinAfterKeyboard({...base, nearBottom: false, keyboardPinned: true})).toBe(true);
-  });
-
-  it('does not pin while scrolling, or near the bottom before ready', () => {
-    expect(shouldPinAfterKeyboard({...base, userScrolling: true, keyboardPinned: true})).toBe(false);
-    expect(shouldPinAfterKeyboard({...base, ready: false})).toBe(false);
   });
 });
 

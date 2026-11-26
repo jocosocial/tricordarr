@@ -67,11 +67,5 @@ export const ANCHOR_SETTLED_FRAMES = 2;
 /** Upper bound on corrective scrolls for an index anchor, so measuring images cannot loop it. */
 export const ANCHOR_MAX_CORRECTIONS = 4;
 
-/**
- * Delays (from keyboardDid*, then between steps) at which a pinned list re-pins the end, covering the
- * KeyboardAvoidingView's last layout passes (~1.1s total).
- */
-export const KEYBOARD_SETTLE_DELAYS_MS = [100, 300, 700];
-
 /** Fraction of the viewport the New divider is placed below the top edge when scrolling to it. */
 export const DIVIDER_VIEW_POSITION = 0.1;

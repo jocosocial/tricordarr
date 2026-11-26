@@ -6,10 +6,10 @@ import {FloatingScrollButtonsView} from '#src/Components/Buttons/FloatingScrollB
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useChatListKeyboardPin} from '#src/Hooks/ChatList/useChatListKeyboardPin';
 import {useChatListOwnItemScroll} from '#src/Hooks/ChatList/useChatListOwnItemScroll';
 import {useChatListPageFill} from '#src/Hooks/ChatList/useChatListPageFill';
 import {useChatListReadyCheck} from '#src/Hooks/ChatList/useChatListReadyCheck';
+import {useChatListResizePin} from '#src/Hooks/ChatList/useChatListResizePin';
 import {useChatListScrollArbiter} from '#src/Hooks/ChatList/useChatListScrollArbiter';
 import {useChatListScrollButtons} from '#src/Hooks/ChatList/useChatListScrollButtons';
 import {useChatListScrollHandlers} from '#src/Hooks/ChatList/useChatListScrollHandlers';
@@ -175,7 +175,7 @@ export const ChatList = <TItem,>({
     applyAtTop,
     applyScrollButtonDirection,
   });
-  const {onContainerLayout} = useChatListKeyboardPin(arbiter);
+  const {onContainerLayout} = useChatListResizePin(arbiter);
   const {
     onScroll,
     onContentSizeChange,
