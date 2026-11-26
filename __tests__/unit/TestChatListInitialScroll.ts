@@ -1,4 +1,9 @@
-import {getFezInitialScrollIndex, getForumInitialScrollIndex} from '#src/Libraries/ChatList';
+import {
+  getFallbackEndIndex,
+  getFezInitialScrollIndex,
+  getForumInitialScrollIndex,
+  getInitialScrollIndex,
+} from '#src/Libraries/ChatList/InitialScroll';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 const fez = (postCount: number, readCount: number, start: number): FezData =>
@@ -65,5 +70,29 @@ describe('getForumInitialScrollIndex', () => {
   it('returns undefined with nothing loaded', () => {
     expect(getForumInitialScrollIndex(0, 0, undefined)).toBeUndefined();
     expect(getForumInitialScrollIndex(0, 0, undefined, true)).toBeUndefined();
+  });
+});
+
+describe('getInitialScrollIndex', () => {
+  it('leaves an end anchor to startRenderingFromBottom', () => {
+    expect(getInitialScrollIndex('end', 9, true)).toBeUndefined();
+  });
+
+  it('opens an end anchor on its last item on the fallback path', () => {
+    expect(getInitialScrollIndex('end', 9, false)).toBe(9);
+    expect(getInitialScrollIndex('end', undefined, false)).toBeUndefined();
+  });
+
+  it('opens an index anchor on its index, except index 0', () => {
+    expect(getInitialScrollIndex({index: 5}, 9, true)).toBe(5);
+    expect(getInitialScrollIndex({index: 0}, 9, true)).toBeUndefined();
+  });
+});
+
+describe('getFallbackEndIndex', () => {
+  it('is the last index, excluding index 0', () => {
+    expect(getFallbackEndIndex(10)).toBe(9);
+    expect(getFallbackEndIndex(1)).toBeUndefined();
+    expect(getFallbackEndIndex(0)).toBeUndefined();
   });
 });

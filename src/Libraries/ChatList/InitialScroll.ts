@@ -1,3 +1,9 @@
+/**
+ * Where a chat opens. FlashList only honors `initialScrollIndex` at mount, so screens compute the
+ * index from read state once, freeze it, and remount the list via `key` when it becomes known (see
+ * `FezChatScreen`, `ForumThreadScreenBase`).
+ */
+
 import {FezData, ForumListData} from '#src/Structs/ControllerStructs';
 
 /**
@@ -57,3 +63,35 @@ export const getForumInitialScrollIndex = (
   }
   return Math.min(Math.max(forumListData.readCount - paginatorStart, 0), loadedCount - 1);
 };
+
+/**
+ * The `initialScrollIndex` ChatList hands FlashList for its anchor.
+ *
+ * An end anchor normally has none: `startRenderingFromBottom` opens it at the bottom. Only on the
+ * fallback path (`startRenderingFromBottom` off) does it open on its last item. Index 0 is excluded
+ * for both: scrolling to it would hide the list header past the top edge, and the first item is
+ * already visible from offset 0.
+ *
+ * @param anchor The list's anchor.
+ * @param fallbackEndIndex Last index at mount, or undefined when there were fewer than two items.
+ * @param startRenderingFromBottom Whether `startRenderingFromBottom` positions end anchors.
+ */
+export const getInitialScrollIndex = (
+  anchor: 'end' | {index: number},
+  fallbackEndIndex: number | undefined,
+  startRenderingFromBottom: boolean,
+): number | undefined => {
+  if (anchor === 'end') {
+    return startRenderingFromBottom ? undefined : fallbackEndIndex;
+  }
+  return anchor.index > 0 ? anchor.index : undefined;
+};
+
+/**
+ * The last index an end-anchored list opens on when `startRenderingFromBottom` is off. Captured
+ * once at mount. Undefined for fewer than two items (index 0 is excluded, see `getInitialScrollIndex`).
+ *
+ * @param dataLength Number of items at mount.
+ */
+export const getFallbackEndIndex = (dataLength: number): number | undefined =>
+  dataLength > 1 ? dataLength - 1 : undefined;

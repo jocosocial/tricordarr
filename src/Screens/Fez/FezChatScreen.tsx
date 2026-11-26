@@ -36,7 +36,7 @@ import {useKeyboardVerticalOffset} from '#src/Hooks/Keyboard/useKeyboardVertical
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
-import {getFezInitialScrollIndex} from '#src/Libraries/ChatList';
+import {getFezInitialScrollIndex} from '#src/Libraries/ChatList/InitialScroll';
 import {createLogger} from '#src/Libraries/Logger';
 import {openFezParentScreen} from '#src/Libraries/Navigation';
 import {

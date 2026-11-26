@@ -15,103 +15,56 @@ import {FloatingScrollButtonsView} from '#src/Components/Buttons/FloatingScrollB
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {
+  computeAnchorError,
+  computeEndOffset,
+  initialReadyCheckState,
+  ReadyCheckState,
+  resolveAnchorIndex as resolveAnchorIndexIn,
+  stepReadyCheck,
+} from '#src/Libraries/ChatList/Anchor';
+import {
+  AUTOSCROLL_TO_BOTTOM_THRESHOLD,
+  DIVIDER_VIEW_POSITION,
+  END_PIN_MS,
+  KEYBOARD_SETTLE_DELAYS_MS,
+  PAGE_FILL_DELAY_MS,
+  START_RENDERING_FROM_BOTTOM,
+} from '#src/Libraries/ChatList/Constants';
+import {getFallbackEndIndex, getInitialScrollIndex} from '#src/Libraries/ChatList/InitialScroll';
+import {
+  getEdgeKeys,
+  getPageFillAction,
+  isEndAppend,
+  nextPageFillDelay,
+  shouldNudgeLoadPrevious,
+} from '#src/Libraries/ChatList/Pagination';
+import {
+  hasOutgrownViewport,
+  isUserFling,
+  shouldPinAfterKeyboard,
+  shouldRepinOnContentGrowth,
+  shouldRepinOnResize,
+} from '#src/Libraries/ChatList/Pinning';
+import {
+  ButtonScrollEdge,
+  ButtonScrollTarget,
+  createButtonScrollTarget,
+  getButtonRetryAction,
+  getDistanceFromBottom,
+  getScrollButtonDirection,
+  getSecondaryEdge,
+  hasReachedButtonEdge,
+  isAtTop,
+  ScrollButtonDirection,
+  ScrollMetrics,
+} from '#src/Libraries/ChatList/ScrollButtons';
 import {createLogger} from '#src/Libraries/Logger';
 
 const logger = createLogger('ChatList.tsx');
 
 export type TChatListRef<TItem> = FlashListRef<TItem> | null;
 export type TChatListRefObject<TItem> = React.RefObject<TChatListRef<TItem>>;
-
-/**
- * Whether a chat anchored to the end lets FlashList start from the bottom
- * (`maintainVisibleContentPosition.startRenderingFromBottom`). This is the single switch for the
- * first fallback in `docs/Specifications/Bi-Directional Chat List.md`: set it to false if
- * `startRenderingFromBottom` misbehaves on a device (short chats, Android flicker). The list then
- * opens via `initialScrollIndex = last item` instead, which leaves chats shorter than the viewport
- * top-aligned.
- */
-const START_RENDERING_FROM_BOTTOM = true;
-
-/** Fraction of the viewport from the bottom within which FlashList keeps following new content. */
-const AUTOSCROLL_TO_BOTTOM_THRESHOLD = 0.2;
-
-/** Fraction of the viewport from the top below which the load-previous nudge fires. */
-const LOAD_PREVIOUS_NUDGE_FRACTION = 0.2;
-
-/** Fraction of the viewport from the bottom below which the page fill loads the next page. */
-const LOAD_NEXT_FILL_FRACTION = 0.5;
-
-/** Delay before the page fill check, long enough for FlashList to settle the position after a prepend. */
-const PAGE_FILL_DELAY_MS = 500;
-
-/** Upper bound on the doubling delay between page fill checks while a page fails to load. */
-const PAGE_FILL_MAX_DELAY_MS = 30000;
-
-/** Frames the ready check waits before revealing the list regardless of position (~750ms at 60fps). */
-const READY_MAX_FRAMES = 45;
-
-/** Pixels of slack when deciding the viewport is at the bottom (the footer is not in the measured content). */
-const AT_BOTTOM_EPSILON = 50;
-
-/**
- * After a scroll-to-bottom button press, how long the list keeps re-pinning the end when content
- * below it grows (an image measuring in, the next page arriving). Bounded; a user drag ends it early.
- */
-const END_PIN_MS = 2000;
-
-/**
- * After a scroll button press, how long a scroll that ended short of its edge is sent again. Bounded,
- * so a stale target cannot move the list long after the press; a touch on the list ends it early.
- */
-const BUTTON_SCROLL_WINDOW_MS = 2000;
-
-/** Upper bound on repeated scrolls for one scroll button press. */
-const BUTTON_SCROLL_MAX_RETRIES = 3;
-
-/** Momentum beginning within this long of a drag ending is the user's fling, not a programmatic scroll. */
-const FLING_AFTER_DRAG_MS = 100;
-
-/** Frames after onLoad before correcting an index anchor; FlashList's initial scroll settles within ~100ms. */
-const ANCHOR_CORRECTION_START_FRAME = 9;
-
-/** Frames to wait after a corrective scroll before measuring again, so the scroll event has landed. */
-const ANCHOR_CORRECTION_WAIT_FRAMES = 3;
-
-/** Pixels an index anchor may be off its target and still count as positioned. */
-const ANCHOR_TOLERANCE = 8;
-
-/** Consecutive in-tolerance frames before an index anchor counts as settled. */
-const ANCHOR_SETTLED_FRAMES = 2;
-
-/** Upper bound on corrective scrolls for an index anchor, so measuring images cannot loop it. */
-const ANCHOR_MAX_CORRECTIONS = 4;
-
-/**
- * Delays (from keyboardDid*, then between steps) at which a pinned list re-pins the end, covering the
- * KeyboardAvoidingView's last layout passes (~1.1s total).
- */
-const KEYBOARD_SETTLE_DELAYS_MS = [100, 300, 700];
-
-/** Fraction of the viewport the New divider is placed below the top edge when scrolling to it. */
-const DIVIDER_VIEW_POSITION = 0.1;
-
-type ScrollButtonDirection = 'up' | 'down' | null;
-
-/** The list edge a scroll button sends the list to. */
-type ButtonScrollEdge = 'top' | 'end';
-
-interface ButtonScrollTarget {
-  edge: ButtonScrollEdge;
-  /** Time (ms) after which a short landing is left alone. */
-  until: number;
-  retries: number;
-}
-
-interface ScrollMetrics {
-  offset: number;
-  viewportHeight: number;
-  contentHeight: number;
-}
 
 interface ChatListProps<TItem> {
   listRef: TChatListRefObject<TItem>;
@@ -261,23 +214,14 @@ export const ChatList = <TItem,>({
   const [ready, setReady] = useState(false);
   const readyFrameRef = useRef<number | null>(null);
   const ownScrollFrameRef = useRef<number | null>(null);
-  const prevKeysRef = useRef<{first?: string; last?: string}>({
-    first: data.length > 0 ? keyExtractor(data[0]) : undefined,
-    last: data.length > 0 ? keyExtractor(data[data.length - 1]) : undefined,
-  });
+  const prevKeysRef = useRef(getEdgeKeys(data, keyExtractor));
 
   // Fallback path only: with START_RENDERING_FROM_BOTTOM off, an end-anchored list opens on its last
   // item. Index 0 is excluded because scrolling to it would hide the list header for no reason.
-  const [fallbackEndIndex] = useState(() => (data.length > 1 ? data.length - 1 : undefined));
+  const [fallbackEndIndex] = useState(() => getFallbackEndIndex(data.length));
   // Index 0 is also excluded for index anchors: initialScrollIndex scrolls the item to the top edge
   // past the header, and the first item is already visible from offset 0.
-  const initialScrollIndex = anchorsToEnd
-    ? START_RENDERING_FROM_BOTTOM
-      ? undefined
-      : fallbackEndIndex
-    : anchorIndex && anchorIndex > 0
-      ? anchorIndex
-      : undefined;
+  const initialScrollIndex = getInitialScrollIndex(anchor, fallbackEndIndex, START_RENDERING_FROM_BOTTOM);
   // FlashList scrolls to `layout.y + viewOffset`, so a negative offset leaves the item below the top edge.
   const initialScrollIndexParams = useMemo(
     () => (initialScrollIndex !== undefined && !anchorsToEnd ? {viewOffset: -styleDefaults.marginSize} : undefined),
@@ -339,8 +283,11 @@ export const ChatList = <TItem,>({
       return undefined;
     }
     try {
-      const contentHeight = list.getChildContainerDimensions().height + list.getFirstItemOffset();
-      return Math.max(contentHeight - list.getWindowSize().height, 0);
+      return computeEndOffset(
+        list.getChildContainerDimensions().height,
+        list.getFirstItemOffset(),
+        list.getWindowSize().height,
+      );
     } catch (error) {
       logger.debug('getEndOffset measurement unavailable', error);
       return undefined;
@@ -348,97 +295,62 @@ export const ChatList = <TItem,>({
   }, [listRef]);
 
   /**
-   * How far (in pixels) the current scroll offset is from the anchor's target offset, using measured
-   * layouts. An index anchor's top sits `marginSize` below the top edge, clamped to the furthest the
-   * list can scroll; an end anchor (no index) is at that furthest offset. Undefined when layout is
-   * not available yet.
+   * Measures how far (in pixels) the current scroll offset is from the anchor's target offset (see
+   * `computeAnchorError`). Undefined when layout is not available yet.
    */
   const getAnchorError = useCallback(
-    (index?: number): {error: number; target: number} | undefined => {
+    (index?: number) => {
       const list = listRef.current;
       const endOffset = getEndOffset();
       if (!list || endOffset === undefined) {
         return undefined;
       }
-      let target = endOffset;
+      let itemY: number | undefined;
       if (index !== undefined) {
         const layout = list.getLayout(index);
         if (!layout) {
           return undefined;
         }
-        target = Math.min(layout.y + list.getFirstItemOffset() - styleDefaults.marginSize, endOffset);
+        itemY = layout.y;
       }
       // Our own onScroll metrics update on the scroll event itself; FlashList's tracked offset is
       // updated from a deferred velocity callback and lags a correction by a frame or more.
       const offset = scrollMetricsRef.current?.offset ?? list.getAbsoluteLastScrollOffset();
-      return {error: offset - target, target};
+      return computeAnchorError({
+        offset,
+        endOffset,
+        itemY,
+        firstItemOffset: list.getFirstItemOffset(),
+        margin: styleDefaults.marginSize,
+      });
     },
     [getEndOffset, listRef, styleDefaults.marginSize],
   );
 
   /** Current index of the anchored item, falling back to the mount-time index if its key is gone. */
   const resolveAnchorIndex = useCallback(
-    (fallback: number) => {
-      if (anchorKey === undefined) {
-        return fallback;
-      }
-      const index = dataRef.current.findIndex(item => keyExtractor(item) === anchorKey);
-      return index >= 0 ? index : fallback;
-    },
+    (fallback: number) => resolveAnchorIndexIn(dataRef.current, keyExtractor, anchorKey, fallback),
     [anchorKey, keyExtractor],
   );
 
   /**
    * Starts the per-frame check that reveals the list once the initial scroll has landed, with a
-   * bounded fallback so the parent's overlay can never stick.
-   *
-   * For an index anchor, FlashList's initialScrollIndex lands using estimated heights for unmeasured
-   * items, so tall items (forum images) leave the anchor well off its target
-   * (Shopify/flash-list#2307). Once FlashList's own initial scroll window has passed, this compares
-   * the anchor's measured position with the scroll offset and nudges with a plain scrollToOffset
-   * (a bounded number of times) until it holds still. scrollToIndex is not used here: it pauses and
-   * re-enables offset correction on its own timers, which raced the initial scroll and overshot.
-   *
-   * For an end anchor, startRenderingFromBottom lands on the top of the last item, which is not the
-   * end when that item is taller than the viewport (a gallery). The same nudges take it there.
+   * bounded fallback so the parent's overlay can never stick. The decisions are in `stepReadyCheck`
+   * (`src/Libraries/ChatList/Anchor.ts`), which explains the corrections.
    */
   const startReadyCheck = useCallback(() => {
-    let frames = 0;
-    let corrections = 0;
-    let settledFrames = 0;
-    let nextMeasureFrame = ANCHOR_CORRECTION_START_FRAME;
-    let lastError: number | undefined;
+    let state: ReadyCheckState = initialReadyCheckState;
     const tick = () => {
       readyFrameRef.current = null;
-      frames++;
-      let positioned: boolean;
-      if (frames < nextMeasureFrame) {
-        positioned = false;
-      } else {
-        const anchorError = getAnchorError(anchorIndex === undefined ? undefined : resolveAnchorIndex(anchorIndex));
-        if (!anchorError) {
-          positioned = false;
-        } else if (Math.abs(anchorError.error) <= ANCHOR_TOLERANCE) {
-          settledFrames++;
-          positioned = settledFrames >= ANCHOR_SETTLED_FRAMES;
-        } else if (lastError !== undefined && Math.abs(anchorError.error - lastError) <= ANCHOR_TOLERANCE) {
-          // The last nudge did not change the measured error, so the list cannot get any closer
-          // (the end of the content, or a measurement that does not track this scroll). Waiting
-          // for the fallback would only delay the reveal.
-          positioned = true;
-        } else {
-          settledFrames = 0;
-          positioned = false;
-          if (corrections < ANCHOR_MAX_CORRECTIONS) {
-            corrections++;
-            lastError = anchorError.error;
-            nextMeasureFrame = frames + ANCHOR_CORRECTION_WAIT_FRAMES;
-            logger.debug(`Anchor correction ${corrections}: off by ${Math.round(anchorError.error)}px`);
-            listRef.current?.scrollToOffset({offset: anchorError.target, animated: false});
-          }
-        }
+      const step = stepReadyCheck(state, () =>
+        getAnchorError(anchorIndex === undefined ? undefined : resolveAnchorIndex(anchorIndex)),
+      );
+      state = step.state;
+      if (step.scrollTo !== undefined) {
+        logger.debug(`Anchor correction ${state.corrections}: off by ${Math.round(state.lastError ?? 0)}px`);
+        listRef.current?.scrollToOffset({offset: step.scrollTo, animated: false});
       }
-      if (positioned || frames >= READY_MAX_FRAMES) {
+      if (step.ready) {
         fireReadyToShow();
       } else {
         readyFrameRef.current = requestAnimationFrame(tick);
@@ -481,13 +393,10 @@ export const ChatList = <TItem,>({
   // End growth is told apart from a prepend (loading older posts, #610) by comparing the first and
   // last keys: a prepend changes the first key; an end append changes the last key and leaves the first.
   useEffect(() => {
-    const first = data.length > 0 ? keyExtractor(data[0]) : undefined;
-    const last = data.length > 0 ? keyExtractor(data[data.length - 1]) : undefined;
+    const keys = getEdgeKeys(data, keyExtractor);
     const prev = prevKeysRef.current;
-    prevKeysRef.current = {first, last};
-    const wasEmpty = prev.last === undefined;
-    const isEndAppend = last !== undefined && last !== prev.last && (first === prev.first || wasEmpty);
-    if (!isEndAppend || !isOwnItem?.(data[data.length - 1])) {
+    prevKeysRef.current = keys;
+    if (!isEndAppend(prev, keys) || !isOwnItem?.(data[data.length - 1])) {
       return;
     }
     if (ownScrollFrameRef.current !== null) {
@@ -512,27 +421,14 @@ export const ChatList = <TItem,>({
     if (!metrics) {
       return null;
     }
-    const threshold = styleDefaults.listScrollThreshold;
-    const distanceFromBottom = metrics.contentHeight - metrics.viewportHeight - metrics.offset;
-    if (distanceFromBottom <= threshold) {
-      return null;
-    }
     const list = listRef.current;
     const layout = newDividerIndex !== undefined ? list?.getLayout(newDividerIndex) : undefined;
-    if (!list || !layout) {
-      return 'down';
-    }
-    const dividerTop = layout.y + list.getFirstItemOffset();
-    const dividerBottom = dividerTop + layout.height;
-    const viewportTop = metrics.offset;
-    const viewportBottom = metrics.offset + metrics.viewportHeight;
-    if (dividerBottom < viewportTop) {
-      return viewportTop - dividerBottom <= threshold ? null : 'up';
-    }
-    if (dividerTop > viewportBottom) {
-      return dividerTop - viewportBottom <= threshold ? null : 'down';
-    }
-    return null;
+    const dividerTop = list && layout ? layout.y + list.getFirstItemOffset() : undefined;
+    return getScrollButtonDirection(
+      metrics,
+      styleDefaults.listScrollThreshold,
+      layout && dividerTop !== undefined ? {top: dividerTop, bottom: dividerTop + layout.height} : undefined,
+    );
   }, [listRef, newDividerIndex, styleDefaults.listScrollThreshold]);
 
   /** Recomputes the button direction, touching state only when it actually changed. */
@@ -570,7 +466,7 @@ export const ChatList = <TItem,>({
    */
   const applyAtTop = useCallback(
     (offset: number) => {
-      const nowAtTop = !hasPreviousPage && offset <= styleDefaults.marginSize;
+      const nowAtTop = isAtTop(offset, hasPreviousPage, styleDefaults.marginSize);
       if (nowAtTop !== atTopRef.current) {
         atTopRef.current = nowAtTop;
         setAtTop(nowAtTop);
@@ -587,15 +483,13 @@ export const ChatList = <TItem,>({
         viewportHeight: layoutMeasurement.height,
         contentHeight: contentSize.height,
       };
-      const distanceFromBottom = contentSize.height - layoutMeasurement.height - contentOffset.y;
+      const distanceFromBottom = getDistanceFromBottom(scrollMetricsRef.current);
       isNearBottomRef.current = distanceFromBottom <= styleDefaults.listScrollThreshold;
       applyAtTop(contentOffset.y);
       const buttonTarget = buttonTargetRef.current;
       if (
         buttonTarget &&
-        (buttonTarget.edge === 'top'
-          ? contentOffset.y <= styleDefaults.marginSize
-          : distanceFromBottom <= AT_BOTTOM_EPSILON)
+        hasReachedButtonEdge(buttonTarget.edge, contentOffset.y, distanceFromBottom, styleDefaults.marginSize)
       ) {
         buttonTargetRef.current = null;
       }
@@ -605,10 +499,13 @@ export const ChatList = <TItem,>({
       // pagination hook ignores calls while a fetch is in flight. Not before the initial position has
       // settled, when the offset is transiently 0.
       if (
-        readyFiredRef.current &&
-        hasPreviousPage &&
         handleLoadPrevious &&
-        contentOffset.y < layoutMeasurement.height * LOAD_PREVIOUS_NUDGE_FRACTION
+        shouldNudgeLoadPrevious({
+          ready: readyFiredRef.current,
+          hasPreviousPage,
+          offset: contentOffset.y,
+          viewportHeight: layoutMeasurement.height,
+        })
       ) {
         handleLoadPrevious();
       }
@@ -655,15 +552,23 @@ export const ChatList = <TItem,>({
           applyAtTop(offset);
           applyScrollButtonDirection();
         }
-        if (hasPreviousPage && offset < viewportHeight * LOAD_PREVIOUS_NUDGE_FRACTION) {
-          pinEndOnFillRef.current = anchorsToEnd && endOffset === 0;
+        const action = getPageFillAction({
+          offset,
+          endOffset,
+          viewportHeight,
+          hasPreviousPage,
+          hasNextPage,
+          anchorsToEnd,
+        });
+        if (action.load === 'previous') {
+          pinEndOnFillRef.current = action.pinEndOnFill;
           handleLoadPreviousRef.current?.();
-        } else if (hasNextPage && endOffset - offset < viewportHeight * LOAD_NEXT_FILL_FRACTION) {
+        } else if (action.load === 'next') {
           handleLoadNextRef.current?.();
         }
       }
       if (hasPreviousPage || hasNextPage) {
-        delay = Math.min(delay * 2, PAGE_FILL_MAX_DELAY_MS);
+        delay = nextPageFillDelay(delay);
         timer = setTimeout(check, delay);
       }
     };
@@ -707,7 +612,7 @@ export const ChatList = <TItem,>({
   /** Scrolls to a list edge for a button press and keeps sending it there until it lands (see buttonTargetRef). */
   const startButtonScroll = useCallback(
     (edge: ButtonScrollEdge) => {
-      buttonTargetRef.current = {edge, until: Date.now() + BUTTON_SCROLL_WINDOW_MS, retries: 0};
+      buttonTargetRef.current = createButtonScrollTarget(edge, Date.now());
       scrollToButtonEdge(edge);
     },
     [scrollToButtonEdge],
@@ -723,7 +628,7 @@ export const ChatList = <TItem,>({
 
   /** Secondary button: to the list edge opposite the primary button's direction. */
   const handleSecondaryScrollButtonPress = useCallback(() => {
-    startButtonScroll(scrollButtonDirection === 'up' ? 'end' : 'top');
+    startButtonScroll(getSecondaryEdge(scrollButtonDirection));
   }, [scrollButtonDirection, startButtonScroll]);
 
   /** Scrolls to the end on the next frame, replacing any pending re-pin. */
@@ -747,7 +652,7 @@ export const ChatList = <TItem,>({
   const onContentSizeChange = useCallback(
     (_width: number, height: number) => {
       const viewportHeight = containerHeightRef.current;
-      if (pinEndOnFillRef.current && viewportHeight !== null && height > viewportHeight + 1) {
+      if (hasOutgrownViewport(pinEndOnFillRef.current, viewportHeight, height)) {
         pinEndOnFillRef.current = false;
         if (!userScrollingRef.current) {
           endPinUntilRef.current = Date.now() + END_PIN_MS;
@@ -758,13 +663,15 @@ export const ChatList = <TItem,>({
       if (!metrics || metrics.contentHeight === height) {
         return;
       }
-      const wasAtEnd = metrics.contentHeight - metrics.viewportHeight - metrics.offset <= AT_BOTTOM_EPSILON;
       scrollMetricsRef.current = {...metrics, contentHeight: height};
       if (
-        wasAtEnd &&
-        height > metrics.contentHeight &&
-        Date.now() < endPinUntilRef.current &&
-        !userScrollingRef.current
+        shouldRepinOnContentGrowth({
+          metrics,
+          contentHeight: height,
+          now: Date.now(),
+          endPinUntil: endPinUntilRef.current,
+          userScrolling: userScrollingRef.current,
+        })
       ) {
         scheduleRepin();
       }
@@ -785,10 +692,16 @@ export const ChatList = <TItem,>({
       const height = event.nativeEvent.layout.height;
       const previous = containerHeightRef.current;
       containerHeightRef.current = height;
-      if (previous === null || previous === height || !readyFiredRef.current) {
-        return;
-      }
-      if (!userScrollingRef.current && (isNearBottomRef.current || keyboardPinnedRef.current)) {
+      if (
+        shouldRepinOnResize({
+          previousHeight: previous,
+          height,
+          ready: readyFiredRef.current,
+          userScrolling: userScrollingRef.current,
+          nearBottom: isNearBottomRef.current,
+          keyboardPinned: keyboardPinnedRef.current,
+        })
+      ) {
         scheduleRepin();
       }
     },
@@ -835,7 +748,7 @@ export const ChatList = <TItem,>({
 
   /** Momentum that starts as a drag ends is the user's fling; any other momentum is programmatic. */
   const onMomentumBegin = useCallback(() => {
-    if (Date.now() - dragEndedAtRef.current <= FLING_AFTER_DRAG_MS) {
+    if (isUserFling(Date.now(), dragEndedAtRef.current)) {
       userScrollingRef.current = true;
     }
   }, []);
@@ -847,7 +760,7 @@ export const ChatList = <TItem,>({
   const onMomentumEnd = useCallback(() => {
     const buttonTarget = buttonTargetRef.current;
     if (buttonTarget) {
-      if (Date.now() > buttonTarget.until || buttonTarget.retries >= BUTTON_SCROLL_MAX_RETRIES) {
+      if (getButtonRetryAction(buttonTarget, Date.now()) === 'clear') {
         buttonTargetRef.current = null;
       } else {
         buttonTarget.retries += 1;
@@ -877,8 +790,12 @@ export const ChatList = <TItem,>({
       keyboardPinnedRef.current = readyFiredRef.current && isNearBottomRef.current;
     };
     const onDid = () => {
-      const pinned =
-        !userScrollingRef.current && (keyboardPinnedRef.current || (readyFiredRef.current && isNearBottomRef.current));
+      const pinned = shouldPinAfterKeyboard({
+        userScrolling: userScrollingRef.current,
+        keyboardPinned: keyboardPinnedRef.current,
+        ready: readyFiredRef.current,
+        nearBottom: isNearBottomRef.current,
+      });
       keyboardPinnedRef.current = pinned;
       if (!pinned) {
         return;

@@ -39,7 +39,7 @@ import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {paginatedHighWaterMark} from '#src/Libraries/CacheReduction';
-import {getForumInitialScrollIndex} from '#src/Libraries/ChatList';
+import {getForumInitialScrollIndex} from '#src/Libraries/ChatList/InitialScroll';
 import {createLogger} from '#src/Libraries/Logger';
 import {cancelSecondaryNotifications} from '#src/Libraries/Notifications/Content';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
