@@ -1,4 +1,4 @@
-import {BUTTON_SCROLL_MAX_RETRIES, END_PIN_MS, FLING_AFTER_DRAG_MS} from '#src/Libraries/ChatList/Constants';
+import {BUTTON_SCROLL_MAX_RETRIES, END_PIN_MS} from '#src/Libraries/ChatList/Constants';
 import {
   ArbiterEvent,
   initialScrollArbiterState,
@@ -69,18 +69,40 @@ describe('resize', () => {
 });
 
 describe('gestures', () => {
-  it('counts momentum right after a drag as the user fling', () => {
-    const {state} = run([{type: 'dragBegin'}, {type: 'dragEnd', now: 1000}, {type: 'momentumBegin', now: 1050}]);
+  it('counts momentum after a drag released with velocity as the user fling', () => {
+    const {state} = run([{type: 'dragBegin'}, {type: 'dragEnd', flingExpected: true}, {type: 'momentumBegin'}]);
     expect(state.gesture).toBe('flinging');
     expect(run([{type: 'momentumEnd', now: 1500}], state).state.gesture).toBe('none');
   });
 
-  it('treats momentum long after a drag as programmatic (Android scrollToEnd)', () => {
+  it('treats momentum after a drag released at rest as programmatic (Android scrollToEnd)', () => {
+    const {state} = run([{type: 'dragBegin'}, {type: 'dragEnd', flingExpected: false}, {type: 'momentumBegin'}]);
+    expect(state.gesture).toBe('none');
+  });
+
+  it('only counts the first momentum after a drag as the user', () => {
     const {state} = run([
       {type: 'dragBegin'},
-      {type: 'dragEnd', now: 1000},
-      {type: 'momentumBegin', now: 1000 + FLING_AFTER_DRAG_MS + 1},
+      {type: 'dragEnd', flingExpected: true},
+      {type: 'momentumBegin'},
+      {type: 'momentumEnd', now: 1500},
+      {type: 'momentumBegin'},
     ]);
+    expect(state.gesture).toBe('none');
+  });
+
+  it('treats momentum from our own animated scroll as programmatic, even after a release with velocity', () => {
+    // Android: a drag released below the fling threshold reports velocity but no momentum follows.
+    const {state} = run(
+      [
+        {type: 'dragBegin'},
+        {type: 'dragEnd', flingExpected: true},
+        {type: 'buttonPress', edge: 'end', now: 1000},
+        {type: 'momentumBegin'},
+      ],
+      settledAtEnd,
+    );
+    expect(state.flingExpected).toBe(false);
     expect(state.gesture).toBe('none');
   });
 });

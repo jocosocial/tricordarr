@@ -15,7 +15,8 @@
  * - `gesture`: `dragging` or `flinging` while the user scrolls. A user scroll always wins: a drag
  *   cancels pending re-pins and closes any end pin, and no re-pin starts until the gesture ends.
  *   Android also fires momentum events for programmatic animated scrolls (scrollToEnd), so momentum
- *   only counts as the user's fling when it starts right after a drag ends (`isUserFling`).
+ *   only counts as the user's fling when the drag before it ended with velocity (`flingExpected`)
+ *   and no animated scroll of ours has started since.
  * - `following`: the user is within a threshold of the bottom, as of the last scroll event. Gates
  *   the resize re-pin.
  * - `endPin`: until `until` (ms), content growth while the list sits at the end re-pins the end.
@@ -30,12 +31,7 @@
  */
 
 import {END_PIN_MS} from '#src/Libraries/ChatList/Constants';
-import {
-  hasOutgrownViewport,
-  isUserFling,
-  shouldRepinOnContentGrowth,
-  shouldRepinOnResize,
-} from '#src/Libraries/ChatList/Pinning';
+import {hasOutgrownViewport, shouldRepinOnContentGrowth, shouldRepinOnResize} from '#src/Libraries/ChatList/Pinning';
 import {
   ButtonScrollEdge,
   ButtonScrollTarget,
@@ -59,8 +55,11 @@ export interface ScrollArbiterState {
   buttonTarget: ButtonScrollTarget | null;
   /** Height of the list's container, from its onLayout. Null before the first layout. */
   containerHeight: number | null;
-  /** When the last drag ended (ms), to tell a fling from programmatic momentum. */
-  dragEndedAt: number;
+  /**
+   * The last drag ended with velocity, so the next momentum is the user's fling. Cleared when that
+   * momentum begins, by a new drag, and by any animated scroll of ours (whose momentum is not the user's).
+   */
+  flingExpected: boolean;
 }
 
 export const initialScrollArbiterState: ScrollArbiterState = {
@@ -71,7 +70,7 @@ export const initialScrollArbiterState: ScrollArbiterState = {
   pendingFillPin: false,
   buttonTarget: null,
   containerHeight: null,
-  dragEndedAt: 0,
+  flingExpected: false,
 };
 
 export type ArbiterEvent =
@@ -87,8 +86,10 @@ export type ArbiterEvent =
   /** The content height changed. `metrics` are the scroll metrics from before the change. */
   | {type: 'contentSize'; height: number; metrics: ScrollMetrics | null; now: number}
   | {type: 'dragBegin'}
-  | {type: 'dragEnd'; now: number}
-  | {type: 'momentumBegin'; now: number}
+  /** A user drag ended; `flingExpected` when it ended with velocity, so momentum will follow. */
+  | {type: 'dragEnd'; flingExpected: boolean}
+  | {type: 'momentumBegin'}
+  /** Momentum ended. `now` times a button end pin reopened by a resend. */
   | {type: 'momentumEnd'; now: number}
   /** Any touch on the list, which hands it back to the user. */
   | {type: 'touchStart'}
@@ -126,6 +127,12 @@ const scrollToButtonEdge = (state: ScrollArbiterState, edge: ButtonScrollEdge, n
       }
     : {state, commands: [{type: 'scrollToOffset', offset: 0, animated: true}]};
 
+/** Whether a command starts an animated scroll, whose momentum events are ours and not the user's. */
+const isAnimatedScroll = (command: ScrollCommand) =>
+  command.type === 'followOwnItem' ||
+  command.type === 'scrollToIndex' ||
+  ((command.type === 'scrollToEnd' || command.type === 'scrollToOffset') && command.animated);
+
 /**
  * Applies one event to the arbiter state and returns the scroll commands it calls for. Pure.
  *
@@ -133,6 +140,19 @@ const scrollToButtonEdge = (state: ScrollArbiterState, edge: ButtonScrollEdge, n
  * @param event What happened.
  */
 export const reduceScrollArbiter = (state: ScrollArbiterState, event: ArbiterEvent): ScrollArbiterStep => {
+  const step = reduceEvent(state, event);
+  return step.state.flingExpected && step.commands.some(isAnimatedScroll)
+    ? {...step, state: {...step.state, flingExpected: false}}
+    : step;
+};
+
+/**
+ * The per-event part of `reduceScrollArbiter`.
+ *
+ * @param state Current state.
+ * @param event What happened.
+ */
+const reduceEvent = (state: ScrollArbiterState, event: ArbiterEvent): ScrollArbiterStep => {
   const ready = state.phase === 'settled';
   const userScrolling = state.gesture !== 'none';
   switch (event.type) {
@@ -187,16 +207,16 @@ export const reduceScrollArbiter = (state: ScrollArbiterState, event: ArbiterEve
 
     case 'dragBegin':
       return {
-        state: {...state, gesture: 'dragging', endPin: null},
+        state: {...state, gesture: 'dragging', endPin: null, flingExpected: false},
         commands: [{type: 'cancelPending'}],
       };
 
     case 'dragEnd':
-      return {state: {...state, gesture: 'none', dragEndedAt: event.now}, commands: []};
+      return {state: {...state, gesture: 'none', flingExpected: event.flingExpected}, commands: []};
 
     case 'momentumBegin':
-      return isUserFling(event.now, state.dragEndedAt)
-        ? {state: {...state, gesture: 'flinging'}, commands: []}
+      return state.flingExpected
+        ? {state: {...state, gesture: 'flinging', flingExpected: false}, commands: []}
         : {state, commands: []};
 
     case 'momentumEnd': {
@@ -206,7 +226,7 @@ export const reduceScrollArbiter = (state: ScrollArbiterState, event: ArbiterEve
         return {state: settled, commands: []};
       }
       // A button scroll that ended short of its edge (the target clears once it lands) was cut short.
-      if (getButtonRetryAction(target, event.now) === 'clear') {
+      if (getButtonRetryAction(target) === 'clear') {
         return {state: {...settled, buttonTarget: null}, commands: []};
       }
       return scrollToButtonEdge(
@@ -231,11 +251,7 @@ export const reduceScrollArbiter = (state: ScrollArbiterState, event: ArbiterEve
     }
 
     case 'buttonPress':
-      return scrollToButtonEdge(
-        {...state, buttonTarget: createButtonScrollTarget(event.edge, event.now)},
-        event.edge,
-        event.now,
-      );
+      return scrollToButtonEdge({...state, buttonTarget: createButtonScrollTarget(event.edge)}, event.edge, event.now);
 
     case 'dividerPress':
       return {state, commands: [{type: 'scrollToIndex', index: event.index, viewPosition: event.viewPosition}]};

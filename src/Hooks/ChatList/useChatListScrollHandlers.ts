@@ -95,14 +95,20 @@ export const useChatListScrollHandlers = ({
   /** A user drag has started: the arbiter stops all re-pins. */
   const onScrollBeginDrag = useCallback(() => arbiter.dispatch({type: 'dragBegin'}), [arbiter]);
 
-  /** A user drag has ended; a fling may follow (see onMomentumScrollBegin). */
-  const onScrollEndDrag = useCallback(() => arbiter.dispatch({type: 'dragEnd', now: Date.now()}), [arbiter]);
-
-  /** Momentum that starts as a drag ends is the user's fling; any other momentum is programmatic. */
-  const onMomentumScrollBegin = useCallback(
-    () => arbiter.dispatch({type: 'momentumBegin', now: Date.now()}),
+  /**
+   * A user drag has ended. A drag released with velocity is followed by the user's fling, so the
+   * momentum after it is the user's (see onMomentumScrollBegin).
+   */
+  const onScrollEndDrag = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const velocity = event.nativeEvent.velocity?.y ?? 0;
+      arbiter.dispatch({type: 'dragEnd', flingExpected: velocity !== 0});
+    },
     [arbiter],
   );
+
+  /** Momentum after a drag released with velocity is the user's fling; any other momentum is programmatic. */
+  const onMomentumScrollBegin = useCallback(() => arbiter.dispatch({type: 'momentumBegin'}), [arbiter]);
 
   /** A fling (or programmatic momentum) has ended. The arbiter resends a button scroll that ended short. */
   const onMomentumScrollEnd = useCallback(() => arbiter.dispatch({type: 'momentumEnd', now: Date.now()}), [arbiter]);

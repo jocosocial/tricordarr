@@ -12,7 +12,8 @@
  * For an end anchor, `startRenderingFromBottom` lands on the top of the last item, which is not the
  * end when that item is taller than the viewport (a gallery). The same nudges take it there.
  *
- * The check is bounded by `READY_MAX_FRAMES`, so the parent's overlay can never stick.
+ * The check is bounded by a watchdog (`READY_WATCHDOG_FRAMES` and `READY_WATCHDOG_MS`), so the
+ * parent's overlay can never stick.
  */
 
 import {
@@ -21,7 +22,8 @@ import {
   ANCHOR_MAX_CORRECTIONS,
   ANCHOR_SETTLED_FRAMES,
   ANCHOR_TOLERANCE,
-  READY_MAX_FRAMES,
+  READY_WATCHDOG_FRAMES,
+  READY_WATCHDOG_MS,
 } from '#src/Libraries/ChatList/Constants';
 
 /** How far the scroll offset is from the anchor's target offset, and that target. */
@@ -118,6 +120,8 @@ export interface ReadyCheckStep {
   state: ReadyCheckState;
   /** Reveal the list now. */
   ready: boolean;
+  /** The reveal is the watchdog's, not a settled anchor. Worth a warning. */
+  watchdog: boolean;
   /** Issue a non-animated `scrollToOffset` to this offset. */
   scrollTo?: number;
 }
@@ -130,12 +134,18 @@ export interface ReadyCheckStep {
  * The anchor is positioned after `ANCHOR_SETTLED_FRAMES` consecutive in-tolerance measurements. When
  * a correction did not change the measured error, the list cannot get any closer (the end of the
  * content, or a measurement that does not track this scroll), so waiting for the fallback would only
- * delay the reveal. The list is revealed regardless after `READY_MAX_FRAMES`.
+ * delay the reveal. Otherwise the watchdog reveals the list once the check has run for both
+ * `READY_WATCHDOG_FRAMES` frames and `READY_WATCHDOG_MS` (see Constants.ts for why both).
  *
  * @param state Progress so far (start from `initialReadyCheckState`).
  * @param measure Measures the anchor's current error.
+ * @param elapsedMs Time since the check's first frame.
  */
-export const stepReadyCheck = (state: ReadyCheckState, measure: () => AnchorError | undefined): ReadyCheckStep => {
+export const stepReadyCheck = (
+  state: ReadyCheckState,
+  measure: () => AnchorError | undefined,
+  elapsedMs: number,
+): ReadyCheckStep => {
   const frames = state.frames + 1;
   let next: ReadyCheckState = {...state, frames};
   let positioned = false;
@@ -162,5 +172,6 @@ export const stepReadyCheck = (state: ReadyCheckState, measure: () => AnchorErro
       }
     }
   }
-  return {state: next, ready: positioned || frames >= READY_MAX_FRAMES, scrollTo};
+  const watchdog = !positioned && frames >= READY_WATCHDOG_FRAMES && elapsedMs >= READY_WATCHDOG_MS;
+  return {state: next, ready: positioned || watchdog, watchdog, scrollTo};
 };

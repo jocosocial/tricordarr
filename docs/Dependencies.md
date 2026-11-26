@@ -21,7 +21,7 @@ None!
 
 ## Local patches
 
-- **@shopify/flash-list** (pinned to exactly `2.3.3`, `patches/@shopify+flash-list+2.3.3.patch`): not an upstream backport. It changes prepend handling in FlashList's data-update path so that loading an older chat page does not move the viewport or remount the posts on screen (details in `docs/Code Notes.md`, "ChatList"). The new path is opt-in through `maintainVisibleContentPosition.anchorThroughDataUpdates`, which only `ChatList` passes; every other FlashList runs stock code. The version is pinned without a range because the patch edits 2.3.3 internals and a newer release would fail to apply or apply wrongly. To upgrade, re-port the patch to the new version and re-run the chat scenarios in `docs/Specifications/Bi-Directional Chat List.md` ("Scenario gate", especially 1, 2 and 7).
+- **@shopify/flash-list** (pinned to exactly `2.3.3`, `patches/@shopify+flash-list+2.3.3.patch`): not an upstream backport. It changes prepend handling in FlashList's data-update path so that loading an older chat page does not move the viewport or remount the posts on screen (details in `docs/ChatList/README.md`). The new path is opt-in through `maintainVisibleContentPosition.anchorThroughDataUpdates`, which only `ChatList` passes; every other FlashList runs stock code. The version is pinned without a range because the patch edits 2.3.3 internals and a newer release would fail to apply or apply wrongly. To upgrade, re-port the patch to the new version and re-run the chat scenarios in `docs/ChatList/README.md` ("Scenario gate", especially 1, 2 and 7).
 
 ## Upstream fixes carried as patches
 

@@ -9,11 +9,11 @@
  * On Android, an animated scroll is cancelled wherever it is when the native
  * maintainVisibleContentPosition shifts the offset (FlashList's correction as a cell measures or a
  * page arrives). Right after a fling that happens often, and the button then seemed only to stop the
- * fling. So a button press records its target edge, and a scroll that ends short of it is sent again
- * within a bounded window and retry count. A touch on the list clears the target.
+ * fling. So a button press records its target edge, and a scroll that ends short of it is sent again,
+ * up to a bounded retry count. A touch on the list clears the target.
  */
 
-import {AT_BOTTOM_EPSILON, BUTTON_SCROLL_MAX_RETRIES, BUTTON_SCROLL_WINDOW_MS} from '#src/Libraries/ChatList/Constants';
+import {AT_BOTTOM_EPSILON, BUTTON_SCROLL_MAX_RETRIES} from '#src/Libraries/ChatList/Constants';
 
 export type ScrollButtonDirection = 'up' | 'down' | null;
 
@@ -22,8 +22,6 @@ export type ButtonScrollEdge = 'top' | 'end';
 
 export interface ButtonScrollTarget {
   edge: ButtonScrollEdge;
-  /** Time (ms) after which a short landing is left alone. */
-  until: number;
   retries: number;
 }
 
@@ -111,23 +109,17 @@ export const hasReachedButtonEdge = (
  * A new target for a button press.
  *
  * @param edge The edge the button sends the list to.
- * @param now Current time (ms).
  */
-export const createButtonScrollTarget = (edge: ButtonScrollEdge, now: number): ButtonScrollTarget => ({
-  edge,
-  until: now + BUTTON_SCROLL_WINDOW_MS,
-  retries: 0,
-});
+export const createButtonScrollTarget = (edge: ButtonScrollEdge): ButtonScrollTarget => ({edge, retries: 0});
 
 /**
  * What to do when momentum ends while a button target is still set (the scroll ended short of its
- * edge): send it again, or give up once the window has passed or the retries are used up.
+ * edge): send it again, or give up once the retries are used up.
  *
  * @param target The pending target.
- * @param now Current time (ms).
  */
-export const getButtonRetryAction = (target: ButtonScrollTarget, now: number): 'retry' | 'clear' =>
-  now > target.until || target.retries >= BUTTON_SCROLL_MAX_RETRIES ? 'clear' : 'retry';
+export const getButtonRetryAction = (target: ButtonScrollTarget): 'retry' | 'clear' =>
+  target.retries >= BUTTON_SCROLL_MAX_RETRIES ? 'clear' : 'retry';
 
 /**
  * The edge the secondary button goes to: opposite the primary button's direction.

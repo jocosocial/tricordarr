@@ -14,7 +14,7 @@
  * arbiter (`ScrollArbiter.ts`), which holds the state they read and says how a gesture is tracked.
  */
 
-import {AT_BOTTOM_EPSILON, FLING_AFTER_DRAG_MS} from '#src/Libraries/ChatList/Constants';
+import {AT_BOTTOM_EPSILON} from '#src/Libraries/ChatList/Constants';
 import {getDistanceFromBottom, ScrollMetrics} from '#src/Libraries/ChatList/ScrollButtons';
 
 /**
@@ -78,12 +78,3 @@ export const shouldRepinOnResize = ({
   userScrolling: boolean;
   nearBottom: boolean;
 }) => previousHeight !== null && previousHeight !== height && ready && !userScrolling && nearBottom;
-
-/**
- * Whether momentum that is beginning is the user's fling (it started as a drag ended) rather than a
- * programmatic animated scroll.
- *
- * @param now Current time (ms).
- * @param dragEndedAt When the last drag ended (ms).
- */
-export const isUserFling = (now: number, dragEndedAt: number) => now - dragEndedAt <= FLING_AFTER_DRAG_MS;

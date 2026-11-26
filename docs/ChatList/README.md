@@ -1,11 +1,45 @@
-# Bi-Directional Chat List Investigation
+# ChatList
+
+`src/Components/Lists/ChatList.tsx` is the chat list for Seamail/LFG/Private Event chats and forum threads (FlashList v2, data oldest to newest), wrapped by `FezConversationListV2` and `ForumConversationListV2`.
+
+The component only wires FlashList up. Each challenge has a concern hook in `src/Hooks/ChatList/` (the refs, timers and effects) and a file in `src/Libraries/ChatList/` (pure decisions, unit tested in `__tests__/unit/TestChatList*.ts`). Each library file's header says what it compensates for:
+
+| Challenge | Hook | Library |
+|---|---|---|
+| Where the list opens | (component) | `InitialScroll.ts` |
+| Landing on the anchor before reveal | `useChatListReadyCheck` | `Anchor.ts` |
+| Scrolling to the user's own post | `useChatListOwnItemScroll` | `Pagination.ts` (`isEndAppend`) |
+| Floating scroll buttons | `useChatListScrollButtons` | `ScrollButtons.ts` |
+| Page fill without scroll events | `useChatListPageFill` | `Pagination.ts` |
+| Resize (keyboard) re-pins | `useChatListResizePin` | `Pinning.ts` |
+| Scroll, drag and momentum handling | `useChatListScrollHandlers` | `Pagination.ts` |
+| Who may scroll the list, and when | `useChatListScrollArbiter` | `ScrollArbiter.ts` (calls `Pinning.ts`) |
+
+The hooks never scroll the list themselves. They report events (scroll, drag, momentum, resize, button press, page fill, own post) to the scroll arbiter, a pure reducer in `ScrollArbiter.ts` whose state is the named modes (`phase` positioning/settled, the user's `gesture`, `following`, the `endPin` window, the pending fill pin and the button target). It returns scroll commands, and `useChatListScrollArbiter` is the only code that runs them and owns their frames. A new scroll goes through a new event and command there, not a `listRef.current.scrollTo*` call in a hook.
+
+Tuning constants live in `src/Libraries/ChatList/Constants.ts`. Timing is not correctness there: each constant is a spatial threshold, a bound (retry count, pixel tolerance), or a watchdog in milliseconds that logs a warning when it fires. A watchdog warning during a device pass is a bug to chase, not a pass. Don't add a delay or frame count something has to wait out; listen for the event it stands in for. Things that are easy to break:
+
+- `keyExtractor` is required: FlashList's maintain-visible-content-position is a silent no-op without it, and loading older pages would jump the viewport.
+- The list only honors its initial position at mount, so screens freeze the initial scroll index and remount via `key` when it becomes known (`FezChatScreen`, `ForumThreadScreenBase`; index math in `src/Libraries/ChatList/InitialScroll.ts`).
+- The parent shows an overlay until `onReadyToShow` fires. It always fires (position reached, empty list, or the ready watchdog, which logs a warning; it needs both `READY_WATCHDOG_FRAMES` frames and `READY_WATCHDOG_MS`, because frames alone shrink on a 120Hz display and wall-clock time alone runs out while the JS thread is busy, before the check has measured anything). For an index anchor the ready check also corrects FlashList's estimate-based `initialScrollIndex` landing with plain `scrollToOffset` nudges, and for an end anchor it does the same when the last item is taller than the viewport (`startRenderingFromBottom` only reaches that item's top); don't swap that for `scrollToIndex`, which raced the initial scroll and overshot.
+- The list scrolls to the user's own new posts itself (`isOwnItem`); screens must not call `scrollToEnd` after a send.
+- Keyboard: the local `KeyboardAvoidingView` resizes the list. `ChatList` re-pins the bottom on any container resize while the user was near the bottom. There are no keyboard listeners: Android used to land one post short after the keyboard closed, which took delayed re-pins after `keyboardDidShow/Hide`, but that was Paper's tab bar resizing the screen again after the keyboard settled, fixed by `keyboardHidesNavigationBar={false}` (see "Keyboard Avoidance" in [Code Notes](<../Code Notes.md>)). A user drag (`onScrollBeginDrag`) cancels any pending re-pin and suppresses new ones until the drag and its fling end. Momentum only counts as the user's when the drag before it was released with velocity (`onScrollEndDrag`'s `velocity`) and no animated scroll of ours started since: Android fires the momentum events for programmatic animated scrolls too, and treating those as the user cancelled the scroll-to-bottom end pin, so scrolling up right after closing the keyboard is not pulled back down. Do not grow this into a multi-frame loop.
+- Nothing in a loaded cell may change height when an older page is prepended. FlashList holds the top of the first visible cell still, so a change inside that cell moves the text below it. Fez day dividers are in the separator (rendered in the earlier post's cell) for this reason: in the later post, the oldest loaded post's divider came and went with each page. They also show whenever the chat has unloaded pages, because `postDayCount` only covers loaded posts and crossing its threshold added every divider at once.
+- `patches/@shopify+flash-list+2.3.3.patch`: after correcting for a data change, FlashList picked a new anchor in the same pass. With the "Loading previous..." header on screen that was a just-prepended post with an estimated height, and its measurement error moved the content (up to ~65dp). The patch keeps the old anchor until the next pass. The second half of the patch keeps the cells on screen mounted through a prepend: FlashList picked the rows to render from the pre-correction offset, handed the visible posts' cells to the new posts, and so remounted every visible post (images went back to their spinner, galleries lost their sideways scroll). It also kept measured heights by index, so each belonged to the wrong post. The patch moves the measured layouts with the items and keeps the tracked offset on the anchor until the correction lands. Only lists that pass `maintainVisibleContentPosition.anchorThroughDataUpdates` get this (only `ChatList`); every other FlashList keeps stock behaviour. Measured layouts only move with their items when the anchor shifted by exactly the number of added items (a prepend at the head); any other update falls back to FlashList's own relayout. FlashList is pinned to the patched version; see `docs/Dependencies.md` before upgrading.
+- Page loading must not depend on scroll events alone. A first page too short to scroll (a few posts at a small page size) gets none, and `startRenderingFromBottom` leaves FlashList's tracked offset outside its start threshold, so `onStartReached` never fires. `ChatList` checks the position once ready and after each page, re-checking with a doubling delay (capped at 30s) in case a load fails or a refetch cancels it. The bottom alignment margin of such a list disappears as it fills, so the end is pinned through that fill. The check uses FlashList's tracked offset and never the last scroll event: FlashList swallows the scroll event of its own prepend correction, so that event still says the list is at the top, and going by it loaded every older page in a row (and left the scroll-to-top button disabled). That button only greys out at the real beginning: while an older page exists it stays enabled, or it would flick off and on as each page loads.
+- No spacer in `ListFooterComponent`: FlashList leaves the footer out of its scroll extent (`getMaxScrollOffset`), so `scrollToEnd` from far away landed short and then hopped the footer's height. `ChatList` puts the gap below the last post inside the last cell instead. Horizontal padding goes in `contentContainerStyle`, not `style`, so the scroll indicator stays on the screen edge.
+- On Android, an animated `scrollTo` is cancelled wherever it is when the native `maintainVisibleContentPosition` shifts the offset (`scrollToPreservingMomentum` cancels the fling animator). FlashList makes that shift whenever a cell above the viewport measures or a page arrives, which is common right after a fling, so the scroll-to-top button often just stopped the fling. The scroll buttons resend a scroll that ends short of its edge (on momentum end, up to 3 times within 2s); a touch on the list drops the retry.
+- `START_RENDERING_FROM_BOTTOM` in `src/Libraries/ChatList/Constants.ts` is the one-line switch for the fallback that opens at the last item index instead (short chats then top-align).
+- Do not add Reanimated `entering`/`exiting`/`layout` animations to chat items (Shopify/flash-list#2052).
+
+## Bi-Directional Chat List Investigation
 
 Report for [#575 Re-investigate bi-directional chat list](https://github.com/jocosocial/tricordarr/issues/575)
 and [#567 Explore Sunsetting LegendList](https://github.com/jocosocial/tricordarr/issues/567).
 Written 2026-10-14 against `cohoe/re-investigate-bi-directional-chat-list`. Reviewed 2026-11-17 after
 merging `main` through `fae23856` (#671): line references, #582 status, and three design points corrected.
 
-## TL;DR
+### TL;DR
 
 - The only chat list still wired to screens is `ConversationListV2` (LegendList) via `FezConversationListV2`
   and `ForumConversationListV2`. `ConversationList` (V1) and `ChatFlatList` are dead code. `ForumPostList`
@@ -28,7 +62,7 @@ merging `main` through `fae23856` (#671): line references, #582 status, and thre
   documented fallback. Do not use raw `FlatList` with `disableVirtualization` for Shutternaut-sized threads.
   Details in [Recommendation](#recommendation).
 
-## Environment
+### Environment
 
 | Package | package.json | Installed | Notes |
 |---|---|---|---|
@@ -41,9 +75,9 @@ merging `main` through `fae23856` (#671): line references, #582 status, and thre
 Bluesky `social-app` at `a7817e089` (2026-10-14): RN 0.86.3, no FlashList or LegendList, keyboard-controller
 1.22.7, reanimated 4.7.1 (patched).
 
-## Current implementations
+### Current implementations
 
-### Component inventory
+#### Component inventory
 
 | File | Engine | Status | Consumers |
 |---|---|---|---|
@@ -61,7 +95,7 @@ PR #325 (2025-10, `54713e49`) when LegendList arrived. V2 lists landed 2026-02-1
 #607 per-screen keyboard avoidance, #610 load-previous scroll bug, #583 up and down scroll buttons together
 (`8b5bbddc`, which also had to touch the dead `ConversationList`).
 
-### `ConversationListV2` anatomy
+#### `ConversationListV2` anatomy
 
 What it does, and which parts exist only because of LegendList:
 
@@ -78,7 +112,7 @@ What it does, and which parts exist only because of LegendList:
 | Recycled cell staleness | `extraData={\`${isFullyRead}-${newDividerIndex}\`}` in both wrappers (#595) | Yes (`recycleItems`). FlashList recycles too, so some form of `extraData` remains necessary |
 | iPad `scrollsToTop={false}` | documented in `Code Notes.md` | No (keep) |
 
-### Domain wrappers
+#### Domain wrappers
 
 `FezConversationListV2` owns the read-state model: `effectiveReadCount = initialReadCount ?? members.readCount`,
 a one-way `alignAtEndRef` (true → false only, "or the list layout will jump"), a synchronously re-seeded
@@ -92,7 +126,7 @@ a one-way `alignAtEndRef` (true → false only, "or the list layout will jump"),
 Both wrappers are engine-agnostic except for the `LegendListRenderItemProps` import in `ChatFlatList` (dead)
 and the `TConversationListV2Ref = LegendListRef` type.
 
-### Consumer screens
+#### Consumer screens
 
 `FezChatScreen` (`src/Screens/Fez/FezChatScreen.tsx`):
 - `getInitialScrollIndex` (`:58-68`): `length-1` when read, else `clamp(readCount - paginator.start)`.
@@ -116,7 +150,7 @@ and the `TConversationListV2Ref = LegendListRef` type.
 - No socket; other users' posts arrive only via refetch.
 - `fullRefresh` also calls `fetchNextPage()` because "the server may report more posts than we have pages for".
 
-### Pagination & server contract
+#### Pagination & server contract
 
 - `useTokenAuthPaginationQuery`, `limit = defaultPageSize = 50`, `start` omitted on first fetch so the server
   picks the window.
@@ -132,7 +166,7 @@ and the `TConversationListV2Ref = LegendListRef` type.
   `hasPreviousPage` never goes false, and the list refetches an empty page forever.
 - `usePagination` guards on the previous render's `isFetching*` flags only; no in-flight ref.
 
-### Keyboard
+#### Keyboard
 
 Per `docs/Code Notes.md` and PR #607: no global KAV; chat screens wrap list and `ContentPostForm` as flex
 siblings in a local `KeyboardAvoidingView` (`behavior='padding'`, `useKeyboardVerticalOffset`).
@@ -141,9 +175,9 @@ composer above the bottom tab bar (translateY assumes flush-with-screen-bottom).
 because its chat runs with `minimalShell` (no tab bar). `AppView.tsx:35-36` still has a stale comment
 claiming chat screens use `KeyboardAwareLegendList`.
 
-## Known issues
+### Known issues
 
-### Fixed / closed
+#### Fixed / closed
 
 | Issue | Summary | Resolution |
 |---|---|---|
@@ -164,7 +198,7 @@ claiming chat screens use `KeyboardAwareLegendList`.
 | [#614](https://github.com/jocosocial/tricordarr/issues/614) | markRead without full refetch | mutation added |
 | [#582](https://github.com/jocosocial/tricordarr/issues/582) | Both up and down scroll buttons on bidirectional lists | #583 `FloatingScrollButtonsView` in `ConversationListV2` (`8b5bbddc`) |
 
-### Open
+#### Open
 
 | Issue | Relevance |
 |---|---|
@@ -173,7 +207,7 @@ claiming chat screens use `KeyboardAwareLegendList`.
 | [#506](https://github.com/jocosocial/tricordarr/issues/506) | Forum images glitchy, "greatly improved by RN86+FlashList, not solved". Image height settling after render is the classic MVCP stressor |
 | [#530](https://github.com/jocosocial/tricordarr/issues/530), [#556](https://github.com/jocosocial/tricordarr/issues/556) | Unified LFG list, tablet — indirect |
 
-### Sharp edges documented in code comments
+#### Sharp edges documented in code comments
 
 - `ConversationListV2.tsx:248` LegendList `maintainScrollAtEnd` unreliable for appends.
 - `ConversationListV2.tsx:179-200` keyboard offset not restored by MVCP; Android KAV animates over frames.
@@ -189,14 +223,14 @@ claiming chat screens use `KeyboardAwareLegendList`.
 - `useFezCacheReducer.ts:883` `TODO: derive the intended data from the socket payload` (`invalidateFez` is a blunt refetch).
 - `AppView.tsx:35-36` stale keyboard comment.
 
-### Test coverage
+#### Test coverage
 
 Only `tests/UnreadCounts.test.ts` touches this area. No tests for `usePagination`, `getPrevious/NextPageParam`,
 cache reducers, `getInitialScrollIndex`, or any list component. Maestro `ForumPostReply.yaml` opens a thread
 but does not scroll. The `conversationListScroll-button` and `conversationListSecondaryScroll-button` testIDs are unreferenced. `docs/Testing.md`: CI runs
 typecheck and lint only.
 
-## Requirements
+### Requirements
 
 1. Long chats (Shutternaut-scale forums with many images; seamails with thousands of posts). Must virtualize.
 2. Start at bottom when fully read; start at first unread (New divider) otherwise; start at a given post
@@ -213,9 +247,9 @@ typecheck and lint only.
 9. Android and iOS parity; tablets.
 10. Drop `@legendapp/list`.
 
-## Options
+### Options
 
-### A. FlashList v2, non-inverted, MVCP `startRenderingFromBottom`
+#### A. FlashList v2, non-inverted, MVCP `startRenderingFromBottom`
 
 Data oldest→newest (as today). `maintainVisibleContentPosition={{startRenderingFromBottom: isFullyRead,
 autoscrollToBottomThreshold: followTail ? 0.2 : undefined, animateAutoScrollToBottom: true}}`,
@@ -259,7 +293,7 @@ header/footer semantics normal; same engine as the other 30 lists; ref APIs enab
 Cons: the P1 list above is real and mostly in exactly our scenarios; `startRenderingFromBottom` + short data
 is the weakest spot; `onStartReached` bug needs a client-side nudge as a guard.
 
-### B. FlashList v2, `inverted`
+#### B. FlashList v2, `inverted`
 
 Data newest→oldest. Offset 0 is the bottom, so start-at-bottom is free and needs no MVCP bottom logic.
 `onEndReached` = older, `onStartReached` = newer. `ListFooterComponent` is the visual top.
@@ -276,7 +310,7 @@ Pros: bottom start is trivially correct; short-content bottom alignment is free;
 possible later (#535). Cons: Android scrollbar and a11y regressions today; every index/day-divider computation
 in both wrappers reverses; separators broken upstream; we'd be the odd list out.
 
-### C. Raw `FlatList`, Bluesky style
+#### C. Raw `FlatList`, Bluesky style
 
 Non-inverted `Animated.FlatList`, `maintainVisibleContentPosition={{minIndexForVisible: 0}}`,
 `disableVirtualization`, `removeClippedSubviews={false}`, `initialNumToRender` ≥ page size, opacity-0 until
@@ -297,12 +331,12 @@ virtualization on, FlatList's blank-cell and `scrollToIndex`-without-`getItemLay
 `autoscrollToBottomThreshold`, so tail-follow is manual (which Bluesky does anyway); introduces a second list
 engine in the app.
 
-### D. Keep LegendList
+#### D. Keep LegendList
 
 Zero migration cost, but the stabilization/keyboard/extraData scaffolding stays, `onLoad` isn't a positioning
 signal, no `getLayout`, and it's a second engine. Rejected per #567.
 
-### Requirement matrix
+#### Requirement matrix
 
 | Req | A FlashList non-inverted | B FlashList inverted | C FlatList (Bluesky) | D LegendList |
 |---|---|---|---|---|
@@ -318,7 +352,7 @@ signal, no `getLayout`, and it's a second engine. Rejected per #567.
 | 9 Android/a11y | ✓ | ✗ left scrollbar, TalkBack reversed | ✓ | ✓ |
 | 10 Drop LegendList | ✓ | ✓ | ✓ | ✗ |
 
-## Recommendation
+### Recommendation
 
 **Primary: Option A.** Build `src/Components/Lists/ChatList.tsx` on FlashList v2, non-inverted, keeping the
 `ConversationListV2` prop contract so `FezConversationListV2`, `ForumConversationListV2`, `FezChatScreen`, and
@@ -328,7 +362,7 @@ from the parent (what `ForumThreadScreenBase` already does), and top-align chats
 **Last resort: Option B**, because it reverses every index and day-divider computation in both wrappers.
 Treat Bluesky as a behaviors checklist, not an engine choice.
 
-### `ChatList` design
+#### `ChatList` design
 
 Props: same as `ConversationListV2` minus `alignItemsAtEnd`/`maintainScrollAtEnd` (replaced by
 `anchor: 'end' | {index: number}`), plus `followTail?: boolean` (default `anchor === 'end'`),
@@ -385,7 +419,7 @@ Internals:
 - Avoid Reanimated layout animations on items (#2052) — check `FezPostListItem` / `ForumPostListItem` and
   `BaseSwipeable` for `entering`/`layout` props.
 
-### Scenario gate for the prototype
+#### Scenario gate for the prototype
 
 Run on an iOS simulator and an Android emulator before replacing V2:
 
@@ -406,7 +440,7 @@ Run on an iOS simulator and an Android emulator before replacing V2:
    `Pagination.ts` fix).
 9. Tablet.
 
-### Migration steps
+#### Migration steps
 
 1. Upgrade `@shopify/flash-list` to 2.3.3 (one fix, low risk). Note `Known Issues.md` expo-doctor mismatch.
 2. Delete `ConversationList.tsx` and `Fez/ChatFlatList.tsx` (dead).
@@ -420,7 +454,7 @@ Run on an iOS simulator and an Android emulator before replacing V2:
 8. Add unit tests for `getInitialScrollIndex`, `getPrevious/NextPageParam`, and a Maestro flow that opens a
    seamail and asserts the last post is visible.
 
-### Adjacent findings (not blocking, worth tickets)
+#### Adjacent findings (not blocking, worth tickets)
 
 - `getPreviousPageParam` strands posts for `?startPost=` (above).
 - `ios/Podfile.lock` picks up a `hermes-engine` checksum change on `pod install` after the #671 merge.
@@ -431,7 +465,7 @@ Run on an iOS simulator and an Android emulator before replacing V2:
 - `AppFlashList` lacks `scrollsToTop={false}` (iPad header-tap issue documented in Code Notes).
 - `docs/Testing.md` reports 5 unit tests failing on clean checkout.
 
-## Sources
+### Sources
 
 - Tricordarr: files cited inline; `gh issue view` for #112, #254, #281, #332, #359, #365, #368, #369, #372,
   #420, #421, #500, #506, #535, #567, #575, #582, #614; PRs #325, #333, #427, #583, #595, #607, #610.

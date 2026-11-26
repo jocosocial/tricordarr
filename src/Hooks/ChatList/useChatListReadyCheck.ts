@@ -26,7 +26,7 @@ interface UseChatListReadyCheckProps<TItem> {
 
 /**
  * Lands ChatList on its anchor and reveals it: `onReadyToShow` fires once the initial position holds,
- * or after a bounded number of frames so the parent's overlay can never stick. Why the position needs
+ * or when its watchdog gives up so the parent's overlay can never stick. Why the position needs
  * correcting at all is explained in `src/Libraries/ChatList/Anchor.ts`.
  *
  * Returns `ready` (state, for effects that must wait for the reveal) and the `onLoad` to hand FlashList.
@@ -58,18 +58,21 @@ export const useChatListReadyCheck = <TItem>({
     onReadyToShowRef.current = onReadyToShow;
   });
 
-  // Every frame started here is cancelled on unmount. Parent screens remount the list via `key`, and
-  // a callback from a replaced instance must never reveal the new one early.
-  useEffect(() => {
-    return () => {
-      if (readyFrameRef.current !== null) {
-        cancelAnimationFrame(readyFrameRef.current);
-      }
-    };
+  /** Stops the per-frame check. */
+  const stopReadyCheck = useCallback(() => {
+    if (readyFrameRef.current !== null) {
+      cancelAnimationFrame(readyFrameRef.current);
+      readyFrameRef.current = null;
+    }
   }, []);
+
+  // Every frame started here is cancelled on unmount. Parent screens remount the list via
+  // `key`, and a callback from a replaced instance must never reveal the new one early.
+  useEffect(() => stopReadyCheck, [stopReadyCheck]);
 
   /** Fires `onReadyToShow` at most once. */
   const fireReadyToShow = useCallback(() => {
+    stopReadyCheck();
     if (arbiter.isReady()) {
       return;
     }
@@ -77,7 +80,7 @@ export const useChatListReadyCheck = <TItem>({
     setReady(true);
     logger.debug('Firing onReadyToShow');
     onReadyToShowRef.current?.();
-  }, [arbiter]);
+  }, [arbiter, stopReadyCheck]);
 
   /**
    * Measures how far (in pixels) the current scroll offset is from the anchor's target offset (see
@@ -113,24 +116,39 @@ export const useChatListReadyCheck = <TItem>({
   );
 
   /**
-   * Starts the per-frame check that reveals the list once the initial scroll has landed. The
-   * decisions are in `stepReadyCheck` (`src/Libraries/ChatList/Anchor.ts`).
+   * Starts the per-frame check that reveals the list once the initial scroll has landed, or when its
+   * watchdog gives up. The decisions are in `stepReadyCheck` (`src/Libraries/ChatList/Anchor.ts`).
+   * A watchdog reveal means the anchor never held still and is logged as a warning, so a device
+   * pass shows it.
    */
   const startReadyCheck = useCallback(() => {
+    stopReadyCheck();
     let state: ReadyCheckState = initialReadyCheckState;
+    let firstFrameAt: number | undefined;
     const tick = () => {
       readyFrameRef.current = null;
-      const step = stepReadyCheck(state, () =>
-        getAnchorError(
-          anchorIndex === undefined
-            ? undefined
-            : resolveAnchorIndex(dataRef.current, keyExtractor, anchorKey, anchorIndex),
-        ),
+      const now = Date.now();
+      firstFrameAt ??= now;
+      const step = stepReadyCheck(
+        state,
+        () =>
+          getAnchorError(
+            anchorIndex === undefined
+              ? undefined
+              : resolveAnchorIndex(dataRef.current, keyExtractor, anchorKey, anchorIndex),
+          ),
+        now - firstFrameAt,
       );
       state = step.state;
       if (step.scrollTo !== undefined) {
         logger.debug(`Anchor correction ${state.corrections}: off by ${Math.round(state.lastError ?? 0)}px`);
         arbiter.dispatch({type: 'anchorCorrection', offset: step.scrollTo});
+      }
+      if (step.watchdog) {
+        logger.warn(
+          `Ready watchdog fired after ${state.frames} frames and ${now - firstFrameAt}ms: ` +
+            `${state.corrections} corrections, last error ${Math.round(state.lastError ?? 0)}px`,
+        );
       }
       if (step.ready) {
         fireReadyToShow();
@@ -139,7 +157,7 @@ export const useChatListReadyCheck = <TItem>({
       }
     };
     readyFrameRef.current = requestAnimationFrame(tick);
-  }, [anchorIndex, anchorKey, arbiter, getAnchorError, keyExtractor, fireReadyToShow]);
+  }, [anchorIndex, anchorKey, arbiter, getAnchorError, keyExtractor, fireReadyToShow, stopReadyCheck]);
 
   /**
    * FlashList fires `onLoad` once after first layout. That is not "initial scroll done", so it only

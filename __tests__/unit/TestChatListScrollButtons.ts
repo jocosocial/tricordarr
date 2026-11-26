@@ -1,4 +1,4 @@
-import {BUTTON_SCROLL_MAX_RETRIES, BUTTON_SCROLL_WINDOW_MS} from '#src/Libraries/ChatList/Constants';
+import {BUTTON_SCROLL_MAX_RETRIES} from '#src/Libraries/ChatList/Constants';
 import {
   createButtonScrollTarget,
   getButtonRetryAction,
@@ -52,19 +52,13 @@ describe('hasReachedButtonEdge', () => {
 });
 
 describe('getButtonRetryAction', () => {
-  it('retries within the window and retry budget', () => {
-    const target = createButtonScrollTarget('end', 1000);
-    expect(getButtonRetryAction(target, 1000 + BUTTON_SCROLL_WINDOW_MS)).toBe('retry');
-  });
-
-  it('clears after the window', () => {
-    const target = createButtonScrollTarget('end', 1000);
-    expect(getButtonRetryAction(target, 1001 + BUTTON_SCROLL_WINDOW_MS)).toBe('clear');
+  it('retries within the retry budget', () => {
+    expect(getButtonRetryAction(createButtonScrollTarget('end'))).toBe('retry');
   });
 
   it('clears once the retries are used up', () => {
-    const target = {...createButtonScrollTarget('top', 1000), retries: BUTTON_SCROLL_MAX_RETRIES};
-    expect(getButtonRetryAction(target, 1000)).toBe('clear');
+    const target = {...createButtonScrollTarget('top'), retries: BUTTON_SCROLL_MAX_RETRIES};
+    expect(getButtonRetryAction(target)).toBe('clear');
   });
 });
 

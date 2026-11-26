@@ -1,10 +1,4 @@
-import {FLING_AFTER_DRAG_MS} from '#src/Libraries/ChatList/Constants';
-import {
-  hasOutgrownViewport,
-  isUserFling,
-  shouldRepinOnContentGrowth,
-  shouldRepinOnResize,
-} from '#src/Libraries/ChatList/Pinning';
+import {hasOutgrownViewport, shouldRepinOnContentGrowth, shouldRepinOnResize} from '#src/Libraries/ChatList/Pinning';
 
 describe('shouldRepinOnContentGrowth', () => {
   // At the end: 1500 - 500 - 1000 = 0 from the bottom.
@@ -56,12 +50,5 @@ describe('shouldRepinOnResize', () => {
     expect(shouldRepinOnResize({...base, ready: false})).toBe(false);
     expect(shouldRepinOnResize({...base, userScrolling: true})).toBe(false);
     expect(shouldRepinOnResize({...base, nearBottom: false})).toBe(false);
-  });
-});
-
-describe('isUserFling', () => {
-  it('counts momentum right after a drag as the user', () => {
-    expect(isUserFling(1000 + FLING_AFTER_DRAG_MS, 1000)).toBe(true);
-    expect(isUserFling(1001 + FLING_AFTER_DRAG_MS, 1000)).toBe(false);
   });
 });
