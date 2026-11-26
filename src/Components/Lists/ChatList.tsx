@@ -14,7 +14,7 @@ import {useChatListScrollArbiter} from '#src/Hooks/ChatList/useChatListScrollArb
 import {useChatListScrollButtons} from '#src/Hooks/ChatList/useChatListScrollButtons';
 import {useChatListScrollHandlers} from '#src/Hooks/ChatList/useChatListScrollHandlers';
 import {AUTOSCROLL_TO_BOTTOM_THRESHOLD, START_RENDERING_FROM_BOTTOM} from '#src/Libraries/ChatList/Constants';
-import {getFallbackEndIndex, getInitialScrollIndex} from '#src/Libraries/ChatList/InitialScroll';
+import {clampAnchor, getFallbackEndIndex, getInitialScrollIndex} from '#src/Libraries/ChatList/InitialScroll';
 
 export type TChatListRef<TItem> = FlashListRef<TItem> | null;
 export type TChatListRefObject<TItem> = React.RefObject<TChatListRef<TItem>>;
@@ -108,7 +108,7 @@ export const ChatList = <TItem,>({
   handleLoadPrevious,
   hasNextPage,
   hasPreviousPage,
-  anchor,
+  anchor: requestedAnchor,
   followTail,
   isOwnItem,
   onReadyToShow,
@@ -118,6 +118,8 @@ export const ChatList = <TItem,>({
   const {commonStyles, styleDefaults} = useStyles();
   const {appConfig} = useConfig();
   const effectiveScrollButton = enableScrollButton ?? appConfig.userPreferences.showScrollButton;
+  // An index past the loaded items would crash FlashList's initial layout; see clampAnchor.
+  const anchor = clampAnchor(requestedAnchor, data.length);
   const anchorsToEnd = anchor === 'end';
   const anchorIndex = anchor === 'end' ? undefined : anchor.index;
   const effectiveFollowTail = followTail ?? anchorsToEnd;

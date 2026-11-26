@@ -65,6 +65,19 @@ export const getForumInitialScrollIndex = (
 };
 
 /**
+ * The anchor with its index clamped to the items present. FlashList's initial layout throws ("index
+ * out of bounds, not enough layouts") for an `initialScrollIndex` past the end of `data`, so an index
+ * computed from stale read state must never reach it. The screens prevent that (each chat or thread
+ * gets its own screen instance, see `getId` in `CommonScreens.tsx`); this keeps a wrong index to a
+ * wrong position instead of a crash.
+ *
+ * @param anchor The list's anchor.
+ * @param dataLength Number of items in the list.
+ */
+export const clampAnchor = (anchor: 'end' | {index: number}, dataLength: number): 'end' | {index: number} =>
+  anchor === 'end' ? anchor : {index: Math.max(0, Math.min(anchor.index, dataLength - 1))};
+
+/**
  * The `initialScrollIndex` ChatList hands FlashList for its anchor.
  *
  * An end anchor normally has none: `startRenderingFromBottom` opens it at the bottom. Only on the

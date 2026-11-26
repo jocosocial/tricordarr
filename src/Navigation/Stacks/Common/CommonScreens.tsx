@@ -205,6 +205,23 @@ import {UserSelfProfileScreen} from '#src/Screens/User/UserSelfProfileScreen';
 import {UsersListScreen} from '#src/Screens/User/UsersListScreen';
 
 /**
+ * Route identity for chat screens (seamail, LFG, private event), so each chat gets its own screen
+ * instance. Without `getId`, a `navigate` to the screen that is already focused only replaces its
+ * params, and React keeps the same component: a notification or link for another chat, tapped while
+ * in a chat, reused that screen, carrying its frozen initial scroll index, `readyToShow`, read count
+ * and socket de-dupe into the new chat (wrong position, or a FlashList crash when the stale index
+ * was past the new chat's first page). With `getId`, a different chat pushes a new route, and the
+ * same chat returns to its existing one.
+ */
+const getFezChatId = ({params}: {params?: {fezID: string}}) => params?.fezID;
+
+/** Route identity for forum threads; see `getFezChatId`. */
+const getForumThreadId = ({params}: {params?: {forumID: string}}) => params?.forumID;
+
+/** Route identity for a forum thread opened at a post; see `getFezChatId`. */
+const getForumThreadPostId = ({params}: {params?: {postID: string}}) => params?.postID;
+
+/**
  * The "Common Screens" pattern was adopted from
  * https://github.com/bluesky-social/social-app/blob/8a40916cd4b0c3e32d3515dd41c55e55695ef2e2/src/Navigation.tsx#L96
  *
@@ -446,6 +463,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.forumThreadScreen}
         component={ForumThreadScreen}
+        getId={getForumThreadId}
         options={{
           title: 'Forum',
         }}
@@ -463,6 +481,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.forumThreadPostScreen}
         component={ForumThreadPostScreen}
+        getId={getForumThreadPostId}
         options={{
           title: 'Forum',
         }}
@@ -520,6 +539,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.seamailChatScreen}
         component={FezChatScreen}
+        getId={getFezChatId}
         // The simple headerTitle string below gets overwritten in the SeamailScreen component.
         // This is here as a performance optimization.
         // The reason it renders in the component is that deep linking doesnt pass in the title
@@ -564,6 +584,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.lfgChatScreen}
         component={FezChatScreen}
+        getId={getFezChatId}
         options={{title: FezType.getChatTitle(FezType.activity)}}
       />
       <Stack.Screen
@@ -835,6 +856,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.privateEventChatScreen}
         component={FezChatScreen}
+        getId={getFezChatId}
         options={{title: FezType.getChatTitle(FezType.privateEvent)}}
       />
       <Stack.Screen

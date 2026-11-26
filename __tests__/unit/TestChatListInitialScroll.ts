@@ -1,4 +1,5 @@
 import {
+  clampAnchor,
   getFallbackEndIndex,
   getFezInitialScrollIndex,
   getForumInitialScrollIndex,
@@ -70,6 +71,25 @@ describe('getForumInitialScrollIndex', () => {
   it('returns undefined with nothing loaded', () => {
     expect(getForumInitialScrollIndex(0, 0, undefined)).toBeUndefined();
     expect(getForumInitialScrollIndex(0, 0, undefined, true)).toBeUndefined();
+  });
+});
+
+describe('clampAnchor', () => {
+  it('leaves an end anchor alone', () => {
+    expect(clampAnchor('end', 3)).toBe('end');
+  });
+
+  it('keeps an index inside the loaded items', () => {
+    expect(clampAnchor({index: 2}, 3)).toEqual({index: 2});
+  });
+
+  it('clamps an index past the end to the last item (stale index from another chat)', () => {
+    expect(clampAnchor({index: 9}, 3)).toEqual({index: 2});
+  });
+
+  it('clamps to 0 for an empty list or a negative index', () => {
+    expect(clampAnchor({index: 4}, 0)).toEqual({index: 0});
+    expect(clampAnchor({index: -1}, 3)).toEqual({index: 0});
   });
 });
 
