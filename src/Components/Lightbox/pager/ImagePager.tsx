@@ -68,6 +68,9 @@ const FAST_SPRING: WithSpringConfig = {
   stiffness: 900,
 };
 
+// How long taps are still ignored after the header actions menu closes.
+const MENU_DISMISS_TAP_GUARD_MS = 300;
+
 function canAnimate(lightbox: Lightbox, reduceMotion: boolean): boolean {
   if (reduceMotion) {
     return false;
@@ -244,6 +247,34 @@ function ImageView({
   const [showControls, setShowControls] = useState(true);
   const [isInfoVisible, setIsInfoVisible] = useState(false);
   const [footerHeight, setFooterHeight] = useState(0);
+  // Taps that land while the header actions menu is open must not hide the chrome the menu is anchored to.
+  // The tap that dismisses the menu also reaches the lightbox's tap gesture, after the menu has already
+  // reported closed. The guard is therefore released after a short delay so that tap is swallowed too,
+  // making hiding the chrome take a second tap.
+  const isMenuOpenRef = useRef(false);
+  const menuReleaseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const onMenuVisibleChange = useCallback((visible: boolean) => {
+    if (menuReleaseTimerRef.current) {
+      clearTimeout(menuReleaseTimerRef.current);
+      menuReleaseTimerRef.current = null;
+    }
+    if (visible) {
+      isMenuOpenRef.current = true;
+      setShowControls(true);
+      return;
+    }
+    menuReleaseTimerRef.current = setTimeout(() => {
+      isMenuOpenRef.current = false;
+      menuReleaseTimerRef.current = null;
+    }, MENU_DISMISS_TAP_GUARD_MS);
+  }, []);
+  useEffect(() => {
+    return () => {
+      if (menuReleaseTimerRef.current) {
+        clearTimeout(menuReleaseTimerRef.current);
+      }
+    };
+  }, []);
   const dismissSwipeTranslateY = useSharedValue(0);
   const isFlyingAway = useSharedValue(false);
   const isPagerDragging = useSharedValue(false);
@@ -330,6 +361,9 @@ function ImageView({
   }, [isAnimated, images, thumbRects, onRequestClose]);
 
   const onTap = useCallback(() => {
+    if (isMenuOpenRef.current) {
+      return;
+    }
     setShowControls(show => !show);
   }, []);
 
@@ -406,6 +440,7 @@ function ImageView({
             onPressShare={allowShare ? () => onPressShare(images[imageIndex]) : undefined}
             onPressSave={allowSave ? () => onPressSave(images[imageIndex]) : undefined}
             onPressInfo={() => setIsInfoVisible(visible => !visible)}
+            onMenuVisibleChange={onMenuVisibleChange}
             imageCount={images.length}
             activeIndex={imageIndex}
           />
