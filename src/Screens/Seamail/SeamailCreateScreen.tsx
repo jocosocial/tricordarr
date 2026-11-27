@@ -8,6 +8,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {SeamailCreateForm} from '#src/Components/Forms/SeamailCreateForm';
+import {AppSnackbar} from '#src/Components/Snackbars/AppSnackbar';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {PostAsUserWarningView} from '#src/Components/Views/Warnings/PostAsUserWarningView';
@@ -147,22 +148,27 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
+  // AppView leaves the snackbar to this screen: drawn at the bottom of the content area, it sits
+  // just above the composer and rides up with it when the keyboard opens instead of covering it.
   return (
-    <AppView>
+    <AppView disableSnackbar={true}>
       <PostAsUserWarningView />
       <KeyboardAvoidingView
         style={commonStyles.flex}
         behavior={'padding'}
         keyboardVerticalOffset={keyboardVerticalOffset}>
-        <ScrollingContentView>
-          <SeamailCreateForm
-            formRef={seamailCreateFormRef}
-            onSubmit={onFezSubmit}
-            initialValues={initialFormValues}
-            onValidationChange={setSeamailFormValid}
-            showPostAsOptions={false}
-          />
-        </ScrollingContentView>
+        <View style={commonStyles.flex}>
+          <ScrollingContentView>
+            <SeamailCreateForm
+              formRef={seamailCreateFormRef}
+              onSubmit={onFezSubmit}
+              initialValues={initialFormValues}
+              onValidationChange={setSeamailFormValid}
+              showPostAsOptions={false}
+            />
+          </ScrollingContentView>
+          <AppSnackbar ignoreBottomInset={true} />
+        </View>
         <ContentPostForm
           formRef={seamailPostFormRef}
           overrideSubmitting={fezMutation.isPending}

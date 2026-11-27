@@ -17,6 +17,7 @@ import {ForumConversationListV2} from '#src/Components/Lists/Forums/ForumConvers
 import {ForumThreadScreenActionsMenu} from '#src/Components/Menus/Forum/ForumThreadScreenActionsMenu';
 import {ForumThreadPinnedPostsItem} from '#src/Components/Menus/Forum/Items/ForumThreadPinnedPostsItem';
 import {ForumThreadSearchPostsItem} from '#src/Components/Menus/Forum/Items/ForumThreadSearchPostsItem';
+import {AppSnackbar} from '#src/Components/Snackbars/AppSnackbar';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {ForumLockedView} from '#src/Components/Views/Static/ForumLockedView';
@@ -333,9 +334,11 @@ const ForumThreadScreenBaseInner = ({
 
   const showForm = !forumData?.isLocked || hasModerator;
 
+  // AppView leaves the snackbar to this screen: drawn at the bottom of the content area, it sits
+  // just above the composer and rides up with it when the keyboard opens instead of covering it.
   return (
     <ForumComposerProvider formRef={postFormRef} inputRef={postInputRef} enabled={showForm}>
-      <AppView>
+      <AppView disableSnackbar={true}>
         <PostAsUserWarningView />
         <ListTitleView
           title={titleOverride ?? forumData?.title ?? ''}
@@ -369,6 +372,7 @@ const ForumThreadScreenBaseInner = ({
                 <ActivityIndicator size={'large'} />
               </View>
             )}
+            <AppSnackbar ignoreBottomInset={true} />
           </View>
           {showForm && (
             <ContentPostForm

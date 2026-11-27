@@ -27,6 +27,12 @@ interface AppViewProps extends PropsWithChildren {
    * footer (e.g. an action button) so the toast sits above it instead of covering it.
    */
   snackbarBottomOffset?: number;
+  /**
+   * Leave the snackbar to the screen. A screen with a composer pinned above the keyboard renders
+   * its own `AppSnackbar` at the bottom of its content, just above the composer, so the toast
+   * moves with the composer instead of covering it.
+   */
+  disableSnackbar?: boolean;
 }
 
 /**
@@ -46,6 +52,7 @@ export const AppView = ({
   disablePreRegistrationWarning = false,
   disableMinAccessLevelWarning = false,
   snackbarBottomOffset = 0,
+  disableSnackbar = false,
 }: AppViewProps) => {
   const {commonStyles} = useStyles();
   const {disruptionDetected} = useSwiftarrQueryClient();
@@ -88,7 +95,8 @@ export const AppView = ({
   // view, which is just above the tab bar. Absolute children ignore this view's padding,
   // so on a tab screen the tab bar covers the bottom inset and Paper's own inset padding
   // is dropped; without a tab bar Paper's padding is kept. It is still outside any
-  // per-screen KeyboardAvoidingView, so the keyboard does not shift it.
+  // per-screen KeyboardAvoidingView, so the keyboard does not shift it; keyboardClearance lifts it
+  // above the keyboard instead, or an error raised while typing would render behind it.
   return (
     <View style={styles.appView}>
       {preRegistrationMode && !disablePreRegistrationWarning && <PreRegistrationWarningView />}
@@ -96,7 +104,13 @@ export const AppView = ({
       {disruptionDetected && <ConnectionDisruptedWarningView />}
       {children}
       <UnsavedChangesWarningView isVisible={hasUnsavedWork} />
-      <AppSnackbar ignoreBottomInset={!!tabBarHeight} bottomOffset={snackbarBottomOffset} />
+      {!disableSnackbar && (
+        <AppSnackbar
+          ignoreBottomInset={!!tabBarHeight}
+          bottomOffset={snackbarBottomOffset}
+          keyboardClearance={tabBarHeight ?? 0}
+        />
+      )}
     </View>
   );
 };

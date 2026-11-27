@@ -1,5 +1,6 @@
 import React, {useMemo} from 'react';
 import {StyleSheet} from 'react-native';
+import {useKeyboardState} from 'react-native-keyboard-controller';
 import {Snackbar, Text} from 'react-native-paper';
 
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
@@ -18,6 +19,14 @@ interface AppSnackbarProps {
    * so the toast sits above that UI instead of covering it.
    */
   bottomOffset?: number;
+  /**
+   * Keep the snackbar above the software keyboard. The value is how far the parent's bottom edge sits
+   * above the bottom of the screen (the tab bar's height on a tab screen, else 0), so the snackbar is
+   * lifted only by the part of the keyboard that overlaps the parent. Without it an error raised
+   * while typing (a failed post from a chat composer) renders behind the keyboard and times out
+   * unseen. Leave unset where the container already moves with the keyboard (a bottom sheet).
+   */
+  keyboardClearance?: number;
 }
 
 /**
@@ -27,9 +36,14 @@ interface AppSnackbarProps {
  * bottom sheet container it sits above the sheet. Rendering inline keeps the
  * navigation and screen contexts, which a Portal would drop.
  */
-export const AppSnackbar = ({ignoreBottomInset = false, bottomOffset = 0}: AppSnackbarProps) => {
+export const AppSnackbar = ({ignoreBottomInset = false, bottomOffset = 0, keyboardClearance}: AppSnackbarProps) => {
   const {snackbarPayload, setSnackbarPayload} = useSnackbar();
   const {theme} = useAppTheme();
+  const keyboardHeight = useKeyboardState(state => (state.isVisible ? state.height : 0));
+  const keyboardOverlap = keyboardClearance === undefined ? 0 : Math.max(0, keyboardHeight - keyboardClearance);
+  // The keyboard covers the bottom inset, so Paper's inset padding is dropped while it is lifted.
+  const dropBottomInset = ignoreBottomInset || keyboardOverlap > 0;
+  const wrapperBottom = Math.max(bottomOffset, keyboardOverlap);
 
   const styles = useMemo(
     () =>
@@ -43,12 +57,12 @@ export const AppSnackbar = ({ignoreBottomInset = false, bottomOffset = 0}: AppSn
         // Paper merges wrapperStyle over its own paddings, so only name paddingBottom
         // when overriding it; an explicit undefined would clear Paper's inset padding.
         wrapper: {
-          bottom: bottomOffset,
-          ...(ignoreBottomInset ? {paddingBottom: 0} : undefined),
+          bottom: wrapperBottom,
+          ...(dropBottomInset ? {paddingBottom: 0} : undefined),
           zIndex: 1,
         },
       }),
-    [bottomOffset, ignoreBottomInset, theme.colors.surface],
+    [dropBottomInset, theme.colors.surface, wrapperBottom],
   );
 
   if (!snackbarPayload) {

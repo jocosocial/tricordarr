@@ -16,7 +16,7 @@ import {cancelContentNotification} from '#src/Libraries/Notifications/Content';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {defaultFezQueryOptions, useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {TokenAuthPaginationQueryOptionsTypeV2} from '#src/Queries/TokenAuthQuery';
-import {ErrorResponse, FezData, FezListData} from '#src/Structs/ControllerStructs';
+import {ErrorResponse, FezData, FezListData, MembersOnlyData} from '#src/Structs/ControllerStructs';
 
 const fezListKeyPrefixes = ['/fez/joined', '/fez/owner', '/fez/open', '/fez/former'];
 const fezListAccessor: PageItemAccessor<FezListData, FezData> = {
@@ -24,7 +24,14 @@ const fezListAccessor: PageItemAccessor<FezListData, FezData> = {
   set: (page, items) => ({...page, fezzes: items}),
 };
 
-function getListCacheReadCount(queryClient: QueryClient, fezID: string): number | undefined {
+/**
+ * The chat's members data from the first fez list cache (Seamail, LFG, private event lists) that holds
+ * it, or undefined when no list has loaded it.
+ *
+ * @param queryClient The query client.
+ * @param fezID The chat.
+ */
+function getListCacheMembers(queryClient: QueryClient, fezID: string): MembersOnlyData | undefined {
   const matchesFez = (f: FezData) => f.fezID === fezID;
   for (const keyPrefix of fezListKeyPrefixes) {
     const entries = queryClient.getQueriesData<InfiniteData<FezListData>>({queryKey: [keyPrefix]});
@@ -32,12 +39,22 @@ function getListCacheReadCount(queryClient: QueryClient, fezID: string): number 
       if (data) {
         const fez = findInPages(data, fezListAccessor, matchesFez);
         if (fez?.members !== undefined) {
-          return fez.members.readCount;
+          return fez.members;
         }
       }
     }
   }
   return undefined;
+}
+
+/**
+ * The chat's read count from the fez list caches, or undefined when no list has loaded it.
+ *
+ * @param queryClient The query client.
+ * @param fezID The chat.
+ */
+function getListCacheReadCount(queryClient: QueryClient, fezID: string): number | undefined {
+  return getListCacheMembers(queryClient, fezID)?.readCount;
 }
 
 interface UseFezDataOptions {
@@ -59,6 +76,12 @@ interface UseFezDataReturn {
   isFetchingPreviousPage: boolean;
   isFetching: boolean;
   isLoading: boolean;
+  /**
+   * The cached chat is behind a fez list (the list counts more posts than the cache holds) and the
+   * fetch started on this mount has not finished. The chat screen holds its loading view meanwhile,
+   * so the opening position is not worked out, and frozen, from the out-of-date copy.
+   */
+  isAwaitingFreshData: boolean;
   error: AxiosError<ErrorResponse> | null;
   isOwner: boolean;
   isMember: boolean;
@@ -139,6 +162,7 @@ export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDa
     fetchPreviousPage,
     hasNextPage,
     hasPreviousPage,
+    isFetchedAfterMount,
     isFetching,
     isFetchingNextPage,
     isFetchingPreviousPage,
@@ -180,6 +204,19 @@ export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDa
     const listReadCount = getListCacheReadCount(queryClient, fezID);
     setInitialReadCount(listReadCount ?? detailReadCount);
   }, [queryClient, fezID]);
+
+  // Read during render because the list caches are not subscribed here; whether the cached copy is
+  // behind can only change when the detail query re-renders this hook anyway. A failed fetch ends
+  // the wait (isFetching goes false), and a query that cannot run never starts one, so the cached
+  // copy still shows then.
+  const listPostCount = getListCacheMembers(queryClient, fezID)?.postCount;
+  const cachedPostCount = fezData?.members?.postCount;
+  const isAwaitingFreshData =
+    !isFetchedAfterMount &&
+    isFetching &&
+    listPostCount !== undefined &&
+    cachedPostCount !== undefined &&
+    listPostCount > cachedPostCount;
 
   /**
    * Get the query pages.
@@ -288,6 +325,7 @@ export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDa
     isFetchingPreviousPage,
     isFetching,
     isLoading,
+    isAwaitingFreshData,
     error,
     isOwner,
     isMember,
