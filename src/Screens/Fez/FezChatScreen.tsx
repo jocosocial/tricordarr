@@ -262,7 +262,7 @@ const FezChatScreenInner = ({route}: Props) => {
   // the bottom so onEndReached won't fire — we need to fetch explicitly.
   useEffect(() => {
     if (hasNextPage) {
-      handleLoadNext();
+      void handleLoadNext();
     }
   }, [hasNextPage, handleLoadNext]);
 
@@ -340,7 +340,7 @@ const FezChatScreenInner = ({route}: Props) => {
       }
       logger.debug(`Fez socket attached for fez ${fezID} (isNew: ${socketInfo.isNew})`);
     };
-    attachSocket();
+    attachSocket().catch(error => logger.error(`Failed to attach fez socket for fez ${fezID}`, error));
     return () => {
       const current = fezSocketWithHandlerRef.current;
       if (current) {

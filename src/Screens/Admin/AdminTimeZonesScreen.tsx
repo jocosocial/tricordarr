@@ -86,7 +86,7 @@ const AdminTimeZonesScreenInner = () => {
                   reloadMutation.mutate(undefined, {
                     onSuccess: () => {
                       setSnackbarPayload({message: 'Time zone data reloaded.', messageType: 'success'});
-                      refetch();
+                      void refetch();
                     },
                   }),
                 )

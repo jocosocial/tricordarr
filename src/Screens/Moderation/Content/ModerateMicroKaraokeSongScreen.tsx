@@ -18,6 +18,7 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertApproveMicroKaraokeSong, alertDeleteMicroKaraokeSnippet} from '#src/Libraries/Alerts/ModerationAlerts';
+import {createLogger} from '#src/Libraries/Logger';
 import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
 import {invalidateQueryKeys} from '#src/Libraries/QueryInvalidation';
 import {ShareContentType} from '#src/Libraries/Sharing';
@@ -36,6 +37,8 @@ import {
 } from '#src/Queries/Moderation/ModerationQueries';
 import {ModeratorFeatureScreen} from '#src/Screens/Checkpoint/ModeratorFeatureScreen';
 import {MicroKaraokeCompletedSong, ModeratorActionLogResponseData} from '#src/Structs/ControllerStructs';
+
+const logger = createLogger('ModerateMicroKaraokeSongScreen.tsx');
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.moderateMicroKaraokeSongScreen>;
 
@@ -164,7 +167,9 @@ const ModerateMicroKaraokeSongScreenInner = ({route}: Props) => {
                     disabled: !snippet.videoURL,
                     onPress: () => {
                       if (snippet.videoURL) {
-                        Linking.openURL(snippet.videoURL);
+                        Linking.openURL(snippet.videoURL).catch(error =>
+                          logger.error('Failed to open snippet video', snippet.videoURL, error),
+                        );
                       }
                     },
                   },

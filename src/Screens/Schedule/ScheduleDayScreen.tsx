@@ -268,16 +268,16 @@ const ScheduleDayScreenActual = ({
   useEffect(() => {
     logger.debug('Firing pagination useEffect');
     if (scheduleSources.has('lfgOpen') && openHasNextPage) {
-      openFetchNextPage();
+      void openFetchNextPage();
     }
     if (joinedHasNextPage) {
-      joinedFetchNextPage();
+      void joinedFetchNextPage();
     }
     if (ownedHasNextPage) {
-      ownedFetchNextPage();
+      void ownedFetchNextPage();
     }
     if (personalHasNextPage) {
-      personalFetchNextPage();
+      void personalFetchNextPage();
     }
   }, [
     scheduleSources,

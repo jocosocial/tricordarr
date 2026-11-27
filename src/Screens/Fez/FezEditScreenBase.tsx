@@ -123,7 +123,7 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle, int
       } catch {
         // The conversion landed but not every invitee did. Resync rather than guess at what the
         // server has; the error itself is surfaced in a snackbar.
-        invalidateFez(fez.fezID);
+        void invalidateFez(fez.fezID);
       }
     }
 

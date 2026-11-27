@@ -102,7 +102,7 @@ const AdminBulkUserScreenInner = () => {
           onSuccess: () => {
             setUploaded(true);
             setSnackbarPayload({message: 'Archive uploaded. Verify the result next.', messageType: 'success'});
-            refetch();
+            void refetch();
           },
         },
       );
@@ -120,7 +120,7 @@ const AdminBulkUserScreenInner = () => {
       applyMutation.mutate(undefined, {
         onSuccess: () => {
           setSnackbarPayload({message: 'Bulk user import applied.', messageType: 'success'});
-          refetch();
+          void refetch();
         },
       }),
     );
@@ -159,7 +159,7 @@ const AdminBulkUserScreenInner = () => {
             buttonText={'Verify Uploaded Archive'}
             onPress={() => {
               setUploaded(true);
-              refetch();
+              void refetch();
             }}
             disabled={uploadMutation.isPending}
             isLoading={isLoading && uploaded}

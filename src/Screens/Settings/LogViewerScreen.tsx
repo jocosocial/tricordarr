@@ -19,10 +19,12 @@ import {useDownloadSheet} from '#src/Context/Contexts/DownloadSheetContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useRefresh} from '#src/Hooks/useRefresh';
-import {getLogEntries} from '#src/Libraries/Logger';
+import {createLogger, getLogEntries} from '#src/Libraries/Logger';
 import {LogEntry} from '#src/Libraries/Logger/types';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useSettingsStack} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
+
+const logger = createLogger('LogViewerScreen.tsx');
 
 const TIME_FILTER_MS: Record<Exclude<LogViewerTimeFilter, 'all'>, number> = {
   '1h': 60 * 60 * 1000,
@@ -82,7 +84,7 @@ export const LogViewerScreen = () => {
   const {refreshing, onRefresh} = useRefresh({refresh});
 
   useEffect(() => {
-    refresh();
+    refresh().catch(error => logger.error('Failed to load log entries', error));
   }, [refresh]);
 
   const filteredEntries = useMemo(() => {

@@ -77,7 +77,7 @@ const BoardgameRecommendScreenInner = ({navigation}: Props) => {
       // Animate scroll to top to show results
       requestAnimationFrame(() => {
         try {
-          listRef.current?.scrollToIndex({index: 0, animated: true});
+          void listRef.current?.scrollToIndex({index: 0, animated: true});
         } catch {
           // If scrollToIndex fails (e.g., list not fully rendered), use scrollToOffset as fallback
           listRef.current?.scrollToOffset({offset: 0, animated: true});

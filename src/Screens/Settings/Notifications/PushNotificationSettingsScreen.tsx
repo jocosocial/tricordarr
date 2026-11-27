@@ -108,13 +108,15 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
   };
 
   const handleEnable = () => {
-    requestNotifications([]).then(({status}) => {
-      setNotificationPermissionStatus(status);
-      setHasNotificationPermission(status === RESULTS.GRANTED);
-      if (status === RESULTS.GRANTED) {
-        startPushProvider();
-      }
-    });
+    requestNotifications([])
+      .then(({status}) => {
+        setNotificationPermissionStatus(status);
+        setHasNotificationPermission(status === RESULTS.GRANTED);
+        if (status === RESULTS.GRANTED) {
+          return startPushProvider();
+        }
+      })
+      .catch(error => logger.error('Failed to enable push notifications', error));
   };
 
   const toggleMarkReadCancelPush = () => {

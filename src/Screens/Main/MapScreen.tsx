@@ -48,7 +48,7 @@ export const MapScreen = ({navigation, route}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const handleRefresh = useCallback(() => {
     setRefreshing(true);
-    refetch().finally(() => setRefreshing(false));
+    void refetch().finally(() => setRefreshing(false));
   }, [refetch]);
 
   const [activeTarget, setActiveTarget] = useState<MapTarget | undefined>(undefined);

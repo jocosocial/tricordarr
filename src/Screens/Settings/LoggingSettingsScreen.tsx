@@ -49,7 +49,7 @@ export const LoggingSettingsScreen = ({navigation}: Props) => {
   const {refreshing, onRefresh} = useRefresh({refresh: refreshLogFileInfo});
 
   useEffect(() => {
-    refreshLogFileInfo();
+    void refreshLogFileInfo();
   }, [refreshLogFileInfo]);
 
   const getNavButtons = useCallback(() => {

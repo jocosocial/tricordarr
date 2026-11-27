@@ -10,12 +10,15 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
 import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
 import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/Root/RootStackComponents';
 import {BottomTabComponents} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
+
+const logger = createLogger('OobeFinishScreen.tsx');
 
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeFinishScreen>;
 
@@ -43,7 +46,7 @@ export const OobeFinishScreen = ({navigation}: Props) => {
       });
     }
     if (!preRegistrationMode && isLoggedIn) {
-      startPushProvider();
+      startPushProvider().catch(error => logger.error('Failed to start the push provider', error));
     }
     rootNavigation.replace(RootStackComponents.rootContentScreen, {
       screen: BottomTabComponents.homeTab,

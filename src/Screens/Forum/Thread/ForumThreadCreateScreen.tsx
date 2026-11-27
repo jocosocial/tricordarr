@@ -70,8 +70,8 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
     }
     // Whatever we picked in the Forum is what should be set in the Post.
     // Forum doesn't take these params and keys off of the first post.
-    postFormRef.current.setFieldValue('postAsModerator', values.postAsModerator);
-    postFormRef.current.setFieldValue('postAsTwitarrTeam', values.postAsTwitarrTeam);
+    void postFormRef.current.setFieldValue('postAsModerator', values.postAsModerator);
+    void postFormRef.current.setFieldValue('postAsTwitarrTeam', values.postAsTwitarrTeam);
     postFormRef.current.values.text = replaceTriggerValues(postFormRef.current.values.text, ({name}) => `@${name}`);
     const forumData: ForumCreateData = {
       title: values.title,
@@ -109,7 +109,7 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
 
   // Handler to trigger the chain of events needed to complete this screen.
   const onSubmit = () => {
-    forumFormRef.current?.submitForm();
+    forumFormRef.current?.submitForm().catch(error => logger.error('Failed to submit forum thread', error));
   };
 
   const getNavButtons = useCallback(() => {

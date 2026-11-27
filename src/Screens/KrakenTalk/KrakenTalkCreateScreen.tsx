@@ -77,7 +77,7 @@ const KrakenTalkCreateScreenInner = ({route, navigation}: Props) => {
   useEffect(() => {
     if (route.params?.initialUserHeader && !initialCallMadeRef.current) {
       initialCallMadeRef.current = true;
-      handleInitiateCall(route.params.initialUserHeader);
+      void handleInitiateCall(route.params.initialUserHeader);
     }
   }, [route.params?.initialUserHeader, handleInitiateCall]);
 

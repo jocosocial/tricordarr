@@ -71,7 +71,7 @@ const RegCodeManageScreenInner = ({navigation}: Props) => {
   const handleFind = (values: FindByCodeFormValues, helpers: FormikHelpers<FindByCodeFormValues>) => {
     const code = normalized(values.regCode);
     if (code === submittedCode) {
-      refetch();
+      void refetch();
     } else {
       setSubmittedCode(code);
     }
