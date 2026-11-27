@@ -47,6 +47,10 @@ export class LogBuffer {
     }, this.FLUSH_DELAY_MS);
   }
 
+  /**
+   * Append everything buffered so far to the current log file. Never rejects:
+   * write failures are reported through `onWriteError`.
+   */
   async flushNow() {
     if (this.buffer.length === 0) {
       return;
@@ -66,7 +70,9 @@ export class LogBuffer {
       if (!logFile.exists) {
         logFile.create({intermediates: true});
       }
-      logFile.write(logText, {encoding: EncodingType.UTF8, append: true});
+      // File.write is asynchronous (expo-file-system 58+). Await it so a failed
+      // write lands in the catch below instead of becoming an unhandled rejection.
+      await logFile.write(logText, {encoding: EncodingType.UTF8, append: true});
     } catch (error) {
       // Logger/index injects a safe internal logger to avoid recursion here.
       this.onWriteError('[LogBuffer] Failed to write logs to file', error);

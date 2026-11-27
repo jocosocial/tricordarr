@@ -48,15 +48,24 @@ export const queryCacheStorage = {
   /**
    * Persist `value` for `key` via a temp file then move, so a mid-write
    * kill cannot leave truncated JSON.
+   *
+   * `File.write` is asynchronous (expo-file-system 58+) and creates or truncates
+   * the file itself, so the write must be awaited before the move. Moving while
+   * the write is still in flight races the native write: the cache file ends up
+   * empty and the write can reject with "it already exists". Returning the promise
+   * also lets the persister's throttle serialize writes.
    */
-  setItem: (key: string, value: string): void => {
+  setItem: async (key: string, value: string): Promise<void> => {
     const file = getCacheFile(key);
     const tmp = getTempFile(key);
-    deleteIfExists(tmp);
-    tmp.create();
-    tmp.write(value);
-    tmp.moveSync(file, {overwrite: true});
-    logger.debug('Wrote query cache', file.name, file.size);
+    try {
+      await tmp.write(value);
+      await tmp.move(file, {overwrite: true});
+      logger.debug('Wrote query cache', file.name, file.size);
+    } catch (error) {
+      logger.error('Failed to write query cache', file.name, error);
+      throw error;
+    }
   },
 
   /**
