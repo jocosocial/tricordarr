@@ -117,7 +117,7 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
         headerListRef.current.scrollToEnd({animated});
       } else {
         const indexOffset = props.enableAll ? 1 : 0;
-        headerListRef.current.scrollToIndex({
+        void headerListRef.current.scrollToIndex({
           index: day - 1 + indexOffset,
           viewPosition: 0.5,
           animated,

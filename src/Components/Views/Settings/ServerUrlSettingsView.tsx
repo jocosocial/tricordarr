@@ -50,7 +50,7 @@ export const ServerUrlSettingsView = () => {
         // Same URL, so the current query key is correct. This is how a failed healthcheck gets
         // retried, since the health query never re-runs an error on its own. Not awaited: Save
         // covers only the local update, and ServerHealthcheckResultView shows the check.
-        refetch();
+        void refetch();
       }
     } finally {
       formikHelpers.resetForm({

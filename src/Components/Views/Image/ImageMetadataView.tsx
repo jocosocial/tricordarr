@@ -64,7 +64,7 @@ export const ImageMetadataView = ({image}: ImageMetadataViewProps) => {
       }
     };
 
-    fetchCachePath();
+    void fetchCachePath();
   }, [image, getSourceURI]);
 
   return (

@@ -78,9 +78,9 @@ export const BackgroundConnectionSettingsIOSView = () => {
     });
     setEnable(newValue);
     setTimeout(() => {
-      fetchManagerStatus();
-      fetchForegroundProviderStatus();
-      fetchWebsocketStatus();
+      void fetchManagerStatus();
+      void fetchForegroundProviderStatus();
+      void fetchWebsocketStatus();
     }, 1000);
   };
 
@@ -107,7 +107,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
           wifiNetworkNames: [data.shipWifiSSID],
         },
       });
-      fetchManagerStatus();
+      void fetchManagerStatus();
     } else {
       setSnackbarPayload({
         message: 'No SSID found in server payload.',
@@ -133,7 +133,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
         wifiNetworkNames: values.wifiNetworkNames,
       },
     });
-    fetchManagerStatus();
+    void fetchManagerStatus();
   };
 
   const handleBackgroundNotifications = () => {
@@ -155,9 +155,9 @@ export const BackgroundConnectionSettingsIOSView = () => {
     try {
       await startPushProvider();
       // Refresh status after recycling worker
-      fetchManagerStatus();
-      fetchForegroundProviderStatus();
-      fetchWebsocketStatus();
+      void fetchManagerStatus();
+      void fetchForegroundProviderStatus();
+      void fetchWebsocketStatus();
     } catch (error) {
       logger.error('Error reconfiguring the push provider:', error);
     }
@@ -244,9 +244,9 @@ export const BackgroundConnectionSettingsIOSView = () => {
   };
 
   useEffect(() => {
-    fetchManagerStatus();
-    fetchForegroundProviderStatus();
-    fetchWebsocketStatus();
+    void fetchManagerStatus();
+    void fetchForegroundProviderStatus();
+    void fetchWebsocketStatus();
   }, []);
 
   return (

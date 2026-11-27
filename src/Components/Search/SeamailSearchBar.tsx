@@ -40,7 +40,7 @@ export const SeamailSearchBar = () => {
   };
   const onSearch = () => {
     setQueryEnable(true);
-    refetch();
+    void refetch();
     Keyboard.dismiss();
   };
 
@@ -52,7 +52,7 @@ export const SeamailSearchBar = () => {
     fetchNextPage: () => {
       if (!isFetchingNextPage && queryEnable) {
         setRefreshing(true);
-        fetchNextPage().finally(() => setRefreshing(false));
+        void fetchNextPage().finally(() => setRefreshing(false));
       }
     },
   });

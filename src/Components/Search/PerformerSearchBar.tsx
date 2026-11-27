@@ -69,7 +69,7 @@ export const PerformerSearchBar = ({performerType, onPress}: PerformerSearchBarP
     fetchNextPage: () => {
       if (!isFetchingNextPage && queryEnable) {
         setRefreshing(true);
-        fetchNextPage().finally(() => setRefreshing(false));
+        void fetchNextPage().finally(() => setRefreshing(false));
       }
     },
   });

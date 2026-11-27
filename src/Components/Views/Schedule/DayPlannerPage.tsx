@@ -181,10 +181,10 @@ const DayPlannerPageComponent = ({
 
   useEffect(() => {
     if (joinedHasNextPage && !isLfgJoinedFetchingNextPage) {
-      joinedFetchNextPage();
+      void joinedFetchNextPage();
     }
     if (personalHasNextPage && !isPersonalEventFetchingNextPage) {
-      personalFetchNextPage();
+      void personalFetchNextPage();
     }
   }, [
     joinedFetchNextPage,

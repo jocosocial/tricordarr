@@ -145,7 +145,7 @@ export default function ImageViewRoot({
       thumbRects.set({});
     });
     requestAnimationFrame(() => {
-      FastImage.clearMemoryCache();
+      void FastImage.clearMemoryCache();
     });
   }, [thumbRects]);
 

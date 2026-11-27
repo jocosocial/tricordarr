@@ -334,7 +334,7 @@ export const APIImage = ({
         setImageSource(fallbackSource);
       }
     };
-    checkCacheAndSetSource();
+    void checkCacheAndSetSource();
   }, [
     getCachedFileSource,
     mode,
