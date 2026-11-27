@@ -1,7 +1,7 @@
 import FastImage, {ImageStyle as FastImageStyle, OnErrorEvent, OnProgressEvent} from '@d11/react-native-fast-image';
 import {type Source as FastImageSource} from '@d11/react-native-fast-image';
 import React from 'react';
-import {useCallback, useState} from 'react';
+import {useCallback, useMemo, useState} from 'react';
 import {
   ActivityIndicator,
   type ImageStyle as RNImageStyle,
@@ -14,6 +14,7 @@ import {Card} from 'react-native-paper';
 import {useAnimatedRef} from 'react-native-reanimated';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {AppFramedImage} from '#src/Components/Images/AppFramedImage';
 import {AppScaledImage} from '#src/Components/Images/AppScaledImage';
 import {useLightboxControls} from '#src/Components/Lightbox/state';
 import {useAppImage} from '#src/Context/Contexts/AppImageContext';
@@ -26,15 +27,44 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {alertImagesDisabled} from '#src/Libraries/Alerts/ImageAlerts';
+import {type ImageSize} from '#src/Libraries/ImageLayout';
 import {createLogger} from '#src/Libraries/Logger';
 import {APIImageSizePaths, AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 const logger = createLogger('APIImage.tsx');
 
+const staticStyles = StyleSheet.create({
+  fill: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  imageContainer: {
+    position: 'relative',
+  },
+  imageDebugIcon: {
+    position: 'absolute',
+    top: 4,
+    left: 4,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    borderRadius: 12,
+    padding: 4,
+    zIndex: 1,
+  },
+});
+
 interface APIImageV2Props {
   path: string;
   style?: StyleProp<FastImageStyle | RNImageStyle>;
-  mode?: 'cardcover' | 'image' | 'avatar' | 'scaledimage';
+  /**
+   * 'framedimage' fills its parent, which must have a size, in every state including loading,
+   * errored and disabled. The others size themselves.
+   */
+  mode?: 'cardcover' | 'image' | 'avatar' | 'scaledimage' | 'framedimage';
+  /** Called with the image's own size once it has loaded. Only for 'framedimage' mode. */
+  onImageSize?: (size: ImageSize) => void;
   disableTouch?: boolean;
   staticSize?: keyof typeof APIImageSizePaths;
   onPress?: () => void;
@@ -60,6 +90,7 @@ export const APIImage = ({
   path,
   style,
   mode = 'scaledimage',
+  onImageSize,
   disableTouch,
   staticSize,
   onPress,
@@ -90,50 +121,45 @@ export const APIImage = ({
   const {openLightbox} = useLightboxControls();
   const thumbRef = useAnimatedRef<View>();
 
-  const styles = StyleSheet.create({
-    disabledCard: {
-      ...commonStyles.marginVerticalSmall,
-    },
-    image: {
-      ...commonStyles.headerImage,
-      ...StyleSheet.flatten(style),
-    },
-    loadingCard: {
-      ...commonStyles.marginVerticalSmall,
-    },
-    imageContainer: {
-      position: 'relative',
-    },
-    imageLoadingOverlay: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      ...commonStyles.justifyCenter,
-      ...commonStyles.alignItemsCenter,
-    },
-    imageDebugIcon: {
-      position: 'absolute',
-      top: 4,
-      left: 4,
-      backgroundColor: 'rgba(0, 0, 0, 0.7)',
-      borderRadius: 12,
-      padding: 4,
-      zIndex: 1,
-    },
-    cardCover: {
-      height: 195,
-      ...commonStyles.fullWidth,
-      ...commonStyles.roundedBorderCard,
-      overflow: 'hidden',
-    },
-    avatar: {
-      width: avatarSize,
-      height: avatarSize,
-      borderRadius: avatarSize / 2,
-    },
-  });
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        disabledCard: {
+          ...commonStyles.marginVerticalSmall,
+        },
+        image: {
+          ...commonStyles.headerImage,
+          ...StyleSheet.flatten(style),
+        },
+        loadingCard: {
+          ...commonStyles.marginVerticalSmall,
+        },
+        imageLoadingOverlay: {
+          ...staticStyles.fill,
+          ...commonStyles.justifyCenter,
+          ...commonStyles.alignItemsCenter,
+        },
+        cardCover: {
+          height: 195,
+          ...commonStyles.fullWidth,
+          ...commonStyles.roundedBorderCard,
+          overflow: 'hidden',
+        },
+        framedDisabled: {
+          ...StyleSheet.absoluteFill,
+          ...commonStyles.justifyCenter,
+          ...commonStyles.alignItemsCenter,
+          ...commonStyles.roundedBorderCard,
+          backgroundColor: theme.colors.surfaceVariant,
+        },
+        avatar: {
+          width: avatarSize,
+          height: avatarSize,
+          borderRadius: avatarSize / 2,
+        },
+      }),
+    [avatarSize, commonStyles, style, theme.colors.surfaceVariant],
+  );
 
   /**
    * Render cached hits from the local file path so FastImage does not revalidate the original
@@ -324,6 +350,13 @@ export const APIImage = ({
    * If the Images feature of Swiftarr is disabled, then show a generic disabled icon.
    */
   if (isDisabled) {
+    if (mode === 'framedimage') {
+      return (
+        <View style={styles.framedDisabled}>
+          <AppIcon icon={AppIcons.imageDisabled} onPress={alertImagesDisabled} />
+        </View>
+      );
+    }
     return (
       <Card.Content style={styles.disabledCard}>
         <AppIcon icon={AppIcons.imageDisabled} onPress={alertImagesDisabled} />
@@ -331,7 +364,9 @@ export const APIImage = ({
     );
   }
 
-  if (!imageSource) {
+  // AppFramedImage shows its own loading state, so the frame is the same before and after the
+  // source resolves.
+  if (!imageSource && mode !== 'framedimage') {
     return (
       <Card.Content style={styles.loadingCard}>
         <ActivityIndicator />
@@ -339,14 +374,19 @@ export const APIImage = ({
     );
   }
 
-  const isThumbnail = imageSource.uri === imageSourceMetadata.thumbURI;
+  const isThumbnail = imageSource?.uri === imageSourceMetadata.thumbURI;
+  const fillStyle = mode === 'framedimage' ? StyleSheet.absoluteFill : undefined;
+  // scaledimage and framedimage have their own placeholder + spinner. Avatars are excluded on
+  // purpose: they are small, usually cached, and appear dozens at a time in chat and forum lists,
+  // where a spinner per row is noise, not feedback.
+  const showLoadingOverlay = isImageLoading && (mode === 'image' || mode === 'cardcover');
 
   // A custom onPress skips opening the lightbox so callers can own the gallery
   // (ContentPostImages) or disable it. disableTouch is how AvatarImage opts out.
   return (
-    <View>
-      <TouchableOpacity disabled={disableTouch} activeOpacity={1} onPress={onPress || onPressDefault}>
-        <View ref={thumbRef} collapsable={false} style={styles.imageContainer}>
+    <View style={fillStyle}>
+      <TouchableOpacity style={fillStyle} disabled={disableTouch} activeOpacity={1} onPress={onPress || onPressDefault}>
+        <View ref={thumbRef} collapsable={false} style={fillStyle ?? staticStyles.imageContainer}>
           {mode === 'cardcover' && (
             <FastImage
               resizeMode={'cover'}
@@ -376,7 +416,16 @@ export const APIImage = ({
               onError={onError}
             />
           )}
-          {mode === 'scaledimage' && (
+          {mode === 'framedimage' && (
+            <AppFramedImage
+              image={imageSource}
+              onLoad={onLoad}
+              onError={onError}
+              onProgress={onProgress}
+              onImageSize={onImageSize}
+            />
+          )}
+          {mode === 'scaledimage' && imageSource && (
             <AppScaledImage
               image={imageSource}
               style={style as FastImageStyle}
@@ -385,16 +434,13 @@ export const APIImage = ({
               onProgress={onProgress}
             />
           )}
-          {/* scaledimage has its own placeholder + spinner in AppScaledImage. Avatars are
-              excluded on purpose: they are small, usually cached, and appear dozens at a
-              time in chat and forum lists, where a spinner per row is noise, not feedback. */}
-          {isImageLoading && (mode === 'image' || mode === 'cardcover') && (
+          {showLoadingOverlay && (
             <View style={styles.imageLoadingOverlay} pointerEvents={'none'}>
               <ActivityIndicator />
             </View>
           )}
           {appConfig.enableDeveloperOptions && mode !== 'avatar' && (
-            <View style={styles.imageDebugIcon}>
+            <View style={staticStyles.imageDebugIcon}>
               <AppIcon
                 icon={isThumbnail ? AppIcons.thumbnail : staticSize === 'identicon' ? AppIcons.user : AppIcons.full}
                 small={true}

@@ -69,6 +69,7 @@ export const forumDataFromModeration = (data: ForumModerationData): ForumData =>
     isMuted: false,
     paginator: {total: 0, start: 0, limit: 50},
     posts: [],
+    readCount: 0,
   };
 };
 

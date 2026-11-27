@@ -1,0 +1,41 @@
+# A fully-read seamail opens at its newest post, with no scroll buttons showing.
+#
+# Regression guard for the ChatList (FlashList) migration: the list must land on the bottom after
+# opening, not on the top or mid-list, and the floating scroll buttons stay hidden at the bottom.
+#
+# Precondition: the app is signed in. Run ../OOBE/Login.yaml first to get there.
+#
+# SEAMAIL_TITLE must name a seamail with enough posts to overflow the screen (so landing at the
+# bottom is meaningful) that the signed-in user has already fully read. LAST_TEXT must be the text
+# of its newest post. Run with:
+#   maestro test -e APP_ID=... -e SEAMAIL_TITLE='...' -e LAST_TEXT='...' SeamailOpenAtBottom.yaml
+appId: ${APP_ID}
+# Both parameters are required and have no defaults: an `env:` block in the flow overrides `-e`.
+---
+# Same launch preamble as ../Forum/ForumPostReply.yaml; see the comments there.
+- launchApp:
+    arguments:
+      '-EXDevMenuIsOnboardingFinished': true
+# Tab labels bundle icon glyphs in with the text, so selectors need wildcards.
+- extendedWaitUntil:
+    visible: '(?s).*Seamail.*'
+    timeout: 120000
+- tapOn: '(?s).*Seamail.*'
+# The seamail may be below the fold of a long list.
+- scrollUntilVisible:
+    element: '(?s).*${SEAMAIL_TITLE}.*'
+    direction: DOWN
+    timeout: 30000
+- tapOn: '(?s).*${SEAMAIL_TITLE}.*'
+# The composer shows once the chat screen is up. The loading overlay hides the list until it is
+# positioned, so waiting for the last post also waits for the overlay to go away.
+- assertVisible:
+    id: 'contentPostText-input'
+- extendedWaitUntil:
+    visible: '(?s).*${LAST_TEXT}.*'
+    timeout: 15000
+- assertVisible: '(?s).*${LAST_TEXT}.*'
+- assertNotVisible:
+    id: 'conversationListScroll-button'
+- assertNotVisible:
+    id: 'conversationListSecondaryScroll-button'

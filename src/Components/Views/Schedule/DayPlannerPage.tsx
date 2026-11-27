@@ -57,7 +57,7 @@ interface DayPlannerPageProps {
   onLoaded: (cruiseDay: number) => void;
   onActiveControlsChange: (controls: DayPlannerPageControls | null) => void;
   /** Registered regardless of active state, so the parent can sync this page's scroll position from outside. */
-  onRegisterScrollController: (controller: DayPlannerScrollController | null) => void;
+  onRegisterScrollController: (cruiseDay: number, controller: DayPlannerScrollController | null) => void;
   /**
    * Called when a user scroll gesture on the active page comes to rest, so the parent can record
    * the shared offset. Deliberately not a per-frame onScroll: mirroring every frame onto every
@@ -300,11 +300,11 @@ const DayPlannerPageComponent = ({
    * brings it into view.
    */
   useEffect(() => {
-    onRegisterScrollController({
+    onRegisterScrollController(cruiseDay, {
       scrollTo: offsetY => scrollTo(offsetY, false),
     });
-    return () => onRegisterScrollController(null);
-  }, [onRegisterScrollController, scrollTo]);
+    return () => onRegisterScrollController(cruiseDay, null);
+  }, [cruiseDay, onRegisterScrollController, scrollTo]);
 
   /**
    * Record the resting offset after a user scroll. Wired to the drag/momentum end events rather

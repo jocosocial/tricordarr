@@ -10,6 +10,8 @@ After a timer period the `APIImage` should dispatch a preload call to load the f
 
 The net result is that there should only ever be two image queries: thumbnail, then full-size.
 
+Forum and Fez post images (`ContentPostImages`) are the exception: they use `APIImage` mode `framedimage`, which fits the whole image inside a frame the parent sizes. Cell widths follow each image's shape once it loads, but the total height must depend only on the post data (available width and number of images, see `ContentPostImageRow`), and be the same while resolving, loading, loaded, errored, or disabled. `ChatList` scroll positioning relies on this. The "Gallery View" setting picks between one 200dp row that scrolls sideways and one 4:3 row per image. Both show every image on the post; `maxForumPostImages` limits posting, not viewing.
+
 ## Sources
 
 Images come from a number of sources:

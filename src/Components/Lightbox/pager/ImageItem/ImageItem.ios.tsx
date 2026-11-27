@@ -27,6 +27,7 @@ import {
   type ImageSource,
   type LightboxTransforms,
 } from '#src/Components/Lightbox/types';
+import {useNonReactiveCallback} from '#src/Hooks/useNonReactiveCallback';
 
 const MAX_ORIGINAL_IMAGE_ZOOM = 2;
 const MIN_SCREEN_ZOOM = 2;
@@ -96,13 +97,14 @@ const ImageItem = ({
     setScaled(nextIsScaled);
   }
 
-  function zoomTo(nextZoomRect: {x: number; y: number; width: number; height: number}) {
+  /** Zooms the scroll view to a rect in screen coordinates. Runs on the JS thread from the double-tap worklet. */
+  const zoomTo = useNonReactiveCallback((nextZoomRect: {x: number; y: number; width: number; height: number}) => {
     const scrollResponderRef = scrollViewRef?.current?.getScrollResponder();
     scrollResponderRef?.scrollResponderZoomTo({
       ...nextZoomRect, // This rect is in screen coordinates
       animated: true,
     });
-  }
+  });
 
   const singleTap = Gesture.Tap().onEnd(() => {
     'worklet';

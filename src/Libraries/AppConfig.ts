@@ -69,6 +69,8 @@ export interface UserPreferences {
   highlightForumAlertWords: boolean;
   autosavePhotos: boolean;
   autoCompressOversizedImages: boolean;
+  /** Show a post's images as one sideways-scrolling row rather than stacked. */
+  imageGalleryView: boolean;
   shareOpensSheet: boolean;
   seamailIncludeLfgs: boolean;
   seamailIncludePrivateEvents: boolean;
@@ -230,6 +232,7 @@ export const defaultAppConfig: AppConfig = {
     highlightForumAlertWords: true,
     autosavePhotos: true,
     autoCompressOversizedImages: true,
+    imageGalleryView: true,
     shareOpensSheet: false,
     seamailIncludeLfgs: true,
     seamailIncludePrivateEvents: true,

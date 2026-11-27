@@ -1,6 +1,7 @@
 import {StackScreenProps} from '@react-navigation/stack';
+import {notifyManager} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
@@ -11,9 +12,10 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
-import {type TConversationListV2Ref} from '#src/Components/Lists/ConversationListV2';
+import {type TChatListRef} from '#src/Components/Lists/ChatList';
 import {FezConversationListV2} from '#src/Components/Lists/Fez/FezConversationListV2';
 import {FezChatScreenActionsMenu} from '#src/Components/Menus/Fez/FezChatScreenActionsMenu';
+import {AppSnackbar} from '#src/Components/Snackbars/AppSnackbar';
 import {NavHeaderTitle} from '#src/Components/Text/NavHeaderTitle';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
@@ -21,12 +23,12 @@ import {FezMutedView} from '#src/Components/Views/Static/FezMutedView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {PostAsUserWarningView} from '#src/Components/Views/Warnings/PostAsUserWarningView';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
-import {FezPostsActions, useFezPostsReducer} from '#src/Context/Reducers/Fez/FezPostsReducers';
 import {WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReducer';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
@@ -34,9 +36,12 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezData, useMarkFezReadEffect} from '#src/Hooks/Fez/useFezData';
 import {useKeyboardVerticalOffset} from '#src/Hooks/Keyboard/useKeyboardVerticalOffset';
+import {useFirstDefined} from '#src/Hooks/useFirstDefined';
+import {useLatestRef} from '#src/Hooks/useLatestRef';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
+import {getFezInitialScrollIndex} from '#src/Libraries/ChatList/InitialScroll';
 import {createLogger} from '#src/Libraries/Logger';
 import {openFezParentScreen} from '#src/Libraries/Navigation';
 import {
@@ -50,22 +55,10 @@ import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueri
 import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
-import {type FezData, type FezPostData, type PostContentData} from '#src/Structs/ControllerStructs';
+import {type FezPostData, type PostContentData} from '#src/Structs/ControllerStructs';
 import {SocketFezMemberChangeData, SocketFezPostData} from '#src/Structs/SocketStructs';
 
 const logger = createLogger('FezChatScreen.tsx');
-
-const getInitialScrollIndex = (fez: FezData, fezPostsData: FezPostData[], initialReadCount?: number) => {
-  const readCount = initialReadCount ?? fez.members?.readCount;
-  if (!fez.members || readCount === undefined || readCount === fez.members.postCount) {
-    return fezPostsData.length > 0 ? fezPostsData.length - 1 : undefined;
-  }
-  const loadedStart = fez.members.paginator?.start ?? 0;
-  const idx = Math.max(readCount - loadedStart, 0);
-  // Clamp to the loaded data range. readCount can exceed the loaded page
-  // when only a subset of posts have been fetched.
-  return Math.min(idx, fezPostsData.length - 1);
-};
 
 type Props = StackScreenProps<
   CommonStackParamList,
@@ -135,6 +128,7 @@ const FezChatScreenInner = ({route}: Props) => {
     isFetchingNextPage,
     isFetchingPreviousPage,
     isFetching,
+    isAwaitingFreshData,
   } = useFezData({fezID: route.params.fezID, initialReadCountHint: route.params.initialReadCount});
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   useMarkFezReadEffect(fez, initialReadCount);
@@ -143,15 +137,29 @@ const FezChatScreenInner = ({route}: Props) => {
   const {openFezSocket, dispatchFezSockets, closeFezSocket} = useSocket();
   const navigation = useCommonStack();
   const {appendPost: appendPostToCache, markRead} = useFezCacheReducer();
+  const {currentUserID} = useSession();
   const dispatchScrollToTop = useScrollToTopIntent();
-  const flatListRef = useRef<TConversationListV2Ref>(null);
+  const flatListRef = useRef<TChatListRef<FezPostData>>(null);
   const fezSocketWithHandlerRef = useRef<{
     ws: ReconnectingWebSocket;
     handler: (e: WebSocketMessageEvent) => void;
   } | null>(null);
-  const fezSocketMessageHandlerRef = useRef<(event: WebSocketMessageEvent) => void>(() => {});
   const lastProcessedPostIDRef = useRef<number | null>(null);
-  const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer([]);
+  // Flattened straight from the query pages. Derived rather than copied into state so the list never
+  // sees an empty first render. De-duped by postID (first occurrence wins) because the socket append
+  // and a page refetch can briefly both carry the same post.
+  const fezPostsData = useMemo(() => {
+    const seen = new Set<number>();
+    return fezPages
+      .flatMap(page => page.members?.posts || [])
+      .filter(post => {
+        if (seen.has(post.postID)) {
+          return false;
+        }
+        seen.add(post.postID);
+        return true;
+      });
+  }, [fezPages]);
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {
       await Promise.all([refetchUserNotificationData(), refetch()]);
@@ -221,12 +229,23 @@ const FezChatScreenInner = ({route}: Props) => {
         lastProcessedPostIDRef.current = socketFezPostData.postID;
         // Include self-authored posts so other devices of the same user stay in
         // sync. appendPost is idempotent, so the posting device does not double-apply.
-        appendPostToCache(route.params.fezID, socketFezPostData);
+        // A post this user wrote is never unread. The socket echo of a post sent from this device
+        // usually beats the HTTP response, and a post from another of this user's devices has no
+        // response here at all; without the reset the frozen read count fell one behind postCount,
+        // so the "New" divider showed above the user's own post (and alignAtEnd latched off).
+        // Batched so the cache write's notifications and the reset flush together: the
+        // re-captured read count renders with the appended post, never a render after it.
+        notifyManager.batch(() => {
+          appendPostToCache(route.params.fezID, socketFezPostData);
+          if (socketFezPostData.author.userID === currentUserID) {
+            notifyManager.schedule(resetInitialReadCount);
+          }
+        });
       }
     },
-    [appendPostToCache, route.params.fezID, setSnackbarPayload],
+    [appendPostToCache, currentUserID, resetInitialReadCount, route.params.fezID, setSnackbarPayload],
   );
-  fezSocketMessageHandlerRef.current = fezSocketMessageHandler;
+  const fezSocketMessageHandlerRef = useLatestRef(fezSocketMessageHandler);
 
   const {handleLoadNext, handleLoadPrevious} = usePagination({
     fetchNextPage,
@@ -295,14 +314,6 @@ const FezChatScreenInner = ({route}: Props) => {
     ],
   );
 
-  // Initial set useEffect
-  useEffect(() => {
-    dispatchFezPostsData({
-      type: FezPostsActions.set,
-      fezPosts: [...fezPages.flatMap(page => page.members?.posts || [])],
-    });
-  }, [fezPages, dispatchFezPostsData]);
-
   // Socket useEffect: open/attach once per fezID (route param). Cleanup removes listener and
   // closes only on unmount or fezID change. Handler is read from a ref so message updates
   // do not retrigger this effect and create duplicate sockets.
@@ -338,7 +349,7 @@ const FezChatScreenInner = ({route}: Props) => {
       }
       closeFezSocket(fezID);
     };
-  }, [fezID, closeFezSocket, dispatchFezSockets, openFezSocket]);
+  }, [fezID, closeFezSocket, dispatchFezSockets, fezSocketMessageHandlerRef, openFezSocket]);
 
   const getFezHeaderTitle = useCallback(() => {
     if (fez) {
@@ -361,20 +372,66 @@ const FezChatScreenInner = ({route}: Props) => {
   // 20260308 The query now refetches on mount by default, so there is no effect here to reload when the
   // user taps a Seamail notification while this screen is active in the background.
 
-  const [readyToShow, setReadyToShow] = useState(false);
+  // Key of the list instance that reported ready. A remount via `listKey` yields a new key, so the
+  // overlay comes back until the new instance is at its initial position.
+  const [readyListKey, setReadyListKey] = useState<string>();
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
-  const frozenScrollIndexRef = useRef<number | null>(null);
 
   const keyboardVerticalOffset = useKeyboardVerticalOffset();
 
+  // The list mounts once the chat is loaded and, when the cached copy is behind a fez list, once the
+  // fresh fetch is back: a copy saved before other people posted reads as fully read and would open
+  // the chat at its end instead of at the first unread post.
+  const isChatReady = !!fez && !isAwaitingFreshData;
+
+  // Frozen on the first render with the chat ready, which is also the list's first render, so later
+  // page loads and reads don't move the anchor; FlashList only honors its initial scroll position
+  // at mount anyway. "No index" is frozen too: a chat that opened empty follows the end from then
+  // on, and letting its first post define an index changed `listKey`, remounting the list behind
+  // the loading overlay right after that post was sent. Computed above the early return below so
+  // the hook runs on every render.
+  const computedScrollIndex = fez ? getFezInitialScrollIndex(fez, fezPostsData.length, initialReadCount) : undefined;
+  const frozenScrollIndex = useFirstDefined(
+    isChatReady
+      ? {index: computedScrollIndex !== undefined && computedScrollIndex >= 0 ? computedScrollIndex : undefined}
+      : undefined,
+  );
+  const initialScrollIndex = frozenScrollIndex ? frozenScrollIndex.index : computedScrollIndex;
+
+  const listKey = `${fez?.fezID ?? 'fez'}-${initialScrollIndex ?? 'bottom'}`;
+  const readyToShow = readyListKey === listKey;
+
+  /** Marks the currently mounted list instance as ready, hiding the overlay. */
   const onReadyToShow = useCallback(() => {
     logger.debug('Fez chat list ready to show');
-    setReadyToShow(true);
-  }, []);
+    setReadyListKey(listKey);
+  }, [listKey]);
+
+  const overlayStyles = useMemo(
+    () =>
+      StyleSheet.create({
+        overlay: {
+          ...commonStyles.positionAbsolute,
+          ...commonStyles.flex,
+          ...commonStyles.justifyCenter,
+          ...commonStyles.alignItemsCenter,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: theme.colors.background,
+          zIndex: 1,
+        },
+        keyboardView: {
+          ...commonStyles.flex,
+        },
+      }),
+    [commonStyles, theme.colors.background],
+  );
 
   // This is kinda hax for the fezPostData below
-  if (!fez) {
+  if (!fez || !isChatReady) {
     return (
       <AppView>
         <LoadingView />
@@ -382,33 +439,10 @@ const FezChatScreenInner = ({route}: Props) => {
     );
   }
 
-  const computedScrollIndex = getInitialScrollIndex(fez, fezPostsData, initialReadCount);
-  if (frozenScrollIndexRef.current === null && computedScrollIndex !== undefined && computedScrollIndex >= 0) {
-    frozenScrollIndexRef.current = computedScrollIndex;
-  }
-  const initialScrollIndex = frozenScrollIndexRef.current ?? computedScrollIndex;
-  const listKey = `${fez.fezID}-${initialScrollIndex ?? 'bottom'}`;
-
-  const overlayStyles = StyleSheet.create({
-    overlay: {
-      ...commonStyles.positionAbsolute,
-      ...commonStyles.flex,
-      ...commonStyles.justifyCenter,
-      ...commonStyles.alignItemsCenter,
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: theme.colors.background,
-      zIndex: 1,
-    },
-    keyboardView: {
-      ...commonStyles.flex,
-    },
-  });
-
+  // AppView leaves the snackbar to this screen: drawn at the bottom of the content area, it sits
+  // just above the composer and rides up with it when the keyboard opens instead of covering it.
   return (
-    <AppView>
+    <AppView disableSnackbar={true}>
       <ListTitleView title={fez.title} />
       <PostAsUserWarningView />
       {fez.members?.isMuted && <FezMutedView />}
@@ -437,6 +471,7 @@ const FezChatScreenInner = ({route}: Props) => {
               <ActivityIndicator size={'large'} />
             </View>
           )}
+          <AppSnackbar ignoreBottomInset={true} />
         </View>
         <ContentPostForm onSubmit={onSubmit} enablePhotos={!FezType.isSeamailType(fez.fezType)} maxPhotos={1} />
       </KeyboardAvoidingView>

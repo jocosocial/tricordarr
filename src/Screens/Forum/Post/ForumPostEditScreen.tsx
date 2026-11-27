@@ -1,10 +1,12 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {FormikHelpers} from 'formik';
 import React from 'react';
+import {View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
 
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
+import {AppSnackbar} from '#src/Components/Snackbars/AppSnackbar';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
@@ -86,13 +88,18 @@ const ForumPostEditScreenInner = ({route, navigation}: Props) => {
     postAsTwitarrTeam: false,
   };
 
+  // AppView leaves the snackbar to this screen: drawn at the bottom of the content area, it sits
+  // just above the composer and rides up with it when the keyboard opens instead of covering it.
   return (
-    <AppView>
+    <AppView disableSnackbar={true}>
       <KeyboardAvoidingView
         style={commonStyles.flex}
         behavior={'padding'}
         keyboardVerticalOffset={keyboardVerticalOffset}>
-        <ScrollingContentView isStack={false} />
+        <View style={commonStyles.flex}>
+          <ScrollingContentView isStack={false} />
+          <AppSnackbar ignoreBottomInset={true} />
+        </View>
         <ContentPostForm
           onSubmit={onSubmit}
           enablePhotos={true}

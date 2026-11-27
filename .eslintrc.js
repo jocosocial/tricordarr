@@ -78,6 +78,10 @@ module.exports = {
         argsIgnorePattern: '^_',
       },
     ],
+    // Components must be pure: no reading or writing ref.current during render. Use state (the
+    // "adjust state while rendering" pattern, e.g. useStickyTrue / useFirstDefined), or write the ref
+    // in an effect (useLatestRef / useNonReactiveCallback).
+    'react-hooks/refs': 'error',
     // React prop validation
     'react/jsx-no-undef': 'error',
     'react/no-typos': 'error',

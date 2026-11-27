@@ -854,6 +854,12 @@ export interface ForumData {
   eventID?: string;
   /// If this forum is pinned or not.
   isPinned?: boolean;
+  /// The number of posts the user had read in this forum before this request, with the same
+  /// definition as `ForumListData.readCount`, so `readCount - paginator.start` is the index of the
+  /// first unread post within `posts`. Only the response to a request without an explicit `start`
+  /// reflects where the user was when they opened the thread; every fetch moves the read marker.
+  /// Absent from servers without jocosocial/swiftarr#688.
+  readCount?: number;
 }
 
 export interface PostData {

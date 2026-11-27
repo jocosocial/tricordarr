@@ -127,7 +127,7 @@ npx expo-doctor
 ...
 ⚠️ Minor version mismatches
 package                  expected  found
-@shopify/flash-list      2.0.2     2.3.2
+@shopify/flash-list      2.0.2     2.3.3
 ```
 
 Do not downgrade. The doc is dumb.

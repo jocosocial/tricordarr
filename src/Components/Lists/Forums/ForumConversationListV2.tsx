@@ -1,8 +1,7 @@
 import React, {useCallback, useMemo} from 'react';
 import {RefreshControlProps, View} from 'react-native';
 
-import {type TConversationListV2RefObject} from '#src/Components/Lists/ConversationListV2';
-import {ConversationListV2} from '#src/Components/Lists/ConversationListV2';
+import {ChatList, type TChatListRefObject} from '#src/Components/Lists/ChatList';
 import {LabelDivider} from '#src/Components/Lists/Dividers/LabelDivider';
 import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
 import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter';
@@ -12,7 +11,8 @@ import {ForumPostListItem} from '#src/Components/Lists/Items/Forum/ForumPostList
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {ForumData, ForumListData, PostData} from '#src/Structs/ControllerStructs';
+import type {ForumReadState} from '#src/Libraries/ChatList/InitialScroll';
+import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 
 interface ForumConversationListV2Props {
   postList: PostData[];
@@ -23,9 +23,13 @@ interface ForumConversationListV2Props {
   hasPreviousPage?: boolean;
   hasNextPage?: boolean;
   enableShowInThread?: boolean;
-  listRef: TConversationListV2RefObject;
+  listRef: TChatListRefObject<PostData>;
   getListHeader?: () => React.JSX.Element;
-  forumListData?: ForumListData;
+  /**
+   * How far the user had read, from the forum list entry or the thread fetch (see `ForumReadState`).
+   * Without it the thread is treated as fully read.
+   */
+  readState?: ForumReadState;
   initialScrollIndex?: number;
   /** Callback fired once the list has reached its initial scroll position. */
   onReadyToShow?: () => void;
@@ -37,11 +41,8 @@ interface ForumConversationListV2Props {
 }
 
 /**
- * V2 forum conversation list. Wraps ConversationListV2 with forum-specific rendering.
- *
- * Key differences from V1:
- * - Configurable `alignItemsAtEnd` based on whether the thread is fully read.
- * - Exposes `onReadyToShow` to the parent screen for overlay control.
+ * Forum conversation list. Wraps ChatList with forum-specific rendering (post items, the "New"
+ * divider). Anchors to the end when the thread is fully read, else to `initialScrollIndex`.
  */
 export const ForumConversationListV2 = ({
   postList,
@@ -53,7 +54,7 @@ export const ForumConversationListV2 = ({
   enableShowInThread,
   listRef,
   getListHeader,
-  forumListData,
+  readState,
   hasNextPage,
   initialScrollIndex,
   onReadyToShow,
@@ -64,35 +65,31 @@ export const ForumConversationListV2 = ({
   const {hasModerator} = usePrivilege();
 
   // The thread is fully read when readCount equals postCount. A thread opened
-  // from a specific post has no forumListData, which would otherwise look fully
+  // from a specific post has no read state, which would otherwise look fully
   // read and pin the list to the last item — hiding the startPost.
-  const isFullyRead = startFromPost
-    ? false
-    : forumListData
-      ? forumListData.readCount === forumListData.postCount
-      : true;
+  const isFullyRead = startFromPost ? false : readState ? readState.readCount === readState.postCount : true;
 
   // Compute the divider index for the scroll button. Only set when the divider
   // is within the loaded data range.
   const newDividerIndex = useMemo(() => {
-    if (!forumListData || !forumData) return undefined;
-    if (forumListData.postCount === forumListData.readCount) return undefined;
-    const idx = forumListData.readCount - forumData.paginator.start;
+    if (!readState || !forumData) return undefined;
+    if (readState.postCount === readState.readCount) return undefined;
+    const idx = readState.readCount - forumData.paginator.start;
     return idx >= 0 && idx < postList.length ? idx : undefined;
-  }, [forumData, forumListData, postList.length]);
+  }, [forumData, readState, postList.length]);
 
   const showNewDivider = useCallback(
     (index: number) => {
-      if (forumListData && forumData) {
-        if (forumListData.postCount === forumListData.readCount) {
+      if (readState && forumData) {
+        if (readState.postCount === readState.readCount) {
           return false;
         }
         const loadedStartIndex = forumData.paginator.start;
-        return forumListData.readCount - loadedStartIndex === index;
+        return readState.readCount - loadedStartIndex === index;
       }
       return false;
     },
-    [forumData, forumListData],
+    [forumData, readState],
   );
 
   const renderItem = useCallback(
@@ -131,30 +128,48 @@ export const ForumConversationListV2 = ({
     if (hasNextPage) {
       return <LoadingNextFooter />;
     }
-    return <SpaceDivider />;
+    // No spacer here: ChatList puts the gap below the last post inside the last cell.
+    return null;
   }, [hasNextPage]);
 
   const keyExtractor = useCallback((item: PostData) => item.postID.toString(), []);
 
+  /** Recycled cells are only reused for items that render the same chrome (the New divider). */
+  const getItemType = useCallback(
+    (item: PostData, index: number) => (showNewDivider(index) ? 'post-with-divider' : 'post'),
+    [showNewDivider],
+  );
+
+  const isOwnItem = useCallback((item: PostData) => item.author.userID === currentUserID, [currentUserID]);
+
+  // Opened from a specific post: that post is first in the loaded page. Otherwise a fully-read
+  // thread opens at the end and an unread one at the first unread post.
+  const anchor = startFromPost ? {index: 0} : isFullyRead ? ('end' as const) : {index: initialScrollIndex ?? 0};
+
   return (
-    <ConversationListV2<PostData>
+    <ChatList<PostData>
       listRef={listRef}
       data={postList}
       renderItem={renderItem}
       keyExtractor={keyExtractor}
+      getItemType={getItemType}
       ListHeaderComponent={renderListHeader}
       ListFooterComponent={renderListFooter}
       ItemSeparatorComponent={renderSeparator}
       refreshControl={refreshControl}
       handleLoadNext={handleLoadNext}
       handleLoadPrevious={handleLoadPrevious}
-      initialScrollIndex={initialScrollIndex}
-      alignItemsAtEnd={isFullyRead}
-      estimatedItemSize={120}
+      hasNextPage={hasNextPage}
+      hasPreviousPage={hasPreviousPage}
+      anchor={anchor}
+      isOwnItem={isOwnItem}
+      // Image-heavy threads: render further beyond the viewport so tall late-loading items are
+      // already laid out when scrolled to (Shopify/flash-list#1951).
+      drawDistance={1000}
       onReadyToShow={onReadyToShow}
       newDividerIndex={newDividerIndex}
       // renderItem's "New" divider placement is driven by isFullyRead/newDividerIndex,
-      // which live outside `data`. LegendList's recycled cells (recycleItems={true}) only
+      // which live outside `data`. FlashList's recycled cells only
       // redraw when `item`/`index` change or `extraData` changes identity, so without this
       // a cell that already rendered a divider would keep showing it after posting (see
       // the same fix in FezConversationListV2). Combine both so every visibility/position
@@ -164,7 +179,8 @@ export const ForumConversationListV2 = ({
       // Style is here rather than in the renderItem because the padding we use is
       // also needed for the dividers. It could be added to the divider function as
       // well but this is slightly simpler and covers cases I am not remembering.
-      style={commonStyles.paddingHorizontalSmall}
+      // On the content container, not the list, so the scroll bar stays on the screen edge.
+      contentContainerStyle={commonStyles.paddingHorizontalSmall}
     />
   );
 };

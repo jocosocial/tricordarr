@@ -1,0 +1,54 @@
+import {hasOutgrownViewport, shouldRepinOnContentGrowth, shouldRepinOnResize} from '#src/Libraries/ChatList/Pinning';
+
+describe('shouldRepinOnContentGrowth', () => {
+  // At the end: 1500 - 500 - 1000 = 0 from the bottom.
+  const base = {
+    metrics: {offset: 1000, viewportHeight: 500, contentHeight: 1500},
+    contentHeight: 1800,
+    now: 1000,
+    endPinUntil: 2000,
+    userScrolling: false,
+  };
+
+  it('re-pins growth at the end inside the window', () => {
+    expect(shouldRepinOnContentGrowth(base)).toBe(true);
+  });
+
+  it('does not re-pin away from the end, on shrink, after the window, or while the user scrolls', () => {
+    expect(shouldRepinOnContentGrowth({...base, metrics: {...base.metrics, offset: 800}})).toBe(false);
+    expect(shouldRepinOnContentGrowth({...base, contentHeight: 1400})).toBe(false);
+    expect(shouldRepinOnContentGrowth({...base, now: 2000})).toBe(false);
+    expect(shouldRepinOnContentGrowth({...base, userScrolling: true})).toBe(false);
+  });
+});
+
+describe('hasOutgrownViewport', () => {
+  it('needs a pending pin, a measured viewport, and content past it', () => {
+    expect(hasOutgrownViewport(true, 500, 502)).toBe(true);
+    expect(hasOutgrownViewport(true, 500, 501)).toBe(false);
+    expect(hasOutgrownViewport(false, 500, 900)).toBe(false);
+    expect(hasOutgrownViewport(true, null, 900)).toBe(false);
+  });
+});
+
+describe('shouldRepinOnResize', () => {
+  const base = {
+    previousHeight: 600,
+    height: 400,
+    ready: true,
+    userScrolling: false,
+    nearBottom: true,
+  };
+
+  it('re-pins a real resize while near the bottom', () => {
+    expect(shouldRepinOnResize(base)).toBe(true);
+  });
+
+  it('ignores the first layout, no change, before ready, while scrolling, and away from the bottom', () => {
+    expect(shouldRepinOnResize({...base, previousHeight: null})).toBe(false);
+    expect(shouldRepinOnResize({...base, height: 600})).toBe(false);
+    expect(shouldRepinOnResize({...base, ready: false})).toBe(false);
+    expect(shouldRepinOnResize({...base, userScrolling: true})).toBe(false);
+    expect(shouldRepinOnResize({...base, nearBottom: false})).toBe(false);
+  });
+});

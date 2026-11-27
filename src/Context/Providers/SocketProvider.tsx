@@ -7,6 +7,7 @@ import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SocketContext} from '#src/Context/Contexts/SocketContext';
 import {useWebSocketStorageReducer, WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReducer';
+import {useLatestRef} from '#src/Hooks/useLatestRef';
 import {createLogger} from '#src/Libraries/Logger';
 import {buildWebSocket, getToken, OpenFezSocket} from '#src/Libraries/Network/Websockets';
 
@@ -17,6 +18,12 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
   const [notificationSocket, setNotificationSocket] = useState<ReconnectingWebSocket>();
   const [fezSockets, dispatchFezSockets] = useWebSocketStorageReducer({});
   const openFezSocketInFlightRef = useRef<Map<string, Promise<OpenFezSocket>>>(new Map());
+  // openFezSocket/closeFezSocket read the sockets through this ref so their identity does not change
+  // with the map. Chat screens list them as effect dependencies, and a callback rebuilt on every map
+  // change re-ran each screen's socket effect, whose cleanup closes that screen's socket. With two
+  // chat screens mounted (one pushed over another) each close re-ran the other screen's effect, and
+  // the two closed and reopened each other's sockets in a loop that starved the JS thread.
+  const fezSocketsRef = useLatestRef(fezSockets);
   const {appConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();
   const {oobeCompleted} = useOobe();
@@ -24,9 +31,10 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
   // Socket Open
 
   /**
-   * Open a Fez Socket for a given FezID. Only one Fez Socket can be open at a time.
+   * Open a Fez Socket for a given FezID, one per FezID (two chats on the stack each hold their own).
    * Concurrent calls for the same fezID share a single creation promise to avoid
    * duplicate sockets. Returns whether a new socket was created and the socket to use.
+   * Stable across socket map changes (see fezSocketsRef); call it from effects or handlers, not render.
    */
   const openFezSocket = useCallback(
     async (fezID: string): Promise<OpenFezSocket> => {
@@ -36,7 +44,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
           isNew: false,
         };
       }
-      const existingSocket = fezSockets[fezID];
+      const existingSocket = fezSocketsRef.current[fezID];
       if (
         existingSocket &&
         (existingSocket.readyState === WebSocket.OPEN || existingSocket.readyState === WebSocket.CONNECTING)
@@ -62,7 +70,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
       openFezSocketInFlightRef.current.set(fezID, promise);
       return promise;
     },
-    [appConfig.enableFezSocket, fezSockets],
+    [appConfig.enableFezSocket, fezSocketsRef],
   );
 
   const openNotificationSocket = useCallback(() => {
@@ -97,6 +105,10 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
 
   // Socket Close
 
+  /**
+   * Close and forget the Fez Socket for a given FezID. Stable across socket map changes (see
+   * fezSocketsRef); call it from effects, cleanups or handlers, not render.
+   */
   const closeFezSocket = useCallback(
     (fezID: string) => {
       logger.debug('FezSocket is closing.');
@@ -104,7 +116,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
         logger.debug('FezSocket is disabled. Skipping close.');
         return;
       }
-      const fezSocket = fezSockets[fezID];
+      const fezSocket = fezSocketsRef.current[fezID];
       const readyState = fezSocket?.readyState;
       logger.debug(`FezSocket enabled for ${fezID}. State: ${readyState}`);
       // Close for OPEN, CONNECTING, or CLOSED so the socket is always removed from storage
@@ -122,7 +134,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
       }
       logger.debug(`FezSocket close complete. State: ${readyState}`);
     },
-    [appConfig.enableFezSocket, dispatchFezSockets, fezSockets],
+    [appConfig.enableFezSocket, dispatchFezSockets, fezSocketsRef],
   );
 
   const closeNotificationSocket = useCallback(() => {
@@ -143,17 +155,17 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
 
   // SocketProvider lives inside SessionBoundaryProvider, so it unmounts on every session change. Sockets are
   // authenticated as the outgoing account, so they must not outlive it.
-  const socketsRef = useRef<{notification?: ReconnectingWebSocket; fez: Record<string, ReconnectingWebSocket>}>({
-    fez: {},
+  const socketsRef = useLatestRef<{notification?: ReconnectingWebSocket; fez: Record<string, ReconnectingWebSocket>}>({
+    notification: notificationSocket,
+    fez: fezSockets,
   });
-  socketsRef.current = {notification: notificationSocket, fez: fezSockets};
   useEffect(() => {
     const sockets = socketsRef;
     return () => {
       sockets.current.notification?.close();
       Object.values(sockets.current.fez).forEach(ws => ws.close());
     };
-  }, []);
+  }, [socketsRef]);
 
   useEffect(() => {
     logger.debug('Triggering openNotificationSocket useEffect.');

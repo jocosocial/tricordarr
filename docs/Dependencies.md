@@ -18,6 +18,10 @@ None!
 - **markdown-it** (pinned to 14.3.3): pulled in by `@ronradtke/react-native-markdown-display`. Upstream declares `^13.0.1`; 14.3.0 fixes the ReDoS in linkify. When the library depends on markdown-it@14.1.1+, the override can be removed.
 - **uuid**, scoped to `xcode` (pinned to 11.1.1): `xcode` (a transitive dep of the Expo config-plugins toolchain) declares vulnerable `^7.0.3`. 11.1.1 fixes the buffer-bounds-check advisory (GHSA-w5hq-g745-h8pq); `xcode` only calls `uuid.v4()`, which is unchanged. Scoped to `xcode` specifically because the app also has a direct, already-patched `uuid@^14.0.1` dependency that a global override would conflict with. When `xcode` updates its range, the override can be removed.
 
+## Local patches
+
+- **@shopify/flash-list** (pinned to exactly `2.3.3`, `patches/@shopify+flash-list+2.3.3.patch`): not an upstream backport. It changes prepend handling in FlashList's data-update path so that loading an older chat page does not move the viewport or remount the posts on screen (details in `docs/ChatList/README.md`). The new path is opt-in through `maintainVisibleContentPosition.anchorThroughDataUpdates`, which only `ChatList` passes; every other FlashList runs stock code. The version is pinned without a range because the patch edits 2.3.3 internals and a newer release would fail to apply or apply wrongly. To upgrade, re-port the patch to the new version and re-run the chat scenarios in `docs/ChatList/README.md` ("Scenario gate", especially 1, 2 and 7).
+
 ## Upstream fixes carried as patches
 
 - **@mattermost/react-native-paste-input** (2.0.1, `patches/@mattermost+react-native-paste-input+2.0.1.patch`): applies three open upstream PRs, without which image paste into composers does nothing. Drop each part once a release includes it.

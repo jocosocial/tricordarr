@@ -1,9 +1,10 @@
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppIcons} from '#src/Enums/Icons';
+import {useLatestRef} from '#src/Hooks/useLatestRef';
 import {
   CommonStackComponents,
   CommonStackParamList,
@@ -38,8 +39,7 @@ export const useAdminHeaderButtons = <T extends HelpScreenComponents>(
   params?: CommonStackParamList[T],
 ) => {
   const navigation = useCommonStack();
-  const paramsRef = useRef(params);
-  paramsRef.current = params;
+  const paramsRef = useLatestRef(params);
 
   return useCallback(
     () => (
@@ -52,6 +52,6 @@ export const useAdminHeaderButtons = <T extends HelpScreenComponents>(
         }
       />
     ),
-    [helpScreen, navigation],
+    [helpScreen, navigation, paramsRef],
   );
 };

@@ -24,6 +24,12 @@ export const getNextPageParam = (page: WithPaginator | FezData): PaginationQuery
 
 /**
  * Tells useInfiniteQuery if there's a previous page.
+ *
+ * The server's default window starts on a multiple of `limit`, but a window opened from a specific
+ * post (`?startPost=`) starts at the exact count of earlier posts, e.g. `start=37, limit=50`. Stepping
+ * back by `limit` would go negative and strand posts 0-36, so the final previous page is shortened to
+ * `{start: 0, limit: start}`. The `start <= 0` check must come first: without it a page at `start=0`
+ * would yield `{start: 0, limit: 0}` and `hasPreviousPage` would never go false.
  */
 export const getPreviousPageParam = (page: WithPaginator | FezData): PaginationQueryParams | undefined => {
   let paginator;
@@ -36,8 +42,11 @@ export const getPreviousPageParam = (page: WithPaginator | FezData): PaginationQ
     return;
   }
   const {limit, start} = paginator;
+  if (start <= 0) {
+    return undefined;
+  }
   const prevStart = start - limit;
-  return prevStart >= 0 ? {start: prevStart, limit: limit} : undefined;
+  return prevStart < 0 ? {start: 0, limit: start} : {start: prevStart, limit: limit};
 };
 
 /**

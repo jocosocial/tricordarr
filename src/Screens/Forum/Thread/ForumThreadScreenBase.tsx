@@ -1,7 +1,7 @@
 import {InfiniteData, QueryObserverResult} from '@tanstack/react-query';
 import {FormikHelpers, FormikProps} from 'formik';
 import pluralize from 'pluralize';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {StyleSheet, TextInputInstance, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
@@ -12,11 +12,12 @@ import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButto
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {type TConversationListV2Ref} from '#src/Components/Lists/ConversationListV2';
+import {type TChatListRef} from '#src/Components/Lists/ChatList';
 import {ForumConversationListV2} from '#src/Components/Lists/Forums/ForumConversationListV2';
 import {ForumThreadScreenActionsMenu} from '#src/Components/Menus/Forum/ForumThreadScreenActionsMenu';
 import {ForumThreadPinnedPostsItem} from '#src/Components/Menus/Forum/Items/ForumThreadPinnedPostsItem';
 import {ForumThreadSearchPostsItem} from '#src/Components/Menus/Forum/Items/ForumThreadSearchPostsItem';
+import {AppSnackbar} from '#src/Components/Snackbars/AppSnackbar';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {ForumLockedView} from '#src/Components/Views/Static/ForumLockedView';
@@ -35,10 +36,12 @@ import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useForumData} from '#src/Hooks/Forum/useForumData';
 import {useKeyboardVerticalOffset} from '#src/Hooks/Keyboard/useKeyboardVerticalOffset';
+import {useFirstDefined} from '#src/Hooks/useFirstDefined';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {paginatedHighWaterMark} from '#src/Libraries/CacheReduction';
+import {type ForumReadState, getForumInitialScrollIndex} from '#src/Libraries/ChatList/InitialScroll';
 import {createLogger} from '#src/Libraries/Logger';
 import {cancelSecondaryNotifications} from '#src/Libraries/Notifications/Content';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -47,7 +50,7 @@ import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations'
 import {useForumMarkReadMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
 import {useForumThreadPinnedPostsQuery} from '#src/Queries/Forum/ForumThreadQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
-import {ForumData, ForumListData, PostContentData} from '#src/Structs/ControllerStructs';
+import {ForumData, PostContentData, PostData} from '#src/Structs/ControllerStructs';
 
 const logger = createLogger('ForumThreadScreenBase.tsx');
 
@@ -62,7 +65,12 @@ interface Props {
   hasNextPage?: boolean;
   hasPreviousPage?: boolean;
   getListHeader?: () => React.JSX.Element;
-  forumListData?: ForumListData;
+  /**
+   * How far the user had read: from the forum list entry the thread was opened from, else from the
+   * thread fetch (see `ForumReadState`). Undefined when neither is available, which is treated as
+   * fully read.
+   */
+  readState?: ForumReadState;
   /**
    * Unmasked title from a moderation View in Context. Public thread
    * payloads replace quarantined titles with placeholder copy.
@@ -71,7 +79,7 @@ interface Props {
   initialElevation?: keyof typeof PrivilegedUserAccounts;
   /**
    * True when this thread was opened from a specific post. `startPost` returns that
-   * post as the first item, so we must not treat a missing forumListData as fully-read
+   * post as the first item, so we must not treat a missing readState as fully-read
    * and scroll to the end.
    */
   startFromPost?: boolean;
@@ -102,7 +110,7 @@ const ForumThreadScreenBaseInner = ({
   hasNextPage,
   hasPreviousPage,
   getListHeader,
-  forumListData,
+  readState,
   titleOverride,
   startFromPost,
 }: Props) => {
@@ -111,7 +119,7 @@ const ForumThreadScreenBaseInner = ({
   const postInputRef = useRef<TextInputInstance | null>(null);
   const postCreateMutation = useForumPostCreateMutation();
   const markReadMutation = useForumMarkReadMutation();
-  const flatListRef = useRef<TConversationListV2Ref>(null);
+  const flatListRef = useRef<TChatListRef<PostData>>(null);
   const {hasModerator} = usePrivilege();
   const {asModerator, asTwitarrTeam} = useElevation();
   const {maxForumPostImages} = useClientSettings();
@@ -119,7 +127,9 @@ const ForumThreadScreenBaseInner = ({
   // This is used deep in the FlatList to star posts by favorite users.
   // Will trigger an initial load if the data is empty else a background refetch on staleTime.
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
-  const [readyToShow, setReadyToShow] = useState(false);
+  // Key of the list instance that reported ready. A remount via `listKey` yields a new key, so the
+  // overlay comes back until the new instance is at its initial position.
+  const [readyListKey, setReadyListKey] = useState<string>();
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
 
@@ -151,16 +161,16 @@ const ForumThreadScreenBaseInner = ({
       );
       const serverPostCount = forumData.paginator.total;
       if (
-        forumListData &&
-        forumListData.readCount === forumListData.postCount &&
-        forumListData.postCount >= serverPostCount &&
-        forumListData.readCount >= fetchedUpTo
+        readState &&
+        readState.readCount === readState.postCount &&
+        readState.postCount >= serverPostCount &&
+        readState.readCount >= fetchedUpTo
       ) {
         return;
       }
       markRead(forumData.forumID, forumData.categoryID, fetchedUpTo, serverPostCount);
     }
-  }, [forumData, forumListData, markRead, data]);
+  }, [forumData, readState, markRead, data]);
 
   // Viewing the thread dismisses any displayed mention/alertword notifications for it, like opening a seamail does.
   const forumID = forumData?.forumID;
@@ -263,12 +273,8 @@ const ForumThreadScreenBaseInner = ({
       // Clear server unread status (fire-and-forget).
       markReadMutation.mutate({forumID: forumData.forumID});
 
-      // Scroll to the new post.
-      // requestAnimationFrame(() => {
-      //   requestAnimationFrame(() => {
-      flatListRef.current?.scrollToEnd({animated: false});
-      //   });
-      // });
+      // No scroll here: ChatList scrolls to the user's own post itself once it reaches the list
+      // (it knows when the data landed; this handler fires a render or more too early).
     } catch (error) {
       // The error snackbar is raised by useTokenAuthMutation's onError. Swallow here so the
       // rejection doesn't escape into Formik's submit handling.
@@ -276,12 +282,49 @@ const ForumThreadScreenBaseInner = ({
     }
   };
 
+  // Frozen once computable so later page loads and reads don't move the anchor; the list is
+  // remounted via `key` when the index first becomes known, because FlashList only honors its
+  // initial scroll position at mount. Computed above the early return below so the hook runs on
+  // every render, but only once loading has finished, as before.
+  const isLoaded = !!data && !isLoading && !isLoadingFavorites;
+  const computedScrollIndex = isLoaded
+    ? getForumInitialScrollIndex(forumPosts.length, forumData?.paginator.start ?? 0, readState, startFromPost)
+    : undefined;
+  const frozenScrollIndex = useFirstDefined(computedScrollIndex);
+  const initialScrollIndex = frozenScrollIndex ?? computedScrollIndex;
+
+  const listKey = `${forumData?.forumID ?? 'forum'}-${initialScrollIndex ?? 'bottom'}`;
+  const readyToShow = readyListKey === listKey;
+
+  /** Marks the currently mounted list instance as ready, hiding the overlay. */
   const onReadyToShow = useCallback(() => {
     logger.debug('Forum thread list ready to show');
-    setReadyToShow(true);
-  }, []);
+    setReadyListKey(listKey);
+  }, [listKey]);
 
-  if (!data || isLoading || isLoadingFavorites) {
+  const overlayStyles = useMemo(
+    () =>
+      StyleSheet.create({
+        overlay: {
+          ...commonStyles.positionAbsolute,
+          ...commonStyles.flex,
+          ...commonStyles.justifyCenter,
+          ...commonStyles.alignItemsCenter,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: theme.colors.background,
+          zIndex: 1,
+        },
+        keyboardView: {
+          ...commonStyles.flex,
+        },
+      }),
+    [commonStyles, theme.colors.background],
+  );
+
+  if (!isLoaded) {
     return (
       <AppView>
         <LoadingView />
@@ -289,48 +332,13 @@ const ForumThreadScreenBaseInner = ({
     );
   }
 
-  const getInitialScrollIndex = () => {
-    // startPost returns the selected post as the first item on the page. The
-    // fully-read path below would scroll to the last loaded post and hide it.
-    if (startFromPost) {
-      return forumPosts.length > 0 ? 0 : undefined;
-    }
-    if (!forumListData || forumListData.readCount === forumListData.postCount) {
-      // Fully read: scroll to the last post via initialScrollIndex.
-      // We use this instead of scrollToEnd because scrollToEnd fires before
-      // LegendList has fully laid out recycled content, causing it to land mid-list.
-      return forumPosts.length > 0 ? forumPosts.length - 1 : undefined;
-    }
-    const loadedStart = forumData?.paginator.start ?? 0;
-    const idx = Math.max(forumListData.readCount - loadedStart, 0);
-    // Clamp to the loaded data range. readCount can exceed the loaded page
-    // when only a subset of posts have been fetched.
-    return Math.min(idx, forumPosts.length - 1);
-  };
-
   const showForm = !forumData?.isLocked || hasModerator;
 
-  const overlayStyles = StyleSheet.create({
-    overlay: {
-      ...commonStyles.positionAbsolute,
-      ...commonStyles.flex,
-      ...commonStyles.justifyCenter,
-      ...commonStyles.alignItemsCenter,
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: theme.colors.background,
-      zIndex: 1,
-    },
-    keyboardView: {
-      ...commonStyles.flex,
-    },
-  });
-
+  // AppView leaves the snackbar to this screen: drawn at the bottom of the content area, it sits
+  // just above the composer and rides up with it when the keyboard opens instead of covering it.
   return (
     <ForumComposerProvider formRef={postFormRef} inputRef={postInputRef} enabled={showForm}>
-      <AppView>
+      <AppView disableSnackbar={true}>
         <PostAsUserWarningView />
         <ListTitleView
           title={titleOverride ?? forumData?.title ?? ''}
@@ -344,6 +352,7 @@ const ForumThreadScreenBaseInner = ({
           keyboardVerticalOffset={keyboardVerticalOffset}>
           <View style={commonStyles.flex}>
             <ForumConversationListV2
+              key={listKey}
               postList={forumPosts}
               handleLoadNext={handleLoadNext}
               handleLoadPrevious={handleLoadPrevious}
@@ -353,8 +362,8 @@ const ForumThreadScreenBaseInner = ({
               getListHeader={getListHeader}
               listRef={flatListRef}
               hasNextPage={hasNextPage}
-              forumListData={forumListData}
-              initialScrollIndex={getInitialScrollIndex()}
+              readState={readState}
+              initialScrollIndex={initialScrollIndex}
               onReadyToShow={onReadyToShow}
               startFromPost={startFromPost}
             />
@@ -363,6 +372,7 @@ const ForumThreadScreenBaseInner = ({
                 <ActivityIndicator size={'large'} />
               </View>
             )}
+            <AppSnackbar ignoreBottomInset={true} />
           </View>
           {showForm && (
             <ContentPostForm
