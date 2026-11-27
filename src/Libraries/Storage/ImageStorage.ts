@@ -20,11 +20,15 @@ const getImageDestinationFile = (fileName: string, mimeType: string) => {
   return new File(Paths.document, destName);
 };
 
-const writeBase64File = (file: File, base64Data: string) => {
+/**
+ * Write base64-encoded bytes to `file`. Resolves once the data is on disk, so callers can hand
+ * the file to another API right after awaiting it.
+ */
+const writeBase64File = async (file: File, base64Data: string) => {
   if (!file.exists) {
     file.create({intermediates: true, overwrite: true});
   }
-  file.write(base64Data, {encoding: EncodingType.Base64});
+  await file.write(base64Data, {encoding: EncodingType.Base64});
 };
 
 const deleteIfExists = (file: File) => {
@@ -98,7 +102,7 @@ export const saveImageDataURIToCameraRoll = async (imageData: AppImageMetaData) 
     throw Error(`No data to save to file ${destFile.uri}`);
   }
   logger.debug('Writing data to', destFile.uri, imageData.mimeType);
-  writeBase64File(destFile, dataURI);
+  await writeBase64File(destFile, dataURI);
   const cameraRollSaveResult = await CameraRoll.save(destFile.uri, {
     type: 'photo',
     album: 'Tricordarr',
@@ -117,7 +121,7 @@ export const saveImageQueryToLocal = async (imageData: ImageQueryData) => {
     throw Error(`No data to save to file ${destFile.uri}`);
   }
   logger.debug('Writing data to', destFile.uri, imageData.mimeType);
-  writeBase64File(destFile, imageData.base64);
+  await writeBase64File(destFile, imageData.base64);
   const cameraRollSaveResult = await CameraRoll.save(destFile.uri, {
     type: 'photo',
     album: 'Tricordarr',
@@ -169,7 +173,7 @@ export const newSaveImage = async (image: AppImageMetaData) => {
       // Handle base64 data URI
       logger.debug('Writing base64 data to', destFile.uri);
       const base64Data = dataURI.split(',')[1]; // Remove the data:image/jpeg;base64, prefix
-      writeBase64File(destFile, base64Data);
+      await writeBase64File(destFile, base64Data);
     } else {
       throw new Error(`Unsupported dataURI format: ${dataURI.substring(0, 50)}...`);
     }

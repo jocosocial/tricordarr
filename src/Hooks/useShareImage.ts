@@ -34,7 +34,7 @@ export const useShareImage = () => {
             if (!cacheFile.exists) {
               cacheFile.create({intermediates: true, overwrite: true});
             }
-            cacheFile.write(base64Data, {encoding: EncodingType.Base64});
+            await cacheFile.write(base64Data, {encoding: EncodingType.Base64});
             break;
           }
           case AppImageMode.asset: {

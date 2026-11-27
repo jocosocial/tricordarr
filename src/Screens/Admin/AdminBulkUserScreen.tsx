@@ -69,7 +69,7 @@ const AdminBulkUserScreenInner = () => {
           const fileName = `twitarr-users-${Math.floor(Date.now() / 1000)}.zip`;
           const file = new File(Paths.cache, fileName);
           file.create({intermediates: true, overwrite: true});
-          file.write(new Uint8Array(buffer));
+          await file.write(new Uint8Array(buffer));
           await Share.open({
             url: file.uri,
             type: 'application/zip',

@@ -73,7 +73,7 @@ const pruneIfNeeded = async (): Promise<void> => {
     if (trimmed.length === lines.length) {
       return;
     }
-    NOTIFICATION_LOG_FILE.write(trimmed.join('\n') + '\n', {encoding: EncodingType.UTF8});
+    await NOTIFICATION_LOG_FILE.write(trimmed.join('\n') + '\n', {encoding: EncodingType.UTF8});
   } catch (error) {
     logger.error('Failed to prune notification log', error);
   }
@@ -116,7 +116,7 @@ export const recordNotificationEvent = async (
     if (!NOTIFICATION_LOG_FILE.exists) {
       NOTIFICATION_LOG_FILE.create({intermediates: true});
     }
-    NOTIFICATION_LOG_FILE.write(serializeEntry(entry) + '\n', {encoding: EncodingType.UTF8, append: true});
+    await NOTIFICATION_LOG_FILE.write(serializeEntry(entry) + '\n', {encoding: EncodingType.UTF8, append: true});
     await pruneIfNeeded();
     notifyNotificationLogListeners();
   } catch (error) {
