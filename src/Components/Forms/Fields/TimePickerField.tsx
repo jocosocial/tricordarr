@@ -31,7 +31,7 @@ export const TimePickerField = ({name, testID}: TimePickerFieldProps) => {
 
   const onConfirm = ({hours, minutes}: TimePick) => {
     setVisible(false);
-    setFieldValue(name, {
+    void setFieldValue(name, {
       hours: hours,
       minutes: minutes,
     });

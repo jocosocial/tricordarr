@@ -25,7 +25,7 @@ export const EmojiPickerField = () => {
   });
 
   const handleEmojiPress = (emoji: string) => {
-    setFieldValue('text', `${values.text}${emoji}`);
+    void setFieldValue('text', `${values.text}${emoji}`);
   };
 
   const getEmojiIcon = (emoji: keyof typeof CustomEmoji) => <Emoji style={styles.emoji} emojiName={emoji} />;

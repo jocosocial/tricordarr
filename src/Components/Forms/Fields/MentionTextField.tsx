@@ -116,14 +116,14 @@ export const MentionTextFieldProvider = ({name, enableMentions, inputRef, childr
    */
   const handleChange = useCallback(
     (text: string) => {
-      helpers.setValue(text);
+      void helpers.setValue(text);
       // If we're expecting a mention insertion and the text doesn't end with a space, add one
       if (pendingMentionInsertionRef.current && text && !text.endsWith(' ')) {
         pendingMentionInsertionRef.current = false;
         // Use requestAnimationFrame to ensure the text update is complete
         requestAnimationFrame(() => {
           const newText = text + ' ';
-          helpers.setValue(newText);
+          void helpers.setValue(newText);
           // Move cursor to end after adding space
           if (textInputRef.current) {
             textInputRef.current.setNativeProps({

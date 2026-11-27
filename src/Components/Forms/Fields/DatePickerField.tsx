@@ -53,7 +53,7 @@ export const DatePickerField = ({
   const onConfirm = (params: {date: CalendarDate}) => {
     setVisible(false);
     if (params.date) {
-      setFieldValue(name, params.date);
+      void setFieldValue(name, params.date);
     }
   };
 

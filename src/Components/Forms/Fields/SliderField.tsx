@@ -30,7 +30,7 @@ export const SliderField = (props: SliderFieldProps) => {
   const {theme} = useAppTheme();
 
   const onValueChange = (value: number) => {
-    setFieldValue(props.name, value);
+    void setFieldValue(props.name, value);
     if (props.onValueChange) {
       props.onValueChange(value);
     }
