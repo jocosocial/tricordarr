@@ -197,11 +197,13 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   // https://tanstack.com/query/v4/docs/react/guides/query-invalidation
   const onSuccess = () => {
     logger.debug('Successfully loaded query client.');
-    queryClient.resumePausedMutations().then(() => {
-      queryClient.invalidateQueries().then(() => {
+    queryClient
+      .resumePausedMutations()
+      .then(() => queryClient.invalidateQueries())
+      .then(() => {
         logger.debug('Finished resuming offline data.');
-      });
-    });
+      })
+      .catch(error => logger.error('Failed to resume offline data', error));
   };
 
   // Eeeek. I don't love this. But LoadingView uses AppView which is where we do the Disruption banner.
