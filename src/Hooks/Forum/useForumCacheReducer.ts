@@ -647,11 +647,11 @@ export const useForumCacheReducer = () => {
   const cancelForumQueries = useCallback(
     (forumID: string, categoryID?: string) => {
       for (const keyPrefix of forumSearchDataKeys) {
-        queryClient.cancelQueries({queryKey: [keyPrefix]});
+        void queryClient.cancelQueries({queryKey: [keyPrefix]});
       }
-      queryClient.cancelQueries({queryKey: [`/forum/${forumID}`]});
+      void queryClient.cancelQueries({queryKey: [`/forum/${forumID}`]});
       if (categoryID) {
-        queryClient.cancelQueries({queryKey: [`/forum/categories/${categoryID}`]});
+        void queryClient.cancelQueries({queryKey: [`/forum/categories/${categoryID}`]});
       }
     },
     [queryClient],
@@ -829,10 +829,10 @@ export const useForumCacheReducer = () => {
    */
   const updatePostPin = useCallback(
     (postID: number, forumID: string | undefined, newValue: boolean) => {
-      queryClient.cancelQueries({queryKey: [`/forum/post/search`]});
+      void queryClient.cancelQueries({queryKey: [`/forum/post/search`]});
       if (forumID) {
-        queryClient.cancelQueries({queryKey: [`/forum/${forumID}`]});
-        queryClient.cancelQueries({queryKey: [`/forum/${forumID}/pinnedposts`]});
+        void queryClient.cancelQueries({queryKey: [`/forum/${forumID}`]});
+        void queryClient.cancelQueries({queryKey: [`/forum/${forumID}/pinnedposts`]});
       }
       const updater = (post: PostData): PostData => ({...post, isPinned: newValue});
       updatePostInThreadCaches(postID, forumID, updater);
@@ -877,10 +877,10 @@ export const useForumCacheReducer = () => {
   const updatePostBookmark = useCallback(
     (post: PostData, forumID: string | undefined, newValue: boolean) => {
       const postID = post.postID;
-      queryClient.cancelQueries({queryKey: [`/forum/post/search`]});
-      queryClient.cancelQueries({queryKey: [`/forum/post/${postID}`]});
+      void queryClient.cancelQueries({queryKey: [`/forum/post/search`]});
+      void queryClient.cancelQueries({queryKey: [`/forum/post/${postID}`]});
       if (forumID) {
-        queryClient.cancelQueries({queryKey: [`/forum/${forumID}`]});
+        void queryClient.cancelQueries({queryKey: [`/forum/${forumID}`]});
       }
       const updater = (p: PostData): PostData => ({...p, isBookmarked: newValue});
       updatePostInThreadCaches(postID, forumID, updater);

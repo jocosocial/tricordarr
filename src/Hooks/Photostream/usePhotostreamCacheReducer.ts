@@ -76,7 +76,7 @@ export const usePhotostreamCacheReducer = () => {
       // An already-in-flight refetch would otherwise resolve after this write and
       // stomp it back to the pre-upload stream. Fire-and-forget: this stays a
       // synchronous cache write for callers.
-      queryClient.cancelQueries({queryKey: [PHOTOSTREAM_LIST_KEY]});
+      void queryClient.cancelQueries({queryKey: [PHOTOSTREAM_LIST_KEY]});
 
       for (const query of queryClient.getQueryCache().findAll({queryKey: [PHOTOSTREAM_LIST_KEY]})) {
         if (!queryParamsIncludeImage(query.queryKey[1] as PhotostreamQueryParams | undefined, image)) {
@@ -100,7 +100,7 @@ export const usePhotostreamCacheReducer = () => {
    */
   const removeImage = useCallback(
     (postID: number) => {
-      queryClient.cancelQueries({queryKey: [PHOTOSTREAM_LIST_KEY]});
+      void queryClient.cancelQueries({queryKey: [PHOTOSTREAM_LIST_KEY]});
 
       queryClient.setQueriesData<InfiniteData<PhotostreamListData>>({queryKey: [PHOTOSTREAM_LIST_KEY]}, oldData =>
         oldData ? filterItemsFromPages(oldData, photostreamAccessor, p => p.postID !== postID) : oldData,

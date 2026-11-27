@@ -749,9 +749,9 @@ export const useFezCacheReducer = () => {
   const updateFavorite = useCallback(
     (fezID: string, isFavorite: boolean) => {
       for (const keyPrefix of fezListKeyPrefixes) {
-        queryClient.cancelQueries({queryKey: [keyPrefix]});
+        void queryClient.cancelQueries({queryKey: [keyPrefix]});
       }
-      queryClient.cancelQueries({queryKey: [`/fez/${fezID}`]});
+      void queryClient.cancelQueries({queryKey: [`/fez/${fezID}`]});
 
       const favoriteUpdater = (fez: FezData): FezData => ({
         ...fez,
@@ -809,9 +809,9 @@ export const useFezCacheReducer = () => {
   const updateMute = useCallback(
     (fezID: string, isMuted: boolean) => {
       for (const keyPrefix of fezListKeyPrefixes) {
-        queryClient.cancelQueries({queryKey: [keyPrefix]});
+        void queryClient.cancelQueries({queryKey: [keyPrefix]});
       }
-      queryClient.cancelQueries({queryKey: [`/fez/${fezID}`]});
+      void queryClient.cancelQueries({queryKey: [`/fez/${fezID}`]});
       const muteUpdater = (fez: FezData): FezData => ({
         ...fez,
         members: fez.members ? {...fez.members, isMuted} : fez.members,
@@ -865,7 +865,7 @@ export const useFezCacheReducer = () => {
       updateFezInAllListCaches(fezID, readUpdater);
       updateFezDetailCache(fezID, readUpdater);
       if (appConfig.markReadCancelPush) {
-        cancelContentNotification(fezID);
+        void cancelContentNotification(fezID);
       }
     },
     [appConfig.markReadCancelPush, updateFezInAllListCaches, updateFezDetailCache],

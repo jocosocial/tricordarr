@@ -3,10 +3,13 @@ import {AppState, AppStateStatus} from 'react-native';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {getCurrentBackgroundStatus} from '#src/Libraries/Notifications/Push/BackgroundStatus';
 import {PerAccountStatus} from '#src/Structs/SocketStructs';
 
 import NativeTricordarrModule from '#specs/NativeTricordarrModule';
+
+const logger = createLogger('useBackgroundConnectionStatus.ts');
 
 export type BackgroundConnectionStatus = 'disabled' | 'connected' | 'warning' | 'error';
 
@@ -47,8 +50,19 @@ export const useBackgroundConnectionStatus = (): BackgroundConnectionStatus => {
     let cancelled = false;
     let timeoutId: ReturnType<typeof setTimeout>;
 
+    /**
+     * Check the status, publish it and schedule the next check. Never rejects: it is fired from
+     * the effect, listeners and setTimeout, none of which handle a rejection. A failed check is
+     * logged and ends polling until the next foreground or status event.
+     */
     const poll = async () => {
-      const next = await checkStatus();
+      let next: BackgroundConnectionStatus;
+      try {
+        next = await checkStatus();
+      } catch (error) {
+        logger.error('Failed to check background connection status', error);
+        return;
+      }
       if (cancelled) {
         return;
       }
@@ -57,19 +71,19 @@ export const useBackgroundConnectionStatus = (): BackgroundConnectionStatus => {
         next === 'connected' || next === 'disabled' ? appConfig.fgsWorkerHealthTimer : FAST_POLL_INTERVAL_MS;
       timeoutId = setTimeout(poll, delay);
     };
-    poll();
+    void poll();
 
     const onAppStateChange = (nextState: AppStateStatus) => {
       if (nextState === 'active') {
         clearTimeout(timeoutId);
-        poll();
+        void poll();
       }
     };
     const subscription = AppState.addEventListener('change', onAppStateChange);
     // Android only (iOS never emits), so an update lands without waiting for the next poll.
     const statusSubscription = NativeTricordarrModule.onBackgroundStatusChanged(() => {
       clearTimeout(timeoutId);
-      poll();
+      void poll();
     });
 
     return () => {
