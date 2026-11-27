@@ -111,13 +111,13 @@ export const useLfgSourceQuery = ({
   // The same goes for the client-side Cancelled filter, which can empty a server page.
   useEffect(() => {
     if (loadAllJoined && joinedHasNextPage && !joinedIsFetchingNextPage && !joinedIsFetchNextPageError) {
-      joinedFetchNextPage();
+      void joinedFetchNextPage();
     }
   }, [loadAllJoined, joinedHasNextPage, joinedIsFetchingNextPage, joinedIsFetchNextPageError, joinedFetchNextPage]);
 
   useEffect(() => {
     if (loadAllDirect && directHasNextPage && !directIsFetchingNextPage && !directIsFetchNextPageError) {
-      directFetchNextPage();
+      void directFetchNextPage();
     }
   }, [loadAllDirect, directHasNextPage, directIsFetchingNextPage, directIsFetchNextPageError, directFetchNextPage]);
 
@@ -125,7 +125,7 @@ export const useLfgSourceQuery = ({
   // nothing loaded there is no start time to merge joined LFGs against, so keep going.
   useEffect(() => {
     if (openEnabled && openItemCount === 0 && openHasNextPage && !openIsFetchingNextPage && !openIsFetchNextPageError) {
-      openFetchNextPage();
+      void openFetchNextPage();
     }
   }, [
     openEnabled,

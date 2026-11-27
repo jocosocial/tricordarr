@@ -28,7 +28,7 @@ export const useFezMuteMutation = () => {
     },
     onError: (_error, {fezID, action}) => {
       updateMute(fezID, action !== 'mute');
-      invalidateFez(fezID);
+      void invalidateFez(fezID);
     },
   });
 };

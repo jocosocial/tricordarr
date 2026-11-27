@@ -29,7 +29,7 @@ export const useForumPinMutation = () => {
     },
     onError: (_error, {forumID, categoryID, action}) => {
       updatePinned(forumID, categoryID, action !== 'pin');
-      invalidateForum(forumID, categoryID);
+      void invalidateForum(forumID, categoryID);
     },
   });
 };

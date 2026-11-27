@@ -24,13 +24,13 @@ export class LogBuffer {
 
     // 1. Immediate flush for errors
     if (severity === LogLevel.ERROR) {
-      this.flushNow();
+      void this.flushNow();
       return;
     }
 
     // 2. Flush if buffer is full
     if (this.buffer.length >= this.MAX_BUFFER_SIZE) {
-      this.flushNow();
+      void this.flushNow();
       return;
     }
 
@@ -43,7 +43,7 @@ export class LogBuffer {
       clearTimeout(this.flushTimer);
     }
     this.flushTimer = setTimeout(() => {
-      this.flushNow();
+      void this.flushNow();
     }, this.FLUSH_DELAY_MS);
   }
 

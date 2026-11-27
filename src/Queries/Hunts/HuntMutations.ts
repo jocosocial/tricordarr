@@ -38,10 +38,10 @@ export const useHuntPuzzleCallInMutation = () => {
   return useTokenAuthMutation(mutationFn, {
     onSettled: (_data, _error, variables) => {
       getHuntPuzzleCacheKeys({puzzleID: variables.puzzleID}).forEach(queryKey => {
-        queryClient.invalidateQueries({queryKey});
+        void queryClient.invalidateQueries({queryKey});
       });
       getHuntCacheKeys({huntID: variables.huntID}).forEach(queryKey => {
-        queryClient.invalidateQueries({queryKey});
+        void queryClient.invalidateQueries({queryKey});
       });
     },
   });
