@@ -48,10 +48,6 @@ export const ServerUrlSettingForm = (props: ServerUrlFormProps) => {
             testID={'serverUrl-input'}
             label={'URL'}
             disabled={values.serverChoice.name !== 'Other'}
-            onChangeText={v => {
-              setFieldValue('serverUrl', v);
-              setFieldValue('serverChoice', {name: 'Other', serverUrl: ''});
-            }}
           />
           <PrimaryActionButton
             disabled={!isValid || isSubmitting || !dirty}
