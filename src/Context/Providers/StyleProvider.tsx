@@ -240,10 +240,6 @@ export const createCommonStyles = (theme: AppTheme) =>
     justifySpaceEvenly: {
       justifyContent: 'space-evenly',
     },
-    // https://github.com/facebook/react-native/issues/30034
-    verticallyInverted: {
-      scaleY: -1,
-    },
     fullWidth: {
       width: '100%',
     },

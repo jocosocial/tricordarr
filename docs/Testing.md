@@ -12,7 +12,7 @@ npm run lint
 ```
 
 Note that `npm test` is not currently green on a clean checkout: `TestDateTime`,
-`TestNewDayMinuteCalculator` and `TestScheduleMarker` fail (5 tests), apparently
+`TestNewDayMinuteCalculator` and `TestScheduleMarker` fail (6 tests), apparently
 timezone-dependent. Compare against a clean tree before assuming you caused a failure.
 
 For agents

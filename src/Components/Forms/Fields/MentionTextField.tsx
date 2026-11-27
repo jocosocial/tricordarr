@@ -1,8 +1,7 @@
 import PasteInput, {PasteInputProps, PasteTextInputInstance} from '@mattermost/react-native-paste-input';
 import {useField} from 'formik';
 import React, {createContext, useCallback, useContext, useMemo, useRef} from 'react';
-import {StyleProp, ViewStyle} from 'react-native';
-import {TextInput} from 'react-native';
+import {StyleProp, TextInputInstance, ViewStyle} from 'react-native';
 import {PatternsConfig, TriggersConfig, useMentions} from 'react-native-controlled-mentions';
 
 import {ContentPostMentionSuggestionsView} from '#src/Components/Views/Content/ContentPostMentionSuggestionsView';
@@ -15,7 +14,7 @@ interface MentionTextFieldContextType {
   textInputProps: ReturnType<typeof useMentions>['textInputProps'];
   /** Undefined while no @mention is being typed. */
   mentionTriggerProps?: MentionTriggerProps;
-  setInputRefs: (node: TextInput | null) => void;
+  setInputRefs: (node: TextInputInstance | null) => void;
   onBlur: () => void;
 }
 
@@ -46,7 +45,7 @@ interface MentionTextFieldProviderProps {
    * when something outside the form writes into the field, since the user is otherwise
    * left with text they cannot type after.
    */
-  inputRef?: React.MutableRefObject<TextInput | null>;
+  inputRef?: React.MutableRefObject<TextInputInstance | null>;
   children: React.ReactNode;
 }
 
@@ -62,7 +61,7 @@ interface MentionTextFieldProviderProps {
 export const MentionTextFieldProvider = ({name, enableMentions, inputRef, children}: MentionTextFieldProviderProps) => {
   const {commonStyles} = useStyles();
   const [field, _, helpers] = useField<string>(name);
-  const textInputRef = useRef<TextInput | null>(null);
+  const textInputRef = useRef<TextInputInstance | null>(null);
   const pendingMentionInsertionRef = useRef<boolean>(false);
 
   /**
@@ -72,7 +71,7 @@ export const MentionTextFieldProvider = ({name, enableMentions, inputRef, childr
    */
   const callerInputRef = inputRef;
   const setInputRefs = useCallback(
-    (node: TextInput | null) => {
+    (node: TextInputInstance | null) => {
       textInputRef.current = node;
       if (callerInputRef) {
         callerInputRef.current = node;

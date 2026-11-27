@@ -5,6 +5,7 @@ import {
   NativeSyntheticEvent,
   Pressable,
   ScrollView,
+  ScrollViewInstance,
   StyleSheet,
   View,
 } from 'react-native';
@@ -46,7 +47,7 @@ export const ContentPostMentionSuggestionsView: FC<SuggestionsProvidedProps> = (
   // marks the stars, the same way MessageView marks a favorited post author.
   const {data: favorites} = useUserFavoritesQuery();
   const {contains} = useUserHeader();
-  const scrollViewRef = useRef<ScrollView>(null);
+  const scrollViewRef = useRef<ScrollViewInstance>(null);
   const [contentHeight, setContentHeight] = useState(0);
   const [scrollY, setScrollY] = useState(0);
   const [isAtBottom, setIsAtBottom] = useState(true);

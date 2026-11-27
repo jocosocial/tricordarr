@@ -1,7 +1,7 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {Formik} from 'formik';
 import React, {useEffect, useRef, useState} from 'react';
-import {ScrollView, View} from 'react-native';
+import {ScrollViewInstance, View, ViewInstance} from 'react-native';
 import {DataTable, SegmentedButtons, Text} from 'react-native-paper';
 import {requestNotifications, RESULTS} from 'react-native-permissions';
 import Animated from 'react-native-reanimated';
@@ -45,9 +45,9 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
   const [muteDuration] = useState(0);
   const [muteNotifications, setMuteNotifications] = useState(appConfig.muteNotifications);
   const [markReadCancelPush, setMarkReadCancelPush] = useState(appConfig.markReadCancelPush);
-  const scrollViewRef = useRef<ScrollView>(null);
-  const scrollContentRef = useRef<View | null>(null);
-  const categoryRefs = useRef<Record<string, View | null>>({});
+  const scrollViewRef = useRef<ScrollViewInstance>(null);
+  const scrollContentRef = useRef<ViewInstance | null>(null);
+  const categoryRefs = useRef<Record<string, ViewInstance | null>>({});
   const [highlightedCategory, setHighlightedCategory] = useState<string | null>(null);
   const notificationType = route.params?.notificationType;
   const hasScrolledToCategory = useRef(false);
@@ -243,7 +243,7 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
                           <Animated.View
                             key={category.configKey}
                             ref={(ref: React.ComponentRef<typeof Animated.View> | null) => {
-                              categoryRefs.current[category.configKey] = ref as View | null;
+                              categoryRefs.current[category.configKey] = ref as ViewInstance | null;
                             }}
                             style={isHighlighted ? pulseAnimatedStyle : undefined}>
                             <BooleanField

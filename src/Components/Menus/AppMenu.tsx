@@ -4,9 +4,11 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   ScrollView,
+  ScrollViewInstance,
   ScrollViewProps,
   StyleSheet,
   View,
+  ViewInstance,
 } from 'react-native';
 import {Menu, MenuProps} from 'react-native-paper';
 
@@ -67,8 +69,8 @@ export const AppMenu = ({visible, children, onScroll, style, header, bounces = f
   const [contentHeight, setContentHeight] = useState(0);
   const [scrollY, setScrollY] = useState(0);
   const [isAtBottom, setIsAtBottom] = useState(false);
-  const scrollViewRef = useRef<ScrollView>(null);
-  const containerRef = useRef<View>(null);
+  const scrollViewRef = useRef<ScrollViewInstance>(null);
+  const containerRef = useRef<ViewInstance>(null);
   const itemLayoutsRef = useRef(new Map<string, AppMenuItemLayout>());
   const pendingAutoScrollRef = useRef(false);
 

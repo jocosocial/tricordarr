@@ -1,6 +1,6 @@
 import {FormikProps} from 'formik';
 import React, {PropsWithChildren, useMemo} from 'react';
-import {TextInput} from 'react-native';
+import {TextInputInstance} from 'react-native';
 
 import {ForumComposerContext, ForumComposerContextType} from '#src/Context/Contexts/ForumComposerContext';
 import {appendMention} from '#src/Libraries/StringUtils';
@@ -10,7 +10,7 @@ interface ForumComposerProviderProps {
   /** Formik ref for the thread's ContentPostForm. */
   formRef: React.RefObject<FormikProps<PostContentData> | null>;
   /** Text input for that same form, so a mention can leave the user ready to type. */
-  inputRef: React.MutableRefObject<TextInput | null>;
+  inputRef: React.MutableRefObject<TextInputInstance | null>;
   /** False when the thread has no composer, which makes the context undefined. */
   enabled: boolean;
 }

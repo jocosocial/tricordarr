@@ -1,12 +1,15 @@
 internal import Expo
 import React
 import ReactAppDependencyProvider
-import React_RCTAppDelegate
 import TricordarrKit
 import UIKit
 
 @main
-class AppDelegate: ExpoAppDelegate {
+class AppDelegate: ExpoAppDelegate, ExpoReactNativeFactoryProvider {
+	// The scene delegate (ExpoAppSceneDelegate) creates the window and starts React Native into it.
+	// iOS 27 traps at launch for apps that have not adopted the UIScene lifecycle.
+	var reactNativeFactoryModuleName: String { "Tricordarr" }
+
 	var window: UIWindow?
 
 	var reactNativeDelegate: ReactNativeDelegate?
@@ -26,14 +29,6 @@ class AppDelegate: ExpoAppDelegate {
 		reactNativeDelegate = delegate
 		reactNativeFactory = factory
 
-		window = UIWindow(frame: UIScreen.main.bounds)
-
-		factory.startReactNative(
-			withModuleName: "Tricordarr",
-			in: window,
-			launchOptions: launchOptions
-		)
-
 		// Lets @mattermost/react-native-paste-input locate TextInput views by tag. Without it,
 		// pasting an image into a composer delivers no paste event.
 		PasteInputModule.setup(factory.rootViewFactory)
@@ -50,33 +45,8 @@ class AppDelegate: ExpoAppDelegate {
 		return super.application(application, didFinishLaunchingWithOptions: launchOptions)
 	}
 
-	// https://docs.expo.dev/bare/installing-expo-modules/
-	// https://github.com/expo/expo/blob/sdk-57/templates/expo-template-bare-minimum/ios/HelloWorld/AppDelegate.swift#L34-L51
-	// Used to be:
-	// https://reactnavigation.org/docs/deep-linking/#set-up-with-bare-react-native-projects
-	// Linking API
-	public override func application(
-		_ app: UIApplication,
-		open url: URL,
-		options: [UIApplication.OpenURLOptionsKey: Any] = [:]
-	) -> Bool {
-		return super.application(app, open: url, options: options)
-			|| RCTLinkingManager.application(app, open: url, options: options)
-	}
-
-	// Universal Links
-	public override func application(
-		_ application: UIApplication,
-		continue userActivity: NSUserActivity,
-		restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void
-	) -> Bool {
-		let result = RCTLinkingManager.application(
-			application,
-			continue: userActivity,
-			restorationHandler: restorationHandler
-		)
-		return super.application(application, continue: userActivity, restorationHandler: restorationHandler) || result
-	}
+	// Deep links, universal links and app lifecycle events arrive on ExpoAppSceneDelegate, which
+	// forwards them to the ExpoAppDelegate subscribers and RCTLinkingManager.
 }
 
 class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {

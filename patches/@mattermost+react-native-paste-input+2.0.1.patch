@@ -213,7 +213,7 @@ index 02dd7fe..cab84fb 100644
          val id = DocumentsContract.getDocumentId(uri)
          if (!TextUtils.isEmpty(id)) {
 diff --git a/node_modules/@mattermost/react-native-paste-input/ios/PasteInputModule.mm b/node_modules/@mattermost/react-native-paste-input/ios/PasteInputModule.mm
-index 59ff531..5cffeab 100644
+index 59ff531..3ac15a0 100644
 --- a/node_modules/@mattermost/react-native-paste-input/ios/PasteInputModule.mm
 +++ b/node_modules/@mattermost/react-native-paste-input/ios/PasteInputModule.mm
 @@ -41,7 +41,7 @@ @interface PasteInputModule ()
@@ -239,7 +239,7 @@ index 59ff531..5cffeab 100644
  #endif
  }
  
-@@ -173,9 +178,11 @@ - (void)removeListeners:(double)count
+@@ -173,16 +178,19 @@ - (void)removeListeners:(double)count
  - (nullable id)getSurfacePresenter
  {
  #ifdef RCT_NEW_ARCH_ENABLED
@@ -253,6 +253,17 @@ index 59ff531..5cffeab 100644
      }
      // Fallback to bridge mode (Fabric with bridge enabled)
      else if (self.bridge) {
+-        // self.bridge.surfacePresenter returns RCTSurfacePresenterBridgeAdapter
+-        RCTSurfacePresenterBridgeAdapter *adapter = self.bridge.surfacePresenter;
++        // self.bridge.surfacePresenter returns the bridge adapter. React Native 0.88 only
++        // forward-declares that class, so talk to it dynamically.
++        id adapter = self.bridge.surfacePresenter;
+         if (adapter && [adapter respondsToSelector:@selector(surfacePresenter)]) {
+-            return adapter.surfacePresenter;
++            return [adapter performSelector:@selector(surfacePresenter)];
+         }
+         // If that fails, the adapter itself might be the surface presenter
+         return adapter;
 diff --git a/node_modules/@mattermost/react-native-paste-input/react-native-paste-input.podspec b/node_modules/@mattermost/react-native-paste-input/react-native-paste-input.podspec
 index bb61e47..a3cd8e1 100644
 --- a/node_modules/@mattermost/react-native-paste-input/react-native-paste-input.podspec

@@ -17,4 +17,4 @@ interface ImageTextBlurModuleType {
   blurTextInImage: (inputFilePath: string, callback: Function) => void;
 }
 
-export const {ImageTextBlurModule}: {ImageTextBlurModule: ImageTextBlurModuleType} = NativeModules;
+export const ImageTextBlurModule: ImageTextBlurModuleType = NativeModules.ImageTextBlurModule;

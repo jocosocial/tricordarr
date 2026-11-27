@@ -7,7 +7,7 @@ import NativeAudioEngineModule from '#specs/NativeAudioEngine';
 
 const logger = createLogger('NativeAudioEngine');
 
-const AudioEngine: Spec | null = NativeAudioEngineModule;
+const AudioEngine: Spec | null = NativeAudioEngineModule ?? null;
 
 if (!AudioEngine) {
   logger.error('Native AudioEngine module not found');
@@ -130,9 +130,9 @@ export class NativeAudioEngine {
     this.audioDataListener = listener;
 
     if (eventEmitter) {
-      this.eventSubscription = eventEmitter.addListener('onAudioData', (event: AudioDataEvent) => {
+      this.eventSubscription = eventEmitter.addListener('onAudioData', (event: object) => {
         if (this.audioDataListener) {
-          this.audioDataListener(event);
+          this.audioDataListener(event as AudioDataEvent);
         }
       });
     } else {
