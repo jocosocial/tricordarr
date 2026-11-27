@@ -1,6 +1,6 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {LayoutChangeEvent, StyleSheet, View} from 'react-native';
+import {LayoutChangeEvent, StyleSheet, View, ViewInstance} from 'react-native';
 import {Text} from 'react-native-paper';
 import {captureRef} from 'react-native-view-shot';
 
@@ -33,7 +33,7 @@ export const RecoveryKeyScreen = ({navigation, route}: Props) => {
   const {setString} = useClipboard();
   const {setSnackbarPayload} = useSnackbar();
   const canLeaveRef = useRef(false);
-  const screenshotRef = useRef<View>(null);
+  const screenshotRef = useRef<ViewInstance>(null);
   const [capturing, setCapturing] = useState(false);
   const [signingIn, setSigningIn] = useState(false);
   // Height of the Acknowledged button area, so snackbars draw above it rather than over it.

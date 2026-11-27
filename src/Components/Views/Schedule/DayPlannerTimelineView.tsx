@@ -6,6 +6,7 @@ import {
   NativeSyntheticEvent,
   RefreshControlProps,
   ScrollView,
+  ScrollViewInstance,
   StyleSheet,
   View,
 } from 'react-native';
@@ -81,7 +82,7 @@ interface DayPlannerTimelineViewProps {
   emptyMessage?: string;
 }
 
-export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineViewProps>(
+export const DayPlannerTimelineView = forwardRef<ScrollViewInstance, DayPlannerTimelineViewProps>(
   (
     {
       items,

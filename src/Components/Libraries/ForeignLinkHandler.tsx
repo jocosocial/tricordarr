@@ -34,7 +34,7 @@ export const ForeignLinkHandler = () => {
   const canonicalHostnames = appConfig.canonicalHostnames;
 
   const handleUrl = useCallback(
-    (url: string | null) => {
+    (url: string | null | undefined) => {
       if (!url || !oobeCompleted || !isForeignAppLink(url, serverUrl, canonicalHostnames)) {
         return;
       }

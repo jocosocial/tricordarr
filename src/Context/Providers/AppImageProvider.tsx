@@ -76,6 +76,9 @@ const fromData = (base64Data: string, mimeType: string = 'image/jpeg'): AppImage
 const fromAsset = (imageAsset: ImageRequireSource, fileName: string): AppImageMetaData => {
   const mimeType = lookupMimeType(fileName) || 'application/octet-stream';
   const resolvedSource = Image.resolveAssetSource(imageAsset);
+  if (!resolvedSource) {
+    throw new Error(`Unable to resolve image asset ${fileName}`);
+  }
 
   return {
     mode: AppImageMode.asset,

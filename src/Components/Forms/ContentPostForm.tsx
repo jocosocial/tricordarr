@@ -1,6 +1,6 @@
 import {Formik, FormikHelpers, FormikProps, useFormikContext} from 'formik';
 import React, {useEffect} from 'react';
-import {ScrollView, StyleProp, StyleSheet, TextInput, View, ViewStyle} from 'react-native';
+import {ScrollView, StyleProp, StyleSheet, TextInputInstance, View, ViewStyle} from 'react-native';
 import {IconButton} from 'react-native-paper';
 import * as Yup from 'yup';
 
@@ -94,7 +94,7 @@ interface ContentPostFormProps {
   initialValues?: PostContentData;
   disabled?: boolean;
   /** Receives the text input, so callers can focus it after writing into the form. */
-  inputRef?: React.MutableRefObject<TextInput | null>;
+  inputRef?: React.MutableRefObject<TextInputInstance | null>;
 }
 
 // https://formik.org/docs/guides/react-native

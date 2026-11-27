@@ -13,6 +13,7 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useDailyThemeQuery} from '#src/Queries/Alert/DailyThemeQueries';
 import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
@@ -52,6 +53,7 @@ export const DailyThemesScreen = ({navigation}: Props) => {
 
 const DailyThemesScreenInner = () => {
   const {data, refetch, isLoading, isRefetching} = useDailyThemeQuery();
+  const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isRefetching});
   const {cruiseDayIndex} = useCruise();
 
   if (isLoading) {
@@ -66,7 +68,7 @@ const DailyThemesScreenInner = () => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<AppRefreshControl refreshing={isRefetching} onRefresh={refetch} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView padSides={false}>
           <ListTitleView title={`Today is day #${cruiseDayIndex}`} />
         </PaddedContentView>

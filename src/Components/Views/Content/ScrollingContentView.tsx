@@ -4,7 +4,7 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   RefreshControlProps,
-  ScrollView,
+  ScrollViewInstance,
   StyleProp,
   StyleSheet,
   View,
@@ -38,7 +38,7 @@ interface ScrollingContentViewProps {
  * `automaticallyAdjustKeyboardInsets` was removed: stacking it back on top of
  * KeyboardAwareScrollView would double the scroll distance again.
  */
-export const ScrollingContentView = forwardRef<ScrollView, PropsWithChildren<ScrollingContentViewProps>>(
+export const ScrollingContentView = forwardRef<ScrollViewInstance, PropsWithChildren<ScrollingContentViewProps>>(
   ({children, isStack = false, refreshControl, overScroll = false, onScroll, onLayout, style, bottomOffset}, ref) => {
     const {commonStyles, styleDefaults} = useStyles();
 

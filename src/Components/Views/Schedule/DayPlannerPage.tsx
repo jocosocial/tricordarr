@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {GestureResponderEvent, NativeScrollEvent, NativeSyntheticEvent, ScrollView, View} from 'react-native';
+import {GestureResponderEvent, NativeScrollEvent, NativeSyntheticEvent, ScrollViewInstance, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 
 import {
@@ -102,7 +102,7 @@ const DayPlannerPageComponent = ({
   const {startDate} = useCruise();
   const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
-  const scrollViewRef = useRef<ScrollView>(null);
+  const scrollViewRef = useRef<ScrollViewInstance>(null);
   const hasPositioned = useRef(false);
   const {preRegistrationMode} = usePreRegistration();
   // Pre-registration users can't list what they've joined, only what they own.

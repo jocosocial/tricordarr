@@ -129,7 +129,7 @@ export const APIImage = ({
         },
         image: {
           ...commonStyles.headerImage,
-          ...style,
+          ...StyleSheet.flatten(style),
         },
         loadingCard: {
           ...commonStyles.marginVerticalSmall,
