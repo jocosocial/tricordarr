@@ -69,7 +69,7 @@ const MuteKeywordsScreenInner = () => {
   };
 
   const onRefresh = () => {
-    refetch().then(() => setIsRefreshing(false));
+    void refetch().then(() => setIsRefreshing(false));
   };
 
   const getNavButtons = useCallback(() => {

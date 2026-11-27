@@ -54,7 +54,7 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
 
   const onSearch = () => {
     setQueryEnable(true);
-    refetch();
+    void refetch();
     Keyboard.dismiss();
   };
 
@@ -66,7 +66,7 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
     fetchNextPage: () => {
       if (!isFetchingNextPage && queryEnable) {
         setRefreshing(true);
-        fetchNextPage().finally(() => setRefreshing(false));
+        void fetchNextPage().finally(() => setRefreshing(false));
       }
     },
   });

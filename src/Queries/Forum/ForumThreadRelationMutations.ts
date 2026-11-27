@@ -45,7 +45,7 @@ export const useForumRelationMutation = () => {
     },
     onError: (_error, {forumID, categoryID, relationType, action}) => {
       applyRelation(forumID, categoryID, relationType, action !== 'create');
-      invalidateForum(forumID, categoryID);
+      void invalidateForum(forumID, categoryID);
     },
   });
 };

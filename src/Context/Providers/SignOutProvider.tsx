@@ -6,7 +6,10 @@ import {ConfirmLogoutOptions, SignOutContext, SignOutContextType} from '#src/Con
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReducer';
 import {alertLogout} from '#src/Libraries/Alerts/AuthAlerts';
+import {createLogger} from '#src/Libraries/Logger';
 import {useLogoutMutation} from '#src/Queries/Auth/LogoutMutations';
+
+const logger = createLogger('SignOutProvider.tsx');
 
 /**
  * SignOutProvider consolidates sign-out into `performSignOut` / `confirmLogout`.
@@ -84,7 +87,7 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
         if (allDevices) {
           logoutMutation.mutate(undefined, {onSuccess: () => finishLogout(onLogoutStart, onLoggedOut)});
         } else {
-          finishLogout(onLogoutStart, onLoggedOut);
+          finishLogout(onLogoutStart, onLoggedOut).catch(error => logger.error('Failed to sign out', error));
         }
       });
     },

@@ -30,7 +30,7 @@ export const useQuartermasterCacheReducer = () => {
    */
   const createItems = useCallback(
     (items: QuartermasterData[]) => {
-      queryClient.cancelQueries({queryKey: [QUARTERMASTER_LIST_KEY]});
+      void queryClient.cancelQueries({queryKey: [QUARTERMASTER_LIST_KEY]});
       for (const query of queryClient.getQueryCache().findAll({queryKey: [QUARTERMASTER_LIST_KEY]})) {
         const params = query.queryKey[1] as QuartermasterListParams | undefined;
         queryClient.setQueryData<InfiniteData<QuartermasterListData>>(query.queryKey, oldData =>
@@ -47,7 +47,7 @@ export const useQuartermasterCacheReducer = () => {
    */
   const updateItem = useCallback(
     (item: QuartermasterData) => {
-      queryClient.cancelQueries({queryKey: [QUARTERMASTER_LIST_KEY]});
+      void queryClient.cancelQueries({queryKey: [QUARTERMASTER_LIST_KEY]});
       queryClient.setQueriesData<QuartermasterData>({queryKey: [getQuartermasterItemEndpoint(item.itemID)]}, oldData =>
         oldData ? item : oldData,
       );
@@ -68,7 +68,7 @@ export const useQuartermasterCacheReducer = () => {
    */
   const deleteItem = useCallback(
     (itemID: string) => {
-      queryClient.cancelQueries({queryKey: [QUARTERMASTER_LIST_KEY]});
+      void queryClient.cancelQueries({queryKey: [QUARTERMASTER_LIST_KEY]});
       queryClient.setQueriesData<InfiniteData<QuartermasterListData>>({queryKey: [QUARTERMASTER_LIST_KEY]}, oldData =>
         oldData ? applyDeletedItem(oldData, itemID) : oldData,
       );

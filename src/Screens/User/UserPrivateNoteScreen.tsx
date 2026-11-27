@@ -52,7 +52,7 @@ const UserPrivateNoteScreenInner = ({route, navigation}: Props) => {
           const invalidations = UserHeader.getCacheKeys(route.params.user.header).map(key => {
             return queryClient.invalidateQueries({queryKey: key});
           });
-          Promise.all(invalidations);
+          void Promise.all(invalidations);
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),

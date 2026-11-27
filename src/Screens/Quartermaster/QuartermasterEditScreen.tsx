@@ -66,7 +66,7 @@ const QuartermasterEditScreenInner = ({navigation, route}: Props) => {
       // A moderator edits from the moderate screen, whose payload (content, edit history) can't be
       // patched locally. It stays mounted under this screen, so refetch it. A no-op when nothing
       // has loaded that query.
-      invalidateQueryKeys(queryClient, [[getQuartermasterModerationEndpoint(item.itemID)]]);
+      void invalidateQueryKeys(queryClient, [[getQuartermasterModerationEndpoint(item.itemID)]]);
       dispatchScrollToTop(MainStackComponents.quartermasterListScreen);
       navigation.goBack();
     } catch (error) {

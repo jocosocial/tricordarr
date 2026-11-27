@@ -56,7 +56,7 @@ export const PickerField = <TData,>({
 
   const handleSelect = (newValue: TData | undefined) => {
     logger.debug('Selecting value', newValue);
-    setFieldValue(name, newValue);
+    void setFieldValue(name, newValue);
     closeMenu();
     if (onSelect) {
       onSelect(newValue);

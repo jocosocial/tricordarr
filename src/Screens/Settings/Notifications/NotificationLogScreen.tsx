@@ -91,12 +91,12 @@ export const NotificationLogScreen = () => {
   const {refreshing, onRefresh} = useRefresh({refresh});
 
   useEffect(() => {
-    refresh();
+    void refresh();
   }, [refresh]);
 
   useEffect(() => {
     return subscribeToNotificationLog(() => {
-      refresh();
+      void refresh();
     });
   }, [refresh]);
 

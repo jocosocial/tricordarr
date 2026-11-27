@@ -213,8 +213,8 @@ export const useEventCacheReducer = () => {
    */
   const updateFavorite = useCallback(
     (event: EventData, newValue: boolean) => {
-      queryClient.cancelQueries({queryKey: ['/events']});
-      queryClient.cancelQueries({queryKey: eventDetailQueryKey(event.eventID)});
+      void queryClient.cancelQueries({queryKey: ['/events']});
+      void queryClient.cancelQueries({queryKey: eventDetailQueryKey(event.eventID)});
       const updatedEvent: EventData = {...event, isFavorite: newValue};
       updateEventInAllCaches(event.eventID, e => ({...e, isFavorite: newValue}));
       updateDayPlannerCaches(updatedEvent, newValue);

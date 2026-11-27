@@ -173,7 +173,7 @@ export const TextField = ({
   });
 
   const handleValueChange = (value: string) => {
-    helpers.setValue(value);
+    void helpers.setValue(value);
   };
 
   const handleBlurEvent = (event: FocusEvent) => {
@@ -191,11 +191,11 @@ export const TextField = ({
       const trimmedValue = field.value.trim();
       if (trimmedValue !== field.value) {
         // Set the trimmed value first
-        helpers.setValue(trimmedValue, false);
+        void helpers.setValue(trimmedValue, false);
         // Use requestAnimationFrame to ensure state update propagates before validation
         requestAnimationFrame(() => {
           // Mark as touched and trigger validation on the trimmed value
-          helpers.setTouched(true, true);
+          void helpers.setTouched(true, true);
         });
         // Call user's onBlur callback
         if (onBlur) {
@@ -208,7 +208,7 @@ export const TextField = ({
     if (onBlur) {
       onBlur(event);
     }
-    helpers.setTouched(true, true);
+    void helpers.setTouched(true, true);
   };
 
   return (

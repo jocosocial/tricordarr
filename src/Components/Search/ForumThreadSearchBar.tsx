@@ -64,7 +64,7 @@ export const ForumThreadSearchBar = (props: Props) => {
 
   const onSearch = () => {
     setEnable(true);
-    refetch();
+    void refetch();
     Keyboard.dismiss();
   };
 
@@ -76,7 +76,7 @@ export const ForumThreadSearchBar = (props: Props) => {
     fetchNextPage: () => {
       if (!isFetchingNextPage) {
         setRefreshing(true);
-        fetchNextPage().finally(() => setRefreshing(false));
+        void fetchNextPage().finally(() => setRefreshing(false));
       }
     },
   });
@@ -84,7 +84,7 @@ export const ForumThreadSearchBar = (props: Props) => {
   const handleLoadPrevious = () => {
     if (!isFetchingPreviousPage && hasPreviousPage) {
       setRefreshing(true);
-      fetchPreviousPage().finally(() => setRefreshing(false));
+      void fetchPreviousPage().finally(() => setRefreshing(false));
     }
   };
 

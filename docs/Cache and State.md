@@ -23,7 +23,8 @@ Reducers live at `src/Hooks/<Domain>/use<Domain>CacheReducer.ts`, one per entity
 action reads and writes the query cache directly through `setQueryData` / `setQueriesData` and
 returns new objects so React Query re-renders. Wrap each action in `useCallback` so memoized
 children aren't invalidated on every render. Actions stay **synchronous** — callers treat them as
-cache writes, so anything async (`cancelQueries`) is fired without awaiting.
+cache writes, so anything async (`cancelQueries`) is fired without awaiting, marked `void` (see
+`docs/Code Notes.md`, "Floating promises").
 
 Name actions for what the user did, not for the endpoint that did it. Several actions are shared by
 a menu item, a swipeable and a detail screen; the name has to make sense at all three.
@@ -102,7 +103,7 @@ it. The reducers therefore cancel before writing — but a cancel must be scoped
 actually hold data:
 
 ```ts
-queryClient.cancelQueries({
+void queryClient.cancelQueries({
   queryKey: [LIST_KEY],
   predicate: query => query.state.data !== undefined,
 });
@@ -215,7 +216,7 @@ eventFavoriteMutation.mutate(
 
 A mutating toggle (favorite/mute/pin) counts as a **mutating item** under `AGENTS.md`'s Menus section, not a filter item — that ambiguity is what makes this worth stating. If we ever revisit, the follow-up order is: fix the in-flight `disabled` gaps first, then rewrite the Menus rules around "can you compute the new value locally", then convert — with verification aimed squarely at the forced-failure path.
 
-**`cancelQueries` before the optimistic write.** TanStack's optimistic-update recipe starts with `queryClient.cancelQueries(...)` for a reason: a refetch that was already in flight when the user tapped will resolve _after_ our optimistic write and stomp it back to the stale value — the same flicker this pattern exists to remove, on the same slow network that makes the window wide. Rather than asking every call site to remember this, the cancel is folded into the reducer actions themselves (`updateFavorite`, `updateMute`, `updatePinned`, `updatePostPin`, `updatePostBookmark`), since they already know which query keys they touch. See "`cancelQueries` only where there is data" above for the one thing that cancel must not catch. `cancelQueries` returns a promise; the reducers stay synchronous and fire it without awaiting (fire-and-forget) rather than becoming `async`, since callers already treat these as synchronous cache writes.
+**`cancelQueries` before the optimistic write.** TanStack's optimistic-update recipe starts with `queryClient.cancelQueries(...)` for a reason: a refetch that was already in flight when the user tapped will resolve _after_ our optimistic write and stomp it back to the stale value — the same flicker this pattern exists to remove, on the same slow network that makes the window wide. Rather than asking every call site to remember this, the cancel is folded into the reducer actions themselves (`updateFavorite`, `updateMute`, `updatePinned`, `updatePostPin`, `updatePostBookmark`), since they already know which query keys they touch. See "`cancelQueries` only where there is data" above for the one thing that cancel must not catch. `cancelQueries` returns a promise; the reducers stay synchronous and fire it with `void` rather than becoming `async`, since callers already treat these as synchronous cache writes. Not awaiting is safe: `cancelQueries` cancels each matching fetch synchronously (the returned promise only reports when the cancelled fetches have settled) and it never rejects. Do not "fix" it with `await`, which would make the reducer async and let the caller's `mutate()` run before the optimistic write.
 
 ## Invalidation is an escape hatch
 

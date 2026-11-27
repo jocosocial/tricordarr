@@ -61,7 +61,7 @@ export const ContentInsertPhotosView = () => {
           <ContentPostAttachedImage
             key={index}
             onIconPress={() => {
-              setFieldValue(
+              void setFieldValue(
                 'images',
                 values.images.filter((img, idx) => idx !== index),
               );

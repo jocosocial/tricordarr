@@ -119,7 +119,7 @@ const AdminScheduleScreenInner = ({navigation}: Props) => {
               reloadMutation.mutate(undefined, {
                 onSuccess: () => {
                   setSnackbarPayload({message: 'Schedule reload started.', messageType: 'success'});
-                  refetch();
+                  void refetch();
                 },
               })
             }

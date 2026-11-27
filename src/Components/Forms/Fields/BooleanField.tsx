@@ -36,7 +36,7 @@ export const BooleanField = ({
   const textColor = disabled ? theme.colors.onSurfaceDisabled : theme.colors.onBackground;
 
   const onPressDefault = () => {
-    helpers.setValue(!field.value);
+    void helpers.setValue(!field.value);
   };
 
   const styles = StyleSheet.create({

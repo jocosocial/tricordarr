@@ -52,7 +52,7 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
     fetchNextPage: () => {
       if (!isFetchingNextPage && queryEnable) {
         setRefreshing(true);
-        fetchNextPage().finally(() => setRefreshing(false));
+        void fetchNextPage().finally(() => setRefreshing(false));
       }
     },
   });

@@ -65,7 +65,7 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
     const invalidations = UserHeader.getRelationKeys().map(key => {
       return queryClient.invalidateQueries({queryKey: key});
     });
-    Promise.all(invalidations);
+    void Promise.all(invalidations);
   };
 
   const handleBlock = () => {

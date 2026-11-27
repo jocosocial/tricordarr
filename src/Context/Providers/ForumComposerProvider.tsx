@@ -42,9 +42,8 @@ export const ForumComposerProvider = ({
         const text = appendMention(form.values.text, username);
         // Not awaited on purpose: this resolves with validation errors we don't act on,
         // and the focus below is sequenced on the render rather than on that promise.
-        // Matches ElevationPrivilegeSync in ContentPostForm. (`no-void` rules out marking
-        // it with the void operator.)
-        form.setFieldValue('text', text);
+        // Matches ElevationPrivilegeSync in ContentPostForm.
+        void form.setFieldValue('text', text);
         // Opening the actions menu leaves the composer unusable, so without this the user
         // is looking at a mention they cannot type after. The two platforms get there
         // differently: iOS fully blurs the field, while Android keeps focus and the caret

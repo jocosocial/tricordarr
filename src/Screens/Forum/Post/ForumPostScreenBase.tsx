@@ -111,7 +111,7 @@ export const ForumPostScreenBase = ({
 
   useEffect(() => {
     if (refreshOnUserNotification && notificationCount) {
-      onRefresh();
+      void onRefresh();
     }
   }, [notificationCount, onRefresh, refreshOnUserNotification]);
 
@@ -126,7 +126,7 @@ export const ForumPostScreenBase = ({
       setForumPosts(data.pages.flatMap(p => p.posts));
     }
     if (notificationCount) {
-      refetchUserNotificationData();
+      void refetchUserNotificationData();
     }
   }, [data, notificationCount, refetchUserNotificationData]);
 

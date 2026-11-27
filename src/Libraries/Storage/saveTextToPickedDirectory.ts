@@ -37,7 +37,7 @@ export const saveTextToPickedDirectory = async ({
     } else {
       const directory = await Directory.pickDirectoryAsync();
       const destFile = directory.createFile(baseName, mimeType);
-      destFile.write(contents);
+      await destFile.write(contents);
     }
     return 'saved';
   } catch (error) {

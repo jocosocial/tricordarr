@@ -31,7 +31,7 @@ export const ForumPostActionsFavoriteItem = ({forumPost, forumData, closeMenu}: 
       {
         onError: () => {
           updatePostBookmark(forumPost, forumData?.forumID, !newValue);
-          invalidateForum(forumData?.forumID);
+          void invalidateForum(forumData?.forumID);
         },
         onSettled: () => {
           closeMenu();

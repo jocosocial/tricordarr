@@ -69,7 +69,7 @@ const AdminBulkUserScreenInner = () => {
           const fileName = `twitarr-users-${Math.floor(Date.now() / 1000)}.zip`;
           const file = new File(Paths.cache, fileName);
           file.create({intermediates: true, overwrite: true});
-          file.write(new Uint8Array(buffer));
+          await file.write(new Uint8Array(buffer));
           await Share.open({
             url: file.uri,
             type: 'application/zip',
@@ -102,7 +102,7 @@ const AdminBulkUserScreenInner = () => {
           onSuccess: () => {
             setUploaded(true);
             setSnackbarPayload({message: 'Archive uploaded. Verify the result next.', messageType: 'success'});
-            refetch();
+            void refetch();
           },
         },
       );
@@ -120,7 +120,7 @@ const AdminBulkUserScreenInner = () => {
       applyMutation.mutate(undefined, {
         onSuccess: () => {
           setSnackbarPayload({message: 'Bulk user import applied.', messageType: 'success'});
-          refetch();
+          void refetch();
         },
       }),
     );
@@ -159,7 +159,7 @@ const AdminBulkUserScreenInner = () => {
             buttonText={'Verify Uploaded Archive'}
             onPress={() => {
               setUploaded(true);
-              refetch();
+              void refetch();
             }}
             disabled={uploadMutation.isPending}
             isLoading={isLoading && uploaded}

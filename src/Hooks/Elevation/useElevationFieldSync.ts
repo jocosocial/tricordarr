@@ -14,7 +14,7 @@ export const useElevationFieldSync = (moderatorField: string, twitarrTeamField: 
   const {asPrivilegedUser} = useElevation();
 
   useEffect(() => {
-    setFieldValue(moderatorField, asPrivilegedUser === PrivilegedUserAccounts.moderator);
-    setFieldValue(twitarrTeamField, asPrivilegedUser === PrivilegedUserAccounts.TwitarrTeam);
+    void setFieldValue(moderatorField, asPrivilegedUser === PrivilegedUserAccounts.moderator);
+    void setFieldValue(twitarrTeamField, asPrivilegedUser === PrivilegedUserAccounts.TwitarrTeam);
   }, [asPrivilegedUser, moderatorField, twitarrTeamField, setFieldValue]);
 };

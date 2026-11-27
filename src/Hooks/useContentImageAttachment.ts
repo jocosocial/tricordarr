@@ -82,7 +82,7 @@ export const useContentImageAttachment = ({
     }
     images.forEach(image => assertBase64WithinSizeLimit(image, maxImageSize));
     const additions: ImageUploadData[] = images.map(image => ({image, _shouldSaveToRoll: shouldSaveToRoll}));
-    setFieldValue(fieldName, values.images.concat(additions));
+    void setFieldValue(fieldName, values.images.concat(additions));
   };
 
   /**

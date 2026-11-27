@@ -31,7 +31,7 @@ export const ForumPostActionsPinItem = (props: ForumPostActionsPinItemProps) => 
       {
         onError: () => {
           updatePostPin(props.forumPost.postID, props.forumData?.forumID, !newValue);
-          invalidateForum(props.forumData?.forumID);
+          void invalidateForum(props.forumData?.forumID);
         },
         onSettled: () => {
           props.closeMenu();

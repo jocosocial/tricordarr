@@ -112,7 +112,7 @@ export function useScrollToNow<T extends EventData | FezData>({
     if (index <= 0) {
       listRef.current.scrollToOffset({offset: 0, animated: true});
     } else {
-      listRef.current.scrollToIndex({
+      void listRef.current.scrollToIndex({
         index,
         // The viewOffset is so that we show the TimeSeparator in the view as well.
         viewOffset: 40,

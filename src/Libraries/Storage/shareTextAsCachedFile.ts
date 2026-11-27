@@ -26,7 +26,7 @@ export const shareTextAsCachedFile = async ({
   try {
     const shareFile = new File(Paths.cache, fileName);
     shareFile.create({intermediates: true, overwrite: true});
-    shareFile.write(contents);
+    await shareFile.write(contents);
     const shareResult = await Share.open({
       url: shareFile.uri,
       type: mimeType,

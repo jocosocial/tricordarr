@@ -164,7 +164,7 @@ const initializeLogger = async () => {
     // Setup AppState listener for background flushing
     const subscription = AppState.addEventListener('change', state => {
       if (state === 'background' || state === 'inactive') {
-        logBuffer?.flushNow();
+        void logBuffer?.flushNow();
       }
     });
     return () => subscription.remove();
@@ -174,7 +174,7 @@ const initializeLogger = async () => {
 };
 
 // Auto-initialize
-initializeLogger();
+void initializeLogger();
 
 // Logger factory function
 export const createLogger = (tag: string): Logger => {

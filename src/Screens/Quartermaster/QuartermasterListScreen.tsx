@@ -91,7 +91,7 @@ const QuartermasterListScreenInner = ({navigation, route}: Props) => {
   const items = useMemo(() => data?.pages.flatMap(p => p.items) ?? [], [data]);
 
   const onReload = useCallback(() => {
-    refetch();
+    void refetch();
   }, [refetch]);
 
   const getNavButtons = useCallback(

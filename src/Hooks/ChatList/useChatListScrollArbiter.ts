@@ -107,7 +107,11 @@ export const useChatListScrollArbiter = <TItem>(listRef: TChatListRefObject<TIte
           listRef.current?.scrollToOffset({offset: command.offset, animated: command.animated});
           return;
         case 'scrollToIndex':
-          listRef.current?.scrollToIndex({index: command.index, animated: true, viewPosition: command.viewPosition});
+          void listRef.current?.scrollToIndex({
+            index: command.index,
+            animated: true,
+            viewPosition: command.viewPosition,
+          });
           return;
       }
     };

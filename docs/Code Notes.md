@@ -78,6 +78,16 @@ Reference implementations: `FezChatScreen.tsx`, `ForumThreadScreenBase.tsx` (lis
 
 The bottom tab bar stays in the layout while the keyboard is open (`keyboardHidesNavigationBar={false}` in `AppBottomTabBar`). Paper's Android default hides the bar only after `keyboardDidShow` and restores it only after `keyboardDidHide`, so every composer screen resized a second time after each keyboard transition: a visible flicker on open, and on close the chat list drew at full height with the bar sliding over the composer. The keyboard covers the bar anyway, and the KAV padding is measured from its own frame, so the offset heuristic above is unaffected.
 
+## Floating promises
+
+`@typescript-eslint/no-floating-promises` is an error in `src/**` and `App.tsx`. A promise nobody awaits, returns or catches turns its rejection into an unhandled-rejection LogBox error whose stack shows only the rejection tracker, not the call site (the expo-file-system 58 `File.write` startup error was one). Every promise-returning call has to say which of these it is:
+
+- **`await`** when ordering or the result matters: a later line depends on it, or the caller should only finish once it has. Inside an `async` function this is usually the answer.
+- **`void`** for an intended fire-and-forget whose promise can't reject or whose failure is already handled: React Query `refetch`, `fetchNextPage`, `invalidateQueries` and `cancelQueries` (none reject unless `throwOnError` is set), Formik `setFieldValue`/`setValue`/`setTouched` in change handlers, `scrollToIndex`, and our own async helpers that catch internally. `no-void` allows `void` as a statement only.
+- **`.catch(error => logger.error(...))`** for a fire-and-forget that can genuinely fail and the failure should be visible: native or platform calls (`startPushProvider`, permission checks, `Linking.openURL`, sockets), Formik `submitForm()` from a header button.
+
+In an effect, keep the callback synchronous and `void` or `.catch` the inner async call. Never add an eslint-disable for this rule. `onPress={() => promise()}` is not flagged because the arrow returns the promise, but React Native drops it the same way, so prefer the forms above in new code.
+
 ## ScrollingContentView `isStack`
 
 `isStack` says whether a navigation header sits above the screen. `false` (the current default) adds a top margin so content clears the top of a headerless screen; `true` adds none, so the first child controls its own spacing (`PaddedContentView padTop={true}`, or a full-width banner that should sit flush under the header).

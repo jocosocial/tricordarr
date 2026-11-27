@@ -151,9 +151,9 @@ const LfgListScreenInner = ({
     (event: WebSocketMessageEvent) => {
       const socketMessage = JSON.parse(event.data) as SocketNotificationData;
       if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.fezUnreadMsg) {
-        invalidateFez();
+        void invalidateFez();
       } else {
-        refetch();
+        void refetch();
       }
     },
     [invalidateFez, refetch],

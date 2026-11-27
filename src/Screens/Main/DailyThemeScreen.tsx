@@ -50,7 +50,7 @@ export const DailyThemeScreen = ({route, navigation}: Props) => {
 
   const onRefresh = () => {
     setRefreshing(true);
-    refetch().then(() => setRefreshing(false));
+    void refetch().then(() => setRefreshing(false));
   };
 
   return (

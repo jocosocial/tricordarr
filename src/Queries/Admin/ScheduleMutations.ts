@@ -64,10 +64,10 @@ export const useScheduleApplyMutation = () => {
         // cruiseday/location-filtered /events queries in ways we can't safely reconstruct
         // client-side -- fall back to invalidation for just those.
         if (diff.createdEvents.length || diff.timeChangeEvents.length || diff.locationChangeEvents.length) {
-          queryClient.invalidateQueries({queryKey: ['/events']});
+          void queryClient.invalidateQueries({queryKey: ['/events']});
         }
       } else {
-        queryClient.invalidateQueries({queryKey: ['/events']});
+        void queryClient.invalidateQueries({queryKey: ['/events']});
       }
 
       // The applied diff is now stale and a new log entry exists -- these aren't Event

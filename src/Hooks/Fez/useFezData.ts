@@ -377,7 +377,7 @@ export const useMarkFezReadEffect = (fez: FezData | undefined, initialReadCount:
         markRead(fez.fezID);
         // The UND drives the tab bar, seamail account buttons, and Schedule Day "Added To"
         // badge counts and we don't have a cache reducer for it yet.
-        refetchUserNotificationData();
+        void refetchUserNotificationData();
       }
     }
   }, [isViewing, fez, initialReadCount, markRead, notificationData, refetchUserNotificationData, isAddedTo]);
@@ -388,7 +388,7 @@ export const useMarkFezReadEffect = (fez: FezData | undefined, initialReadCount:
   const fezID = fez?.fezID;
   useEffect(() => {
     if (isViewing && fezID && appConfig.markReadCancelPush) {
-      cancelContentNotification(fezID);
+      void cancelContentNotification(fezID);
     }
   }, [isViewing, fezID, fez?.members?.postCount, appConfig.markReadCancelPush]);
 };

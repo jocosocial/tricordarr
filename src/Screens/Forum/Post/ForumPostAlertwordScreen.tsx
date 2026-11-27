@@ -40,7 +40,7 @@ export const ForumPostAlertwordScreen = ({route}: Props) => {
   useEffect(() => {
     if (data && data.pages) {
       setForumPosts(data.pages.flatMap(p => p.posts));
-      Promise.all(UserNotificationData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})));
+      void Promise.all(UserNotificationData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})));
     }
   }, [data, setForumPosts, queryClient, route.params.alertWord]);
 

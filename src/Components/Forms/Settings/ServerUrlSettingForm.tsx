@@ -38,7 +38,7 @@ export const ServerUrlSettingForm = (props: ServerUrlFormProps) => {
               choices={ServerChoices.serverChoices}
               getTitle={c => c?.name || 'Unknown'}
               onSelect={c => {
-                setFieldValue('serverUrl', c?.serverUrl);
+                void setFieldValue('serverUrl', c?.serverUrl);
               }}
               disabled={props.disabled}
             />

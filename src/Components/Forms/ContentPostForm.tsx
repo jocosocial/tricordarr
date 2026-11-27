@@ -46,8 +46,8 @@ const ElevationPrivilegeSync = () => {
   useEffect(() => {
     logger.debug('Updating privilege user Formik context.');
     const flags = getPrivilegeFlags(asPrivilegedUser);
-    setFieldValue('postAsModerator', flags.postAsModerator);
-    setFieldValue('postAsTwitarrTeam', flags.postAsTwitarrTeam);
+    void setFieldValue('postAsModerator', flags.postAsModerator);
+    void setFieldValue('postAsTwitarrTeam', flags.postAsTwitarrTeam);
   }, [asPrivilegedUser, setFieldValue]);
 
   return null;

@@ -33,9 +33,9 @@ Android AsyncStorage's default export is still the legacy v2 Room/SQLite backend
 
 ## Tradeoffs
 
-`File.write` is synchronous and blocks the JS thread. So does `superjson.stringify`, which dominates. If write jank ever shows up, `File.open()` / `writableStream()` are the escape hatch.
+`File.write` is asynchronous since expo-file-system 58 and runs off the JS thread, but `superjson.stringify` is synchronous and dominates. If write jank ever shows up, `File.open()` / `writableStream()` are the escape hatch.
 
-File writes are not atomic. The adapter writes a `.tmp` sibling then `moveSync`s over the target.
+File writes are not atomic. The adapter writes a `.tmp` sibling, awaits that write, then moves it over the target. The await is load-bearing: moving while the native write is still in flight leaves an empty cache file and can reject the write with "it already exists". Every `File.write` caller must await it, or a failure escapes `try/catch` as an unhandled rejection.
 
 Restore is all-or-nothing: one corrupt file discards the whole cache. TanStack already does that cleanup in `persistQueryClientRestore`.
 

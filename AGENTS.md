@@ -127,6 +127,11 @@ LoggedInScreen
 - A component docstring says what the component is for, in a sentence or two. Do not enumerate its cases, branches, or literal strings; that restates the implementation and goes stale
 - Avoid inline JSX comments (`{/* ... */}` inside the returned markup). Put the comment in the component body, above the logic or variable it explains
 
+## Floating Promises
+
+- `@typescript-eslint/no-floating-promises` is lint-enforced in `src/**`. Every promise must be awaited, `void`ed, or `.catch`ed; see `docs/Code Notes.md`, "Floating promises", for which to use
+- Do not make an event handler or effect `async` just to satisfy the rule
+
 ## Lists
 
 - Implementors of `BaseSwipeable.tsx` must have a `key`

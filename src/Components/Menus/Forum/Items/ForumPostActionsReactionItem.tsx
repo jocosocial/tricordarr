@@ -68,7 +68,7 @@ export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReacti
       {
         onSuccess: () => {
           // @TODO this is a hack but processing all these static fields and types sucks.
-          refetch();
+          void refetch();
         },
       },
     );

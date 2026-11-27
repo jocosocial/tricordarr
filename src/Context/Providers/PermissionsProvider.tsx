@@ -10,7 +10,10 @@ import {
 } from 'react-native-permissions';
 
 import {PermissionsContext} from '#src/Context/Contexts/PermissionsContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {isAndroid, isIOS} from '#src/Libraries/Platform/Detection';
+
+const logger = createLogger('PermissionsProvider.tsx');
 
 const microphonePermission = isIOS ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO;
 
@@ -30,10 +33,12 @@ export const PermissionsProvider = ({children}: PropsWithChildren) => {
   const [localNetworkPermissionStatus, setLocalNetworkPermissionStatus] = useState<PermissionStatus | undefined>();
 
   useEffect(() => {
-    checkNotifications().then(({status}) => {
-      setHasNotificationPermission(status === RESULTS.GRANTED);
-      setNotificationPermissionStatus(status);
-    });
+    checkNotifications()
+      .then(({status}) => {
+        setHasNotificationPermission(status === RESULTS.GRANTED);
+        setNotificationPermissionStatus(status);
+      })
+      .catch(error => logger.error('Failed to check notification permission', error));
   }, []);
 
   const checkMicrophonePermission = useCallback(async () => {
@@ -42,7 +47,7 @@ export const PermissionsProvider = ({children}: PropsWithChildren) => {
   }, []);
 
   useEffect(() => {
-    checkMicrophonePermission();
+    checkMicrophonePermission().catch(error => logger.error('Failed to check microphone permission', error));
   }, [checkMicrophonePermission]);
 
   const requestMicrophonePermission = useCallback(async () => {
@@ -64,7 +69,7 @@ export const PermissionsProvider = ({children}: PropsWithChildren) => {
   }, []);
 
   useEffect(() => {
-    checkLocalNetworkPermission();
+    checkLocalNetworkPermission().catch(error => logger.error('Failed to check local network permission', error));
   }, [checkLocalNetworkPermission]);
 
   /**

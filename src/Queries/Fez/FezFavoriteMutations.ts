@@ -32,7 +32,7 @@ export const useFezFavoriteMutation = () => {
     },
     onError: (_error, {fezID, action}) => {
       updateFavorite(fezID, action !== 'favorite');
-      invalidateFez(fezID);
+      void invalidateFez(fezID);
     },
   });
 };

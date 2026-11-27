@@ -92,7 +92,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
       }
     };
 
-    setupCallKit();
+    void setupCallKit();
 
     // Cleanup on unmount
     return () => {
@@ -225,7 +225,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
       }
 
       pendingAudioStartSocketRef.current = null;
-      startAudioStreaming(phoneSocket);
+      void startAudioStreaming(phoneSocket);
     },
     [startAudioStreaming],
   );
@@ -571,7 +571,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
             }, 100);
           }
 
-          stopAudioStreaming();
+          void stopAudioStreaming();
           dispatch({type: CallActions.END});
         });
 
@@ -584,7 +584,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
           }
           // Only log as error if socket is still open/connecting
           logger.error('[CallProvider] Phone call socket error', error);
-          stopAudioStreaming();
+          void stopAudioStreaming();
           dispatch({type: CallActions.END});
         });
       } catch (error) {
@@ -916,7 +916,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
             }, 100);
           }
 
-          stopAudioStreaming();
+          void stopAudioStreaming();
           dispatch({type: CallActions.END});
         });
 
@@ -929,7 +929,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
           }
           // Only log as error if socket is still open/connecting
           logger.error('[CallProvider] Phone call socket error', error);
-          stopAudioStreaming();
+          void stopAudioStreaming();
           dispatch({type: CallActions.END});
         });
 
@@ -1170,7 +1170,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
         if (uuidsMatch && currentState === CallState.RINGING) {
           answeredViaCallKitRef.current = true;
           // Use the original currentCallID (uppercase) for consistency with server
-          answerCall(currentCallID!);
+          void answerCall(currentCallID!);
 
           // Navigate to ActiveCallScreen after answering
           // When device is unlocked, iOS hands control to the app after CallKit answer
@@ -1209,7 +1209,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
         // Compare UUIDs case-insensitively (CallKit returns lowercase, server returns uppercase)
         if (uuidsMatch) {
           logger.debug('[CallProvider] CallKit endCall matched current call - calling endCall()');
-          endCall();
+          void endCall();
         } else {
           logger.debug('[CallProvider] CallKit endCall did NOT match current call - ignoring');
         }
@@ -1236,7 +1236,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
           logger.debug('[CallProvider] CallKit mute state differs from app state, toggling');
           // Mark that this change originated from CallKit to prevent feedback loop
           muteChangeFromCallKitRef.current = true;
-          toggleMute();
+          void toggleMute();
         } else if (uuidsMatch) {
           logger.debug('[CallProvider] CallKit mute state matches app state, ignoring');
         }
@@ -1250,7 +1250,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
           // Complete deferred start only after the system confirms audio-session activation.
           logger.debug('[CallProvider] Starting deferred audio after CallKit activation');
           pendingAudioStartSocketRef.current = null;
-          startAudioStreaming(pendingSocket);
+          void startAudioStreaming(pendingSocket);
         }
       },
     });

@@ -125,7 +125,7 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
 
   // Handler to trigger the chain of events needed to complete this screen.
   const onSubmit = useCallback(() => {
-    seamailCreateFormRef.current?.submitForm();
+    seamailCreateFormRef.current?.submitForm().catch(error => logger.error('Failed to submit seamail', error));
   }, []);
 
   const getNavButtons = useCallback(() => {

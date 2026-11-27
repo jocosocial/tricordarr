@@ -43,18 +43,18 @@ export const NotificationDataListener = () => {
   const wsMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
       logger.debug('wsMessageHandler received data from server:', event.data);
-      recordNotificationEvent(event.data, 'app', currentAccountID);
+      void recordNotificationEvent(event.data, 'app', currentAccountID);
       const notificationData = JSON.parse(event.data) as SocketNotificationData;
       const notificationType = SocketNotificationData.getType(notificationData);
       logger.debug(`Notification type: ${notificationType}`);
       // Always refetch the UserNotificationData when we got a socket event.
-      refetchUserNotificationData();
+      void refetchUserNotificationData();
 
       // Some kinds of socket events should update other areas of the state.
       switch (notificationType) {
         case NotificationTypeData.phoneCallEnded: {
           // Initiator receives this when receiver declines or call ends - sync local call state
-          endCall();
+          void endCall();
           break;
         }
         case NotificationTypeData.phoneCallAnswered: {
@@ -63,7 +63,7 @@ export const NotificationDataListener = () => {
           break;
         }
         case NotificationTypeData.announcement: {
-          refetchAnnouncements();
+          void refetchAnnouncements();
           break;
         }
         case NotificationTypeData.incomingPhoneCall: {
@@ -75,27 +75,29 @@ export const NotificationDataListener = () => {
           if (isIOS) {
             const caller = notificationData.caller;
             if (caller) {
-              isEmulator().then(isSim => {
-                if (isSim) {
-                  navigationNavigate(BottomTabComponents.seamailTab, {
-                    screen: ChatStackScreenComponents.krakenTalkReceiveScreen,
-                    params: {
-                      callID: notificationData.contentID,
-                      callerUserID: String(caller.userID),
-                      callerUsername: caller.username,
-                    },
-                  });
-                  receiveCall(
-                    notificationData.contentID,
-                    {userID: caller.userID, username: caller.username},
-                    {
-                      useCallKit: false,
-                    },
-                  );
-                } else {
-                  receiveCall(notificationData.contentID, {userID: caller.userID, username: caller.username});
-                }
-              });
+              isEmulator()
+                .then(isSim => {
+                  if (isSim) {
+                    navigationNavigate(BottomTabComponents.seamailTab, {
+                      screen: ChatStackScreenComponents.krakenTalkReceiveScreen,
+                      params: {
+                        callID: notificationData.contentID,
+                        callerUserID: String(caller.userID),
+                        callerUsername: caller.username,
+                      },
+                    });
+                    receiveCall(
+                      notificationData.contentID,
+                      {userID: caller.userID, username: caller.username},
+                      {
+                        useCallKit: false,
+                      },
+                    );
+                  } else {
+                    receiveCall(notificationData.contentID, {userID: caller.userID, username: caller.username});
+                  }
+                })
+                .catch(error => logger.error('Failed to handle incoming phone call notification', error));
             } else {
               logger.warn('No caller info in phone call notification');
             }
@@ -112,7 +114,7 @@ export const NotificationDataListener = () => {
         case NotificationTypeData.lfgCanceled:
         case NotificationTypeData.privateEventCanceled:
         case NotificationTypeData.addedToSeamail: {
-          invalidateFez(notificationData.contentID);
+          void invalidateFez(notificationData.contentID);
           break;
         }
       }

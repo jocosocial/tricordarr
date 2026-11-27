@@ -176,7 +176,7 @@ const ForumThreadScreenBaseInner = ({
   const forumID = forumData?.forumID;
   useEffect(() => {
     if (forumID && appConfig.markReadCancelPush) {
-      cancelSecondaryNotifications(forumID);
+      void cancelSecondaryNotifications(forumID);
     }
   }, [forumID, appConfig.markReadCancelPush]);
 

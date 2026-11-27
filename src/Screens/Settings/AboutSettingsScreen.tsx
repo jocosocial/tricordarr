@@ -30,10 +30,10 @@ export const AboutSettingsScreen = () => {
   };
 
   useEffect(() => {
-    DeviceInfo.getApiLevel().then(value => {
+    void DeviceInfo.getApiLevel().then(value => {
       setApiLevel(value);
     });
-    DeviceInfo.getManufacturer().then(value => {
+    void DeviceInfo.getManufacturer().then(value => {
       setManufacturer(value);
     });
   }, []);

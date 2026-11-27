@@ -110,16 +110,18 @@ export const LinkingProvider = ({children}: PropsWithChildren) => {
 
       // External URL - open directly
       if (url.startsWith('mailto:') && isIOS) {
-        isEmulator().then(emulator => {
-          if (emulator) {
-            setSnackbarPayload({message: 'mail links on iPhone simulator are not supported', messageType: 'error'});
-            return;
-          }
-          Linking.openURL(url).catch(err => {
-            logger.error('Failed to open external URL:', url, err);
-            setSnackbarPayload({message: 'Failed to open URL: ' + url, messageType: 'error'});
-          });
-        });
+        isEmulator()
+          .then(emulator => {
+            if (emulator) {
+              setSnackbarPayload({message: 'mail links on iPhone simulator are not supported', messageType: 'error'});
+              return;
+            }
+            Linking.openURL(url).catch(err => {
+              logger.error('Failed to open external URL:', url, err);
+              setSnackbarPayload({message: 'Failed to open URL: ' + url, messageType: 'error'});
+            });
+          })
+          .catch(err => logger.error('Failed to check for an emulator before opening URL:', url, err));
         return;
       }
       Linking.openURL(url).catch(err => {
