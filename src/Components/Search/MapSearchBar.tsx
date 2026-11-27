@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, View} from 'react-native';
+import {NativeScrollEvent, NativeSyntheticEvent, ScrollView, ScrollViewInstance, StyleSheet, View} from 'react-native';
 
 import {ListItem} from '#src/Components/Lists/ListItem';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
@@ -35,7 +35,7 @@ export const MapSearchBar = ({visible, index, onSelectResult}: MapSearchBarProps
   const [resultsContentHeight, setResultsContentHeight] = useState(0);
   const [resultsAtBottom, setResultsAtBottom] = useState(false);
 
-  const resultsScrollRef = useRef<ScrollView>(null);
+  const resultsScrollRef = useRef<ScrollViewInstance>(null);
 
   const searchResults: ShipSearchResult[] = useMemo(() => searchLabels(index, searchQuery), [index, searchQuery]);
 

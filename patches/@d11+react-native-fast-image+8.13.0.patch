@@ -14,7 +14,7 @@ index 86ee08e..3c2940c 100644
      }
  
 diff --git a/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java b/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java
-index 5766a8e..a12a4f7 100644
+index 5766a8e..9c839f6 100644
 --- a/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java
 +++ b/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java
 @@ -11,6 +11,12 @@ import com.facebook.react.bridge.ReadableArray;
@@ -166,9 +166,25 @@ index 2a59c61..8c2b899 100644
 +    }
  }
 diff --git a/node_modules/@d11/react-native-fast-image/dist/index.d.ts b/node_modules/@d11/react-native-fast-image/dist/index.d.ts
-index 2332172..aaf7777 100644
+index 2332172..0545c3d 100644
 --- a/node_modules/@d11/react-native-fast-image/dist/index.d.ts
 +++ b/node_modules/@d11/react-native-fast-image/dist/index.d.ts
+@@ -1,5 +1,5 @@
+ import React from 'react';
+-import { FlexStyle, LayoutChangeEvent, ShadowStyleIOS, StyleProp, TransformsStyle, ImageRequireSource, AccessibilityProps, ViewProps, ColorValue } from 'react-native';
++import { ImageStyle as RNImageStyle, LayoutChangeEvent, StyleProp, ImageRequireSource, AccessibilityProps, ViewProps, ColorValue } from 'react-native';
+ export type ResizeMode = 'contain' | 'cover' | 'stretch' | 'center';
+ declare const resizeMode: {
+     readonly contain: "contain";
+@@ -49,7 +49,7 @@ export interface OnErrorEvent {
+         error: string;
+     };
+ }
+-export interface ImageStyle extends FlexStyle, TransformsStyle, ShadowStyleIOS {
++export interface ImageStyle extends RNImageStyle {
+     backfaceVisibility?: 'visible' | 'hidden';
+     borderBottomLeftRadius?: number;
+     borderBottomRightRadius?: number;
 @@ -115,6 +115,9 @@ export interface FastImageStaticProperties {
      preload: (sources: Source[]) => void;
      clearMemoryCache: () => Promise<void>;

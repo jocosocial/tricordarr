@@ -1,7 +1,7 @@
 import FastImage, {type ImageStyle as FastImageStyle} from '@d11/react-native-fast-image';
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {LayoutChangeEvent, ScrollView, StyleSheet, View} from 'react-native';
+import {LayoutChangeEvent, ScrollViewInstance, StyleSheet, View, ViewInstance} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -63,9 +63,9 @@ export const MapScreen = ({navigation, route}: Props) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
 
-  const scrollViewRef = useRef<ScrollView>(null);
-  const scrollContentRef = useRef<View | null>(null);
-  const imageContainerRef = useRef<View | null>(null);
+  const scrollViewRef = useRef<ScrollViewInstance>(null);
+  const scrollContentRef = useRef<ViewInstance | null>(null);
+  const imageContainerRef = useRef<ViewInstance | null>(null);
   const lastScrolledKey = useRef<string | undefined>(undefined);
   const preloadedRef = useRef(false);
   const previousShipRef = useRef<string | undefined>(undefined);

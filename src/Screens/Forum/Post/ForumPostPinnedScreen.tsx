@@ -11,6 +11,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useForumThreadPinnedPostsQuery, useForumThreadQuery} from '#src/Queries/Forum/ForumThreadQueries';
 import {PostData} from '#src/Structs/ControllerStructs';
@@ -19,6 +20,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumP
 
 export const ForumPostPinnedScreen = ({route}: Props) => {
   const {data, refetch, isFetching} = useForumThreadPinnedPostsQuery(route.params.forumID);
+  const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
   const {data: forumData} = useForumThreadQuery(route.params.forumID);
   const {commonStyles} = useStyles();
   const flatListRef = useRef<FlashListRef<PostData>>(null);
@@ -34,7 +36,7 @@ export const ForumPostPinnedScreen = ({route}: Props) => {
   if (data.length === 0) {
     return (
       <AppView>
-        <ScrollingContentView refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+        <ScrollingContentView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <PaddedContentView>
             <TimeDivider label={'No posts to display'} />
           </PaddedContentView>
@@ -50,7 +52,7 @@ export const ForumPostPinnedScreen = ({route}: Props) => {
       <View style={[commonStyles.flex]}>
         <ForumPostList
           listRef={flatListRef}
-          refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}
+          refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           postList={data}
           enableShowInThread={true}
           forumData={forumData?.pages[0]}

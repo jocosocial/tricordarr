@@ -22,7 +22,7 @@ const logger = createLogger('AccountLinkHandler.tsx');
 
 // The URL that launched the app is still reported after a session switch remounts this component,
 // so remember which one has been dealt with at module scope.
-let handledInitialUrl: string | null = null;
+let handledInitialUrl: string | null | undefined = null;
 
 const NAVIGATION_READY_ATTEMPTS = 20;
 const NAVIGATION_READY_INTERVAL_MS = 50;
@@ -50,7 +50,7 @@ export const AccountLinkHandler = () => {
   }, [linkTo]);
 
   const handleUrl = useCallback(
-    (url: string | null) => {
+    (url: string | null | undefined) => {
       if (!url || !oobeCompleted || !isOtherAccountLink(url, currentAccountID)) {
         return;
       }

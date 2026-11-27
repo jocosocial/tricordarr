@@ -8,8 +8,10 @@
 // Tricordarr-Swift.h missing some Apple-smelling type or whatever, it's
 // probably because it's missing here.
 
+// Do not import <RCTAppDelegate.h> here. With Xcode 27 and Expo SDK 58 it changes how UIKit loads into
+// Swift, and AppDelegate then fails to conform to ExpoReactNativeFactoryProvider ("requirements that
+// could not be loaded in Swift 5.10"). Nothing in Swift needs it through this header.
 #import <NetworkExtension/NetworkExtension.h>
-#import <RCTAppDelegate.h>
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
 #import <UserNotifications/UserNotifications.h>

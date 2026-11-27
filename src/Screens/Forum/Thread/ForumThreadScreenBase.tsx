@@ -2,7 +2,7 @@ import {InfiniteData, QueryObserverResult} from '@tanstack/react-query';
 import {FormikHelpers, FormikProps} from 'formik';
 import pluralize from 'pluralize';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {StyleSheet, TextInput, View} from 'react-native';
+import {StyleSheet, TextInputInstance, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
 import {ActivityIndicator} from 'react-native-paper';
@@ -108,7 +108,7 @@ const ForumThreadScreenBaseInner = ({
 }: Props) => {
   const navigation = useCommonStack();
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
-  const postInputRef = useRef<TextInput | null>(null);
+  const postInputRef = useRef<TextInputInstance | null>(null);
   const postCreateMutation = useForumPostCreateMutation();
   const markReadMutation = useForumMarkReadMutation();
   const flatListRef = useRef<TConversationListV2Ref>(null);

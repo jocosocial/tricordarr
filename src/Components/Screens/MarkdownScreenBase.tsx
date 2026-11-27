@@ -1,5 +1,5 @@
 import React, {ReactElement, useCallback, useEffect, useRef, useState} from 'react';
-import {Keyboard, ScrollView, StyleSheet, View} from 'react-native';
+import {Keyboard, ScrollViewInstance, StyleSheet, View} from 'react-native';
 import {Button, Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -53,7 +53,7 @@ export const MarkdownScreenBase = ({
   const [submittedSearchQuery, setSubmittedSearchQuery] = useState('');
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [highlightedMatchIndex, setHighlightedMatchIndex] = useState<number | undefined>(undefined);
-  const scrollViewRef = useRef<ScrollView>(null);
+  const scrollViewRef = useRef<ScrollViewInstance>(null);
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
 

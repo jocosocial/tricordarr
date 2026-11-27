@@ -13,7 +13,7 @@ export const MaterialHeaderButtons = (props: Omit<HeaderButtonsProps, 'HeaderBut
       // I don't love what iOS does with the title in the middle of the header.
       // Defaults are 18 Android, 24 iOS. The latter is way too big.
       columnGap: 16,
-      ...props.style,
+      ...StyleSheet.flatten(props.style),
     },
   });
 
