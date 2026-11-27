@@ -141,6 +141,18 @@ module.exports = {
   },
   overrides: [
     {
+      // A promise that is neither awaited, returned, `void`ed nor `.catch`ed swallows its rejection
+      // into an unhandled-rejection LogBox error with no call site. Make every fire-and-forget explicit.
+      // See docs/Code Notes.md, "Floating promises".
+      files: ['src/**/*.ts', 'src/**/*.tsx', 'App.tsx'],
+      rules: {
+        '@typescript-eslint/no-floating-promises': 'error',
+        // `void promise();` as a statement is the explicit fire-and-forget form the rule above
+        // accepts. Still warn on `void` used as a value (`x = void y`).
+        'no-void': ['warn', {allowAsStatement: true}],
+      },
+    },
+    {
       // The re-exporting modules for generated code.
       files: ['src/Structs/SocketStructs.ts'],
       rules: {
