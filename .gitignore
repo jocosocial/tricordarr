@@ -90,3 +90,5 @@ yarn-error.log
 *.apk
 *.tar.gz
 *.aab
+# Local-only test data (Device Farm device list, test accounts). Shared into worktrees by orca.yaml.
+.fixtures

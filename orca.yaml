@@ -2,3 +2,6 @@ worktree:
   sharedDirectories:
     - .claude
     - .vscode
+    # Local-only test data (Device Farm device list, test accounts). A directory, because only directories
+    # are linked; files listed here are silently ignored. Gitignored; the real copy lives in the primary.
+    - .fixtures
